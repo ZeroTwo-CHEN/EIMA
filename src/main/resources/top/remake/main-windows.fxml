@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="482.0" prefWidth="739.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="top.remake.controller.MainWindowsController">
+   <children>
+      <SplitPane dividerPositions="0.3" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <items>
+            <TreeView fx:id="fileTreeView" prefHeight="485.0" prefWidth="242.0" />
+            <AnchorPane prefHeight="394.0" prefWidth="400.0">
+               <children>
+                  <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="100.0" prefWidth="522.0" style="-fx-background-color: red;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <TextField layoutX="91.0" layoutY="37.0" prefHeight="26.0" prefWidth="245.0" AnchorPane.topAnchor="37.0" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutY="100.0" prefHeight="312.0" prefWidth="528.0" style="-fx-background-color: green;" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <children>
+                        <Button mnemonicParsing="false" text="Button" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutY="468.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="528.0" style="-fx-background-color: blue;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <Button layoutX="433.0" layoutY="418.0" mnemonicParsing="false" text="Button" />
+               </children>
+            </AnchorPane>
+         </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
