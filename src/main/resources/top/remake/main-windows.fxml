@@ -28,7 +28,6 @@
                      </children>
                   </AnchorPane>
                   <AnchorPane layoutY="468.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="528.0" style="-fx-background-color: blue;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                  <Button layoutX="433.0" layoutY="418.0" mnemonicParsing="false" text="Button" />
                </children>
             </AnchorPane>
          </items>

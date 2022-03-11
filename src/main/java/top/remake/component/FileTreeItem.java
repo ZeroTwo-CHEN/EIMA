@@ -78,13 +78,11 @@ public class FileTreeItem extends TreeItem<String> {
     }
 
     /**
-     * 用于控制展开时是否要重新加载
+     * 重写叶子方法
      */
     @Override
     public boolean isLeaf() {
-        return super.isLeaf();
-        //以下语句为不重新加载
-        //return !directory.isDirectory();
+        return !directory.isDirectory();
     }
 
     /**
