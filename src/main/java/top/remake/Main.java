@@ -18,7 +18,8 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-windows.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-
+        stage.setMinHeight(400);
+        stage.setMinWidth(600);
         stage.setTitle("EIMA");
         stage.setScene(scene);
         stage.show();
