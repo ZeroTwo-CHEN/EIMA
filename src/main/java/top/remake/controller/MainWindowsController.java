@@ -2,8 +2,11 @@ package top.remake.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
 import org.controlsfx.control.BreadCrumbBar;
 import top.remake.component.DirectoryLoader;
 import top.remake.component.FileTreeItem;
@@ -22,14 +25,30 @@ import java.util.ResourceBundle;
  */
 public class MainWindowsController implements Initializable {
     @FXML
+    private AnchorPane root;
+
+    @FXML
+    private AnchorPane top;
+
+    @FXML
+    private SplitPane middle;
+
+    @FXML
+    private AnchorPane bottom;
+
+    @FXML
     private TreeView<String> fileTreeView;
 
     @FXML
     private BreadCrumbBar<String> breadCrumbBar;
 
+    @FXML
+    private FlowPane flowPane;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        initAdaptiveLayout();
         initFileTreeView();
         initBreadCrumbBar();
     }
@@ -70,5 +89,16 @@ public class MainWindowsController implements Initializable {
         breadCrumbBar.selectedCrumbProperty()
                 .addListener((observable, oldValue, newValue) ->
                         fileTreeView.getSelectionModel().select(newValue));
+    }
+
+    /**
+     * 设置自适应布局
+     */
+    private void initAdaptiveLayout() {
+        middle.setPrefHeight(root.getHeight() - top.getPrefHeight() - bottom.getPrefHeight());
+        root.heightProperty().addListener((observable, oldValue, newValue) -> {
+            double temp = top.getPrefHeight() + bottom.getPrefHeight();
+            middle.setPrefHeight(newValue.doubleValue() - temp);
+        });
     }
 }
