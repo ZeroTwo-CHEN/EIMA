@@ -2,15 +2,16 @@ package top.remake.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
 import org.controlsfx.control.BreadCrumbBar;
 import top.remake.component.DirectoryLoader;
 import top.remake.component.FileTreeItem;
 import top.remake.component.LazyFileTreeCell;
+import top.remake.component.PreviewFlowPane;
 
 import javax.swing.filechooser.FileSystemView;
 import java.io.File;
@@ -43,11 +44,14 @@ public class MainWindowsController implements Initializable {
     private BreadCrumbBar<String> breadCrumbBar;
 
     @FXML
-    private FlowPane flowPane;
+    private ScrollPane imagePreviewPane;
+
+    private PreviewFlowPane previewFlowPane;
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        initPreviewFlowPane();
         initAdaptiveLayout();
         initFileTreeView();
         initBreadCrumbBar();
@@ -83,12 +87,22 @@ public class MainWindowsController implements Initializable {
     }
 
     /**
+     * 初始化缩略图面板
+     */
+    private void initPreviewFlowPane() {
+        previewFlowPane = new PreviewFlowPane();
+        imagePreviewPane.setContent(previewFlowPane);
+    }
+
+    /**
      * 初始树形目录导航栏
      */
     private void initBreadCrumbBar() {
         breadCrumbBar.selectedCrumbProperty()
-                .addListener((observable, oldValue, newValue) ->
-                        fileTreeView.getSelectionModel().select(newValue));
+                .addListener((observable, oldValue, newValue) -> {
+                    fileTreeView.getSelectionModel().select(newValue);
+                    previewFlowPane.update(((FileTreeItem) newValue).getDirectory());
+                });
     }
 
     /**

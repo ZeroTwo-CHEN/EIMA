@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -77,5 +78,49 @@ public class TestFileSystemView {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void test06() {
+        /*String path="C:\\Users\\cjhaz\\Pictures\\God of War";
+        Files.walkFileTree(Paths.get(path), new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                String fileName = file.getFileName().toString().toLowerCase();
+                if (isSupportedImg(fileName)) {
+                    imgList.add(new ImageModel(file.toString())); // 获取绝对路径
+                }
+                return FileVisitResult.CONTINUE;
+            }
+
+            // 只访问当前文件夹 不进行递归访问
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                if (dir.toString().equals(path)) {
+                    return FileVisitResult.CONTINUE;
+                } else
+                    return FileVisitResult.SKIP_SUBTREE;
+            }
+
+            // 处理访问系统文件的异常
+            @Override
+            public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                return FileVisitResult.SKIP_SUBTREE;
+            }
+        });*/
+    }
+
+    @Test
+    public void test07() {
+        File file = new File("C:\\Users\\cjhaz\\Pictures\\God of War\\ScreenShot-2022-2-1_10-46-30.png");
+        System.out.println(file);
+        try {
+            System.out.println(file.getName());
+            System.out.println(file.toPath().toUri().toURL());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(file.toPath().toUri());
+        System.out.println(file.getAbsoluteFile().toURI());
     }
 }

@@ -37,4 +37,17 @@ public class FileUtil {
         WritableImage writableImage = SwingFXUtils.toFXImage(bufferedImage, null);
         return new ImageView(writableImage);
     }
+
+    /**
+     * 判断照片是否是支持的格式
+     */
+    public static boolean isSupportImageFormat(File file) {
+        String fileName = file.getName().toUpperCase();
+        //支持的照片格式：.JPG、.JPEG、.GIF、.PNG、和.BMP。
+        return fileName.endsWith("JPG") ||
+                fileName.endsWith("JPEG") ||
+                fileName.endsWith("GIF") ||
+                fileName.endsWith("PNG") ||
+                fileName.endsWith("BMP");
+    }
 }
