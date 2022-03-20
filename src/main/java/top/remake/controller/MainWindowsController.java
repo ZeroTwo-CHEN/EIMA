@@ -2,10 +2,7 @@ package top.remake.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import org.controlsfx.control.BreadCrumbBar;
 import top.remake.component.DirectoryLoader;
@@ -48,13 +45,16 @@ public class MainWindowsController implements Initializable {
 
 
     private PreviewFlowPane previewFlowPane;
+    @FXML
+    private Label tipsLabel;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        initPreviewFlowPane();
-        initAdaptiveLayout();
         initFileTreeView();
         initBreadCrumbBar();
+        initPreviewFlowPane();
+        initAdaptiveLayout();
     }
 
 
@@ -116,5 +116,9 @@ public class MainWindowsController implements Initializable {
             double temp = top.getPrefHeight() + bottom.getPrefHeight();
             middle.setPrefHeight(newValue.doubleValue() - temp);
         });
+    }
+
+    public void setTipsLabelText(int number, double size) {
+        tipsLabel.setText("共 " + number + " 张照片(" + String.format("%.2f", size) + " MB)");
     }
 }

@@ -2,6 +2,8 @@ package top.remake.component;
 
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+import top.remake.controller.ControllerMap;
+import top.remake.controller.MainWindowsController;
 import top.remake.entity.ImageFile;
 import top.remake.utils.FileUtil;
 
@@ -26,6 +28,7 @@ public class PreviewFlowPane extends FlowPane {
     private List<ThumbnailPanel> newChoices =new ArrayList<>();
     private List<ThumbnailPanel> oldChoices=new ArrayList<>();
     private double x,y,x2,y2;
+    private MainWindowsController mainWindowsController;
 
     public PreviewFlowPane() {
         setCache(true);
@@ -43,6 +46,9 @@ public class PreviewFlowPane extends FlowPane {
     }
 
     public void update(File directory) {
+        if (mainWindowsController == null) {
+            mainWindowsController = (MainWindowsController) ControllerMap.getController(MainWindowsController.class);
+        }
         this.thumbnailPanels.clear();
         File[] files = directory.listFiles(FileUtil::isSupportImageFormat);
         if (files != null) {
@@ -53,5 +59,10 @@ public class PreviewFlowPane extends FlowPane {
             }
         }
         getChildren().setAll(thumbnailPanels);
+        double totalSize = 0.0;
+        for (ThumbnailPanel thumbnailPanel : thumbnailPanels) {
+            totalSize += thumbnailPanel.getImageFile().getSizeInMagaBytes();
+        }
+        mainWindowsController.setTipsLabelText(thumbnailPanels.size(), totalSize);
     }
 }

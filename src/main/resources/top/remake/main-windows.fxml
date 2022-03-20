@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TreeView?>
@@ -17,7 +18,7 @@
                   <BreadCrumbBar fx:id="breadCrumbBar" prefHeight="50.0" AnchorPane.bottomAnchor="0.0" />
                </children>
             </AnchorPane>
-            <SplitPane fx:id="middle" dividerPositions="0.3" prefHeight="300.0">
+            <SplitPane fx:id="middle" dividerPositions="0.3" prefHeight="330.0">
                <items>
                   <TreeView fx:id="fileTreeView" prefHeight="485.0" prefWidth="242.0" />
                   <ScrollPane fx:id="imagePreviewPane" cache="true" fitToHeight="true" fitToWidth="true" style="-fx-background-color: yellow;" vbarPolicy="NEVER" />
@@ -26,7 +27,10 @@
                   <Insets />
                </VBox.margin>
             </SplitPane>
-            <AnchorPane fx:id="bottom" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" style="-fx-background-color: blue;" />
+            <AnchorPane fx:id="bottom" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0">
+               <children>
+                  <Label fx:id="tipsLabel" layoutX="12.0" layoutY="2.0" AnchorPane.leftAnchor="10.0" />
+               </children></AnchorPane>
          </children>
       </VBox>
    </children>

@@ -17,6 +17,11 @@ import top.remake.entity.ImageFile;
  */
 public class ThumbnailPanel extends VBox {
     /**
+     * Image
+     */
+    private ImageFile imageFile;
+
+    /**
      * 缩略图
      */
     private ImageView imageView;
@@ -37,6 +42,7 @@ public class ThumbnailPanel extends VBox {
 
 
     public ThumbnailPanel(ImageFile imageFile) {
+        this.imageFile = imageFile;
         //保持原比例，启用更好质量的加载算法，启用后台加载
         this.imageView = new ImageView(new Image(imageFile.getURL(),true));
         this.imageView.setFitWidth(100);
@@ -74,5 +80,17 @@ public class ThumbnailPanel extends VBox {
     }
     public void chooseIt(){
         this.isChoice=true;
+    }
+
+    public ImageFile getImageFile() {
+        return imageFile;
+    }
+
+    public ImageView getImageView() {
+        return imageView;
+    }
+
+    public Label getImageName() {
+        return imageName;
     }
 }
