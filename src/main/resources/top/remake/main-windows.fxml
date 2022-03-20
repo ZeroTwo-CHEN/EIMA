@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
@@ -20,8 +21,11 @@
             <SplitPane fx:id="middle" dividerPositions="0.3" prefHeight="330.0">
                <items>
                   <TreeView fx:id="fileTreeView" prefHeight="485.0" prefWidth="242.0" />
-                  <ScrollPane fx:id="imagePreviewPane" cache="true" fitToHeight="true" fitToWidth="true" vbarPolicy="NEVER" />
+                  <ScrollPane fx:id="imagePreviewPane" cache="true" fitToHeight="true" fitToWidth="true" style="-fx-background-color: yellow;" vbarPolicy="NEVER" />
                </items>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
             </SplitPane>
             <AnchorPane fx:id="bottom" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0">
                <children>

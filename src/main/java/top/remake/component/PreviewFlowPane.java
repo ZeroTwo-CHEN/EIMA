@@ -1,5 +1,6 @@
 package top.remake.component;
 
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import top.remake.controller.ControllerMap;
 import top.remake.controller.MainWindowsController;
@@ -21,11 +22,27 @@ public class PreviewFlowPane extends FlowPane {
      */
     private List<ThumbnailPanel> thumbnailPanels = new ArrayList<>();
 
+    /**
+     * 被选中图片的数组
+     */
+    private List<ThumbnailPanel> newChoices =new ArrayList<>();
+    private List<ThumbnailPanel> oldChoices=new ArrayList<>();
+    private double x,y,x2,y2;
     private MainWindowsController mainWindowsController;
 
     public PreviewFlowPane() {
         setCache(true);
-        setVgap(5);
+        setVgap(10);
+        setHgap(10);
+        setStyle("-fx-background-color: transparent");
+        this.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
+            x=event.getX();
+            y=event.getY();
+        });
+        this.addEventHandler(MouseEvent.MOUSE_RELEASED,event -> {
+
+        });
+
     }
 
     public void update(File directory) {
@@ -36,7 +53,7 @@ public class PreviewFlowPane extends FlowPane {
         File[] files = directory.listFiles(FileUtil::isSupportImageFormat);
         if (files != null) {
             for (File file : files) {
-                ImageFile imageFile = new ImageFile(file, 100, 100);
+                ImageFile imageFile = new ImageFile(file, 110, 110);
                 ThumbnailPanel thumbnailPanel = new ThumbnailPanel(imageFile);
                 this.thumbnailPanels.add(thumbnailPanel);
             }

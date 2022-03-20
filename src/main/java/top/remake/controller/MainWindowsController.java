@@ -43,8 +43,8 @@ public class MainWindowsController implements Initializable {
     @FXML
     private ScrollPane imagePreviewPane;
 
-    private PreviewFlowPane previewFlowPane;
 
+    private PreviewFlowPane previewFlowPane;
     @FXML
     private Label tipsLabel;
 
@@ -56,6 +56,7 @@ public class MainWindowsController implements Initializable {
         initPreviewFlowPane();
         initAdaptiveLayout();
     }
+
 
     /**
      * 初始化树形目录
@@ -91,6 +92,7 @@ public class MainWindowsController implements Initializable {
      */
     private void initPreviewFlowPane() {
         previewFlowPane = new PreviewFlowPane();
+       // previewFlowPane.setStyle("-fx-background-color: red");
         imagePreviewPane.setContent(previewFlowPane);
     }
 
