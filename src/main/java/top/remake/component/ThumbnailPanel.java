@@ -54,10 +54,7 @@ public class ThumbnailPanel extends VBox {
         pane.setMaxSize(110,110);
         pane.setMinSize(110,110);
         pane.setCenter(imageView);
-       // pane.setStyle("-fx-background-color: red");
-       // this.imageName.
         this.imageName.setAlignment(Pos.CENTER);
-       // this.imageName.setTextAlignment(TextAlignment.CENTER);
         getChildren().addAll(pane,imageName);
        this.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
            @Override
@@ -67,8 +64,6 @@ public class ThumbnailPanel extends VBox {
 
             }
         });
-        //this.addEventHandler();
-
     }
 
     /**
