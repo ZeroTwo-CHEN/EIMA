@@ -9,7 +9,7 @@ import java.util.Map;
  *
  * @author ZeroTwo_CHEN
  */
-public class ControllerMap {
+public final class ControllerMap {
     private static final Map<String, Object> CONTROLLER_MAP = new HashMap<>();
 
     private ControllerMap() {

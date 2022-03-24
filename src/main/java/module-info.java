@@ -4,6 +4,7 @@ module EIMA {
     requires javafx.swing;
     requires javafx.graphics;
     requires org.controlsfx.controls;
+    requires rxcontrols;
 
     opens top.remake to javafx.fxml;
     opens top.remake.controller to javafx.fxml;

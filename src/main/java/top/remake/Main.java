@@ -17,7 +17,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-windows.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/main-windows.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
         //addController要在FXMLoader.load调用后再使用
         ControllerMap.addController(fxmlLoader.getController());

@@ -1,14 +1,18 @@
 package top.remake.controller;
 
+import com.leewyatt.rxcontrols.controls.RXTranslationButton;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import org.controlsfx.control.BreadCrumbBar;
 import top.remake.component.DirectoryLoader;
 import top.remake.component.FileTreeItem;
 import top.remake.component.LazyFileTreeCell;
 import top.remake.component.PreviewFlowPane;
+import top.remake.entity.SortOrder;
 
 import javax.swing.filechooser.FileSystemView;
 import java.io.File;
@@ -45,8 +49,15 @@ public class MainWindowsController implements Initializable {
 
 
     private PreviewFlowPane previewFlowPane;
+
     @FXML
     private Label tipsLabel;
+
+    @FXML
+    private ComboBox<String> sortOrderComboBox;
+
+    @FXML
+    private RXTranslationButton refreshButton;
 
 
     @Override
@@ -55,6 +66,7 @@ public class MainWindowsController implements Initializable {
         initBreadCrumbBar();
         initPreviewFlowPane();
         initAdaptiveLayout();
+        initToolsPane();
     }
 
 
@@ -92,7 +104,6 @@ public class MainWindowsController implements Initializable {
      */
     private void initPreviewFlowPane() {
         previewFlowPane = new PreviewFlowPane();
-       // previewFlowPane.setStyle("-fx-background-color: red");
         imagePreviewPane.setContent(previewFlowPane);
     }
 
@@ -118,7 +129,38 @@ public class MainWindowsController implements Initializable {
         });
     }
 
+    /**
+     * 初始化工具栏
+     */
+    private void initToolsPane() {
+        //排序选择框
+        sortOrderComboBox.getItems()
+                .addAll(SortOrder.ASC_SORT_BY_NAME, SortOrder.DESC_SORT_BY_NAME,
+                        SortOrder.ASC_SORT_BY_TIME, SortOrder.DESC_SORT_BY_TIME,
+                        SortOrder.ASC_SORT_BY_SIZE, SortOrder.DESC_SORT_BY_SIZE);
+        sortOrderComboBox.getSelectionModel().select(0);
+        sortOrderComboBox.getSelectionModel().selectedItemProperty()
+                .addListener((observable, oldValue, newValue) -> previewFlowPane.update());
+
+        //初始化刷新按钮
+        ImageView imageView = new ImageView(new Image(getClass().getResource("/image/btn-refresh.png").toExternalForm(), true));
+        imageView.setPreserveRatio(true);
+        imageView.setFitHeight(18);
+        refreshButton.setGraphic(imageView);
+        refreshButton.setOnAction(event -> previewFlowPane.update());
+    }
+
+    /**
+     * 左下角提示栏
+     */
     public void setTipsLabelText(int number, double size) {
         tipsLabel.setText("共 " + number + " 张照片(" + String.format("%.2f", size) + " MB)");
+    }
+
+    /**
+     * 返回comboBox中的值
+     */
+    public String getSortOrder() {
+        return sortOrderComboBox.getSelectionModel().getSelectedItem();
     }
 }

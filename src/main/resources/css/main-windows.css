@@ -1,0 +1,6 @@
+.btn-refresh{
+    -fx-background-color: linear-gradient(to right,#00fffc,#fff600);
+
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}

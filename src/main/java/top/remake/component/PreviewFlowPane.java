@@ -6,6 +6,7 @@ import top.remake.controller.ControllerMap;
 import top.remake.controller.MainWindowsController;
 import top.remake.entity.ImageFile;
 import top.remake.utils.FileUtil;
+import top.remake.utils.SortUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,6 +22,11 @@ public class PreviewFlowPane extends FlowPane {
      * 照片列表
      */
     private List<ThumbnailPanel> thumbnailPanels = new ArrayList<>();
+
+    /**
+     * 当前展示的文件夹
+     */
+    private File directory;
 
     /**
      * 被选中图片的数组
@@ -46,6 +52,7 @@ public class PreviewFlowPane extends FlowPane {
     }
 
     public void update(File directory) {
+        this.directory = directory;
         if (mainWindowsController == null) {
             mainWindowsController = (MainWindowsController) ControllerMap.getController(MainWindowsController.class);
         }
@@ -58,11 +65,21 @@ public class PreviewFlowPane extends FlowPane {
                 this.thumbnailPanels.add(thumbnailPanel);
             }
         }
-        getChildren().setAll(thumbnailPanels);
+        SortUtil.sortThumbnailPanel(this.thumbnailPanels, mainWindowsController.getSortOrder());
+        getChildren().setAll(this.thumbnailPanels);
         double totalSize = 0.0;
         for (ThumbnailPanel thumbnailPanel : thumbnailPanels) {
             totalSize += thumbnailPanel.getImageFile().getSizeInMagaBytes();
         }
         mainWindowsController.setTipsLabelText(thumbnailPanels.size(), totalSize);
+    }
+
+    /**
+     * 当改变排序方式时刷新缩略图面板
+     */
+    public void update() {
+        if (directory != null) {
+            update(directory);
+        }
     }
 }

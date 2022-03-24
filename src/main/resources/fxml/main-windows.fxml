@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.leewyatt.rxcontrols.controls.RXTranslationButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.BreadCrumbBar?>
+
+<AnchorPane fx:id="root" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/main-windows.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="top.remake.controller.MainWindowsController">
+   <children>
+      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane fx:id="top" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0">
+               <children>
+                  <BreadCrumbBar fx:id="breadCrumbBar" prefHeight="50.0" AnchorPane.bottomAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <SplitPane fx:id="middle" dividerPositions="0.3" prefHeight="330.0">
+               <items>
+                  <TreeView fx:id="fileTreeView" prefHeight="485.0" prefWidth="242.0" />
+                  <AnchorPane>
+                     <children>
+                        <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="417.0" style="-fx-background-color: blue;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <ComboBox fx:id="sortOrderComboBox" layoutX="253.0" layoutY="14.0" prefWidth="150.0" AnchorPane.rightAnchor="10.0" />
+                              <RXTranslationButton id="btn-refresh" fx:id="refreshButton" layoutX="200.0" layoutY="11.0" prefHeight="24.0" prefWidth="45.0" styleClass="btn-refresh" text="刷新" AnchorPane.bottomAnchor="13.0" AnchorPane.rightAnchor="170.0" AnchorPane.topAnchor="13.0">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font></RXTranslationButton>
+                           </children>
+                        </AnchorPane>
+                        <ScrollPane fx:id="imagePreviewPane" cache="true" fitToHeight="true" fitToWidth="true" prefHeight="273.0" prefWidth="417.0" style="-fx-background-color: yellow;" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+                     </children>
+                  </AnchorPane>
+               </items>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </SplitPane>
+            <AnchorPane fx:id="bottom" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0">
+               <children>
+                  <Label fx:id="tipsLabel" layoutX="12.0" layoutY="2.0" AnchorPane.leftAnchor="10.0" />
+               </children></AnchorPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
