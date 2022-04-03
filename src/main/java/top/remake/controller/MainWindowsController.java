@@ -1,15 +1,20 @@
 package top.remake.controller;
 
 import com.leewyatt.rxcontrols.controls.RXTranslationButton;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import org.controlsfx.control.BreadCrumbBar;
-import top.remake.component.DirectoryLoader;
-import top.remake.component.FileTreeItem;
-import top.remake.component.LazyFileTreeCell;
-import top.remake.component.PreviewFlowPane;
+import top.remake.component.*;
 import top.remake.entity.SortOrder;
 
 import javax.swing.filechooser.FileSystemView;
@@ -97,12 +102,40 @@ public class MainWindowsController implements Initializable {
         fileTreeView.setShowRoot(false);
     }
 
+    private Pane pane;
+    private Rectangle rectangle;
     /**
      * 初始化缩略图面板
+     *
      */
     private void initPreviewFlowPane() {
-        previewFlowPane = new PreviewFlowPane();
-        imagePreviewPane.setContent(previewFlowPane);
+        previewFlowPane=new PreviewFlowPane();
+        rectangle=new Rectangle();
+        pane=new Pane();
+        rectangle.setFill(Color.rgb(50,150,250,.8));
+        rectangle.setVisible(false);
+        pane.getChildren().addAll(previewFlowPane,rectangle);
+        addHandler();
+        previewFlowPane.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                pane.setMinHeight(previewFlowPane.getHeight());
+            }
+        });
+        imagePreviewPane.viewportBoundsProperty().addListener(new ChangeListener<Bounds>() {
+            @Override
+            public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
+                previewFlowPane.setPrefWidth(newValue.getWidth());
+                System.out.println("flowpane:"+previewFlowPane.getHeight()+"\npane:"+pane.getHeight());
+                System.out.println("imagePreviewPane:"+imagePreviewPane.getHeight());
+
+            }
+        });
+        imagePreviewPane.setContent(pane);
+        rectangle.setVisible(false);
+        rectangle.toFront();
+        imagePreviewPane.setCache(true);
+
     }
 
     /**
@@ -156,5 +189,75 @@ public class MainWindowsController implements Initializable {
      */
     public String getSortOrder() {
         return sortOrderComboBox.getSelectionModel().getSelectedItem();
+    }
+
+
+    private double x,y;
+    private double width;
+    private double height;
+    private void addHandler(){
+        previewFlowPane.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+            @Override
+
+            public void handle(MouseEvent event) {
+                x=event.getX();
+                y=event.getY();
+            }
+        });
+        previewFlowPane.addEventHandler(MouseEvent.MOUSE_DRAGGED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                double x2=event.getX();
+                double y2=event.getY();
+
+                double endX;double endY;
+                if(y2<y){
+                    height=y-y2;
+                    endY=y2;
+                    if(x2<x) {
+                        width=x-x2;
+                        endX=x2;
+                    }else{
+                        width=x2-x;
+                        endX=x;
+                    }
+                }else{
+                    endY=y;
+                    height=y2-y;
+                    if(x2<x){
+                        endX=x2;
+                        width=x-x2;
+                    }else{
+                        endX=x;
+                        width=x2-x;
+                    }
+                }
+                rectangle.setX(endX);
+                rectangle.setY(endY);
+                rectangle.setWidth(width);
+                rectangle.setHeight(height);
+                rectangle.setVisible(true);
+            }
+        });
+       previewFlowPane.addEventHandler(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                //选中图片
+              //  selectImg(x,y,width,height);
+                rectangle.setVisible(false);
+            }
+        });
+    }
+
+
+    private void selectImg(double starX,double starY,double width,double height){
+        //  System.out.println(starX+"  "+starY+"  "+width+"  "+height);
+        for(ThumbnailPanel pane:previewFlowPane.getThumbnailPanels()){
+            Boolean ifSelect=pane.intersects(starX,starY,width,height);
+            if(ifSelect==true){
+
+              //  previewFlowPane.addSelect(pane);
+            }
+        }
     }
 }
