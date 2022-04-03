@@ -4,8 +4,6 @@ import com.leewyatt.rxcontrols.controls.RXTranslationButton;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import org.controlsfx.control.BreadCrumbBar;
 import top.remake.component.DirectoryLoader;
@@ -143,10 +141,6 @@ public class MainWindowsController implements Initializable {
                 .addListener((observable, oldValue, newValue) -> previewFlowPane.update());
 
         //初始化刷新按钮
-        ImageView imageView = new ImageView(new Image(getClass().getResource("/image/btn-refresh.png").toExternalForm(), true));
-        imageView.setPreserveRatio(true);
-        imageView.setFitHeight(18);
-        refreshButton.setGraphic(imageView);
         refreshButton.setOnAction(event -> previewFlowPane.update());
     }
 

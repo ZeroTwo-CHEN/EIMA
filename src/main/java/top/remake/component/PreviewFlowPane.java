@@ -48,7 +48,6 @@ public class PreviewFlowPane extends FlowPane {
         this.addEventHandler(MouseEvent.MOUSE_RELEASED,event -> {
 
         });
-
     }
 
     public void update(File directory) {
@@ -60,7 +59,7 @@ public class PreviewFlowPane extends FlowPane {
         File[] files = directory.listFiles(FileUtil::isSupportImageFormat);
         if (files != null) {
             for (File file : files) {
-                ImageFile imageFile = new ImageFile(file, 110, 110);
+                ImageFile imageFile = new ImageFile(file);
                 ThumbnailPanel thumbnailPanel = new ThumbnailPanel(imageFile);
                 this.thumbnailPanels.add(thumbnailPanel);
             }

@@ -77,15 +77,13 @@ public class ImageFile {
     private double imageHeight;
 
 
-    public ImageFile(File file, double requestedWidth, double requestedHeight) {
+    public ImageFile(File file) {
         this.file = file;
         this.fileName = file.getName();
         this.fileType = this.fileName.toUpperCase().substring(this.fileName.lastIndexOf(".") + 1);
         this.absolutePath = file.getAbsolutePath();
         this.sizeInBytes = file.length();
         this.sizeInMagaBytes = file.length() / (1024.0 * 1024);
-//        this.imageWidth = this.image.getWidth();
-//        this.imageHeight = this.image.getHeight();
 
         try {
             BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);

@@ -1,4 +1,5 @@
 import org.junit.jupiter.api.Test;
+import top.remake.DisplayWindow;
 
 import javax.imageio.ImageIO;
 import javax.swing.filechooser.FileSystemView;
@@ -122,5 +123,12 @@ public class TestFileSystemView {
         }
         System.out.println(file.toPath().toUri());
         System.out.println(file.getAbsoluteFile().toURI());
+    }
+
+    @Test
+    public void test08() {
+        String absolutePath = new File("C:\\Users\\cjhaz\\Pictures\\God of War\\ScreenShot-2022-2-1_10-46-30.png").getAbsolutePath();
+        String[] args = {absolutePath};
+        DisplayWindow.main(args);
     }
 }
