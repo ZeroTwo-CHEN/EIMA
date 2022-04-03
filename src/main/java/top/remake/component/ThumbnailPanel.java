@@ -32,16 +32,6 @@ public class ThumbnailPanel extends VBox {
      */
     private Label imageName;
 
-    private Boolean isChoice = false;
-
-    public Boolean getIsChoice() {
-        return isChoice;
-    }
-
-    public void setIsChoice(Boolean value) {
-        this.isChoice = value;
-    }
-
 
     public ThumbnailPanel(ImageFile imageFile) {
         //关闭cache防止占用内存过大
@@ -62,7 +52,6 @@ public class ThumbnailPanel extends VBox {
         getChildren().addAll(pane, imageName);
         this.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
             setStyle("-fx-background-color: #cce8ff");
-            isChoice = true;
 
         });
         this.setOnMouseClicked(event -> {
@@ -83,14 +72,15 @@ public class ThumbnailPanel extends VBox {
     /**
      * 标记该面板是否被选中
      */
-    public void removeChoice() {
-        this.isChoice = false;
+    public  void select(){
+        this.setStyle("-fx-background-color: rgba(0.5,0.5,1,.8)");
+    }
+    public void removeSelect(){
         this.setStyle("-fx-background-color: white");
     }
 
-    public void chooseIt() {
-        this.isChoice = true;
-    }
+
+
 
     public ImageFile getImageFile() {
         return imageFile;

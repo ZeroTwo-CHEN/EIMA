@@ -1,6 +1,5 @@
 package top.remake.component;
 
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import top.remake.controller.ControllerMap;
 import top.remake.controller.MainWindowsController;
@@ -40,14 +39,6 @@ public class PreviewFlowPane extends FlowPane {
         setCache(true);
         setVgap(10);
         setHgap(10);
-        setStyle("-fx-background-color: transparent");
-        this.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
-            x=event.getX();
-            y=event.getY();
-        });
-        this.addEventHandler(MouseEvent.MOUSE_RELEASED,event -> {
-
-        });
     }
 
     public void update(File directory) {
@@ -80,5 +71,13 @@ public class PreviewFlowPane extends FlowPane {
         if (directory != null) {
             update(directory);
         }
+    }
+
+    public List<ThumbnailPanel> getThumbnailPanels() {
+        return thumbnailPanels;
+    }
+    public void addSelect(ThumbnailPanel pane){
+        newChoices.add(pane);
+        pane.select();
     }
 }
