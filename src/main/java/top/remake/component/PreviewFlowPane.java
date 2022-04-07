@@ -37,9 +37,10 @@ public class PreviewFlowPane extends FlowPane {
 
     public PreviewFlowPane() {
         setCache(true);
-        setVgap(10);
-        setHgap(10);
+        setVgap(5);
+        setHgap(5);
     }
+
 
     public void update(File directory) {
         this.directory = directory;
@@ -76,8 +77,63 @@ public class PreviewFlowPane extends FlowPane {
     public List<ThumbnailPanel> getThumbnailPanels() {
         return thumbnailPanels;
     }
+
     public void addSelect(ThumbnailPanel pane){
         newChoices.add(pane);
         pane.select();
+    }
+
+    /**
+     * 清空存放的已选择图片
+     */
+    public void clearSelect(){
+        oldChoices.clear();
+        oldChoices.addAll(newChoices);
+        for(ThumbnailPanel pane :newChoices)
+            pane.removeSelect();
+        newChoices.clear();
+    }
+
+    /**
+     *删除一张已选择的图片
+     */
+    public void deleteImgFromList(Object obj){
+        ThumbnailPanel img=(ThumbnailPanel) obj;
+        oldChoices.clear();
+        oldChoices.addAll(newChoices);
+        img.removeSelect();
+        newChoices.remove(img);
+
+    }
+
+    /**
+     *增加一张图片到已选择图片中
+     */
+    public void addImgToList(Object obj){
+        ThumbnailPanel img=(ThumbnailPanel) obj;
+        oldChoices.clear();
+        oldChoices.addAll(newChoices);
+        newChoices.add(img);
+        img.select();
+    }
+
+    /**
+     * 全选（反选）
+     * 选择对未选择的图片
+     * 取消选择已选择的图片
+     */
+    public void selectAll(){
+        oldChoices.clear();
+        oldChoices.addAll(newChoices);
+        for(ThumbnailPanel img:thumbnailPanels) {
+            if (img.getIfSelected()==true) {
+                img.removeSelect();
+                newChoices.remove(img);
+            }
+            else {
+                img.select();
+                newChoices.add(img);
+            }
+        }
     }
 }
