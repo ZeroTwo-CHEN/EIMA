@@ -5,7 +5,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import top.remake.DisplayWindow;
@@ -32,6 +31,8 @@ public class ThumbnailPanel extends VBox {
      */
     private Label imageName;
 
+    private Boolean ifSelected;
+
 
     public ThumbnailPanel(ImageFile imageFile) {
         //关闭cache防止占用内存过大
@@ -48,12 +49,11 @@ public class ThumbnailPanel extends VBox {
         pane.setMaxSize(110, 110);
         pane.setMinSize(110, 110);
         pane.setCenter(imageView);
+        ifSelected=false;
         this.imageName.setAlignment(Pos.CENTER);
         getChildren().addAll(pane, imageName);
-        this.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
-            setStyle("-fx-background-color: #cce8ff");
 
-        });
+
         this.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 String[] args = {imageFile.getAbsolutePath()};
@@ -66,6 +66,38 @@ public class ThumbnailPanel extends VBox {
 //                });
                 DisplayWindow.main(args);
             }
+            if(event.getButton()==MouseButton.PRIMARY&&event.getClickCount()==1){
+
+
+                //按下Ctrl键时对图片进行选择
+                if(event.isControlDown()){
+                    PreviewFlowPane parent=(PreviewFlowPane) this.getParent();
+                    //图片已经选中，则取消选中
+                    if(this.getIfSelected()) {
+                       // this.ifSelected = false;
+                        parent.deleteImgFromList((Object) this);
+                    }
+                    //图片未被选中，则选择该图片
+                    else {
+                     //   this.ifSelected = true;
+                        parent.addImgToList((Object) this);
+                    }
+                }
+                //图片单选
+                else{
+                    PreviewFlowPane parent=(PreviewFlowPane) this.getParent();
+
+                    //如果图片已经被选中，则取消选中
+                    if(this.getIfSelected()){
+                        parent.clearSelect();
+                    }
+                    //否则就选中图片
+                    else{
+                        parent.clearSelect();
+                        parent.addImgToList((Object) this);
+                    }
+                }
+            }
         });
     }
 
@@ -73,10 +105,12 @@ public class ThumbnailPanel extends VBox {
      * 标记该面板是否被选中
      */
     public  void select(){
-        this.setStyle("-fx-background-color: rgba(0.5,0.5,1,.8)");
+        this.setStyle("-fx-background-color: #2894FF");
+        this.ifSelected=true;
     }
     public void removeSelect(){
-        this.setStyle("-fx-background-color: white");
+        this.setStyle("-fx-background-color: #ffffff");
+        this.ifSelected=false;
     }
 
 
@@ -92,5 +126,13 @@ public class ThumbnailPanel extends VBox {
 
     public Label getImageName() {
         return imageName;
+    }
+
+    public Boolean getIfSelected() {
+        return ifSelected;
+    }
+
+    public void setIfSelected(Boolean ifSelected) {
+        this.ifSelected = ifSelected;
     }
 }

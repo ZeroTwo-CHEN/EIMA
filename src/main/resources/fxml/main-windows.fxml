@@ -41,6 +41,11 @@
                                                 <Font size="14.0" />
                                             </font>
                                         </RXTranslationButton>
+                              <RXTranslationButton fx:id="selectAllButton" layoutX="14.0" layoutY="12.0" prefHeight="24.0" prefWidth="45.0" text="全选" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="13.0" AnchorPane.topAnchor="13.0">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </RXTranslationButton>
                                     </children>
                                 </AnchorPane>
                                 <ScrollPane fx:id="imagePreviewPane" cache="true" fitToHeight="true" fitToWidth="true" prefHeight="273.0" prefWidth="417.0" style="-fx-background-color: yellow;" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />

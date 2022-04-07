@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -61,6 +62,9 @@ public class MainWindowsController implements Initializable {
 
     @FXML
     private RXTranslationButton refreshButton;
+
+    @FXML
+    private RXTranslationButton selectAllButton;
 
 
     @Override
@@ -126,14 +130,14 @@ public class MainWindowsController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
                 previewFlowPane.setPrefWidth(newValue.getWidth());
-                System.out.println("flowpane:"+previewFlowPane.getHeight()+"\npane:"+pane.getHeight());
-                System.out.println("imagePreviewPane:"+imagePreviewPane.getHeight());
-
+                if(previewFlowPane.getHeight()<imagePreviewPane.getHeight())
+                    previewFlowPane.setPrefHeight(imagePreviewPane.getHeight());
             }
         });
+
         imagePreviewPane.setContent(pane);
         rectangle.setVisible(false);
-        rectangle.toFront();
+        //rectangle.toFront();
         imagePreviewPane.setCache(true);
 
     }
@@ -175,6 +179,8 @@ public class MainWindowsController implements Initializable {
 
         //初始化刷新按钮
         refreshButton.setOnAction(event -> previewFlowPane.update());
+        //初始化全选按钮
+        selectAllButton.setOnAction(event -> previewFlowPane.selectAll());
     }
 
     /**
@@ -192,10 +198,17 @@ public class MainWindowsController implements Initializable {
     }
 
 
+    //
     private double x,y;
     private double width;
     private double height;
     private void addHandler(){
+
+
+
+        /**
+         * 对FlowPane添加监听器记录鼠标按下时的坐标，存放于x，y中。
+         */
         previewFlowPane.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
 
@@ -204,60 +217,70 @@ public class MainWindowsController implements Initializable {
                 y=event.getY();
             }
         });
+        /**
+         * 通过对FlowPane添加监听器记录并计算矩形（多选框）的坐标，宽高；
+         * 根据得到的坐标和宽高绘制矩形并动态选择图片
+         */
         previewFlowPane.addEventHandler(MouseEvent.MOUSE_DRAGGED, new EventHandler<MouseEvent>() {
+
             @Override
             public void handle(MouseEvent event) {
                 double x2=event.getX();
                 double y2=event.getY();
-
                 double endX;double endY;
-                if(y2<y){
-                    height=y-y2;
-                    endY=y2;
-                    if(x2<x) {
-                        width=x-x2;
-                        endX=x2;
-                    }else{
-                        width=x2-x;
-                        endX=x;
-                    }
-                }else{
-                    endY=y;
-                    height=y2-y;
-                    if(x2<x){
-                        endX=x2;
-                        width=x-x2;
-                    }else{
-                        endX=x;
-                        width=x2-x;
-                    }
-                }
+                endX=Math.min(x,x2);
+                endY=Math.min(y,y2);
+                width=Math.max(x,x2)-Math.min(x,x2);
+                height=Math.max(y,y2)-Math.min(y,y2);
                 rectangle.setX(endX);
                 rectangle.setY(endY);
                 rectangle.setWidth(width);
                 rectangle.setHeight(height);
                 rectangle.setVisible(true);
+                //选择矩形所经过的图片
+                if(width>=10&&height>=10)
+                   selectImg();
+                //拖拽鼠标向上超出边界时，将ScrollPane上滑
+                if(event.getSceneY()<100)
+                   imagePreviewPane.setVvalue(imagePreviewPane.getVvalue()+(event.getSceneY()-100)/previewFlowPane.getHeight()/100);
+                //拖拽鼠标向下超出边界时。将ScrollPane下滑
+                if(event.getSceneY()>100+imagePreviewPane.getHeight())
+                    imagePreviewPane.setVvalue(imagePreviewPane.getVvalue()+(event.getSceneY()-imagePreviewPane.getHeight()-100)/previewFlowPane.getHeight()/10);
             }
         });
+        /***
+         * 处理单击图片或者单击空白面板
+         */
        previewFlowPane.addEventHandler(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 //选中图片
-              //  selectImg(x,y,width,height);
                 rectangle.setVisible(false);
             }
         });
+
+        /**
+         * 处理单击空白部分时取消已选择的图片
+         */
+        previewFlowPane.setOnMouseClicked(event -> {
+           if(event.getButton()== MouseButton.PRIMARY&&event.getClickCount()==1&&!event.isControlDown()) {
+               if (previewFlowPane.equals(event.getPickResult().getIntersectedNode())) {
+                   previewFlowPane.clearSelect();
+               }
+
+           }
+       });
     }
 
-
-    private void selectImg(double starX,double starY,double width,double height){
-        //  System.out.println(starX+"  "+starY+"  "+width+"  "+height);
+    /**
+     * 根据矩形的数据选择图片
+     */
+    private void selectImg(){
+        previewFlowPane.clearSelect();
         for(ThumbnailPanel pane:previewFlowPane.getThumbnailPanels()){
-            Boolean ifSelect=pane.intersects(starX,starY,width,height);
-            if(ifSelect==true){
-
-              //  previewFlowPane.addSelect(pane);
-            }
+            boolean inIntersects = rectangle.intersects(pane.getLayoutX(), pane.getLayoutY(), pane.getWidth(), pane.getHeight());
+            if(inIntersects)
+                previewFlowPane.addSelect(pane);
         }
     }
 }
