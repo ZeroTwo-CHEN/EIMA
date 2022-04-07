@@ -50,4 +50,11 @@ public class FileUtil {
                 fileName.endsWith("PNG") ||
                 fileName.endsWith("BMP");
     }
+
+    /**
+     * 删除图片
+     */
+    public static void delete(File file) {
+        Desktop.getDesktop().moveToTrash(file);
+    }
 }
