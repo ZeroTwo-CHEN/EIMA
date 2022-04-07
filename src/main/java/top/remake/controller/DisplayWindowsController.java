@@ -29,7 +29,6 @@ import top.remake.utils.SortUtil;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -366,10 +365,12 @@ public class DisplayWindowsController implements Initializable {
         hBox.getChildren().addAll(key, value);
 
 
-        key.getStyleClass().add("image-info-vbox");
-        value.getStyleClass().add("image-info-vbox");
-        hBox.getStylesheets()
-                .add(Objects.requireNonNull(getClass().getResource("/css/display-window.css")).toExternalForm());
+        key.setStyle("-fx-spacing: 15px");
+        value.setStyle("-fx-spacing: 15px");
+//        key.getStyleClass().add("image-info-vbox");
+//        value.getStyleClass().add("image-info-vbox");
+//        hBox.getStylesheets()
+//                .add(Objects.requireNonNull(getClass().getResource("/css/display-window.css")).toExternalForm());
 
         alert.getDialogPane().setContent(hBox);
         alert.initModality(Modality.NONE);
@@ -390,9 +391,11 @@ public class DisplayWindowsController implements Initializable {
             FileUtil.delete(imageFiles.get(currentIndex).getFile());
             imageFiles.remove(imageFiles.get(currentIndex));
             nextImage();
-            Platform.runLater(() -> {
-
-            });
+            Platform.runLater(() -> mainWindowsController.updateFlowPane());
         }
+    }
+
+    private void fullScreen() {
+        stage.setFullScreen(true);
     }
 }

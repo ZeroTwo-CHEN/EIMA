@@ -62,7 +62,7 @@ public class PreviewFlowPane extends FlowPane {
         for (ThumbnailPanel thumbnailPanel : thumbnailPanels) {
             totalSize += thumbnailPanel.getImageFile().getSizeInMagaBytes();
         }
-        mainWindowsController.setTipsLabelText(thumbnailPanels.size(), totalSize);
+        mainWindowsController.updateTipsLabelText(thumbnailPanels.size(), totalSize);
     }
 
     /**
@@ -89,8 +89,9 @@ public class PreviewFlowPane extends FlowPane {
     public void clearSelect(){
         oldChoices.clear();
         oldChoices.addAll(newChoices);
-        for(ThumbnailPanel pane :newChoices)
+        for(ThumbnailPanel pane :newChoices) {
             pane.removeSelect();
+        }
         newChoices.clear();
     }
 
@@ -126,7 +127,7 @@ public class PreviewFlowPane extends FlowPane {
         oldChoices.clear();
         oldChoices.addAll(newChoices);
         for(ThumbnailPanel img:thumbnailPanels) {
-            if (img.getIfSelected()==true) {
+            if (img.getIfSelected()) {
                 img.removeSelect();
                 newChoices.remove(img);
             }

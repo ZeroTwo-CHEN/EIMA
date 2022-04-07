@@ -28,7 +28,7 @@
                         <TreeView fx:id="fileTreeView" prefHeight="485.0" prefWidth="242.0" />
                         <AnchorPane>
                             <children>
-                                <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="417.0" style="-fx-background-color: blue;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="417.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
                                         <ComboBox fx:id="sortOrderComboBox" layoutX="253.0" layoutY="14.0" prefWidth="150.0" AnchorPane.rightAnchor="10.0" />
                                         <RXTranslationButton fx:id="refreshButton" layoutX="200.0" layoutY="11.0" prefHeight="24.0" prefWidth="45.0" text="刷新" AnchorPane.bottomAnchor="13.0" AnchorPane.rightAnchor="170.0" AnchorPane.topAnchor="13.0">
@@ -48,7 +48,7 @@
                               </RXTranslationButton>
                                     </children>
                                 </AnchorPane>
-                                <ScrollPane fx:id="imagePreviewPane" cache="true" fitToHeight="true" fitToWidth="true" prefHeight="273.0" prefWidth="417.0" style="-fx-background-color: yellow;" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+                                <ScrollPane fx:id="imagePreviewPane" cache="true" fitToHeight="true" fitToWidth="true" prefHeight="273.0" prefWidth="417.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
                             </children>
                         </AnchorPane>
                     </items>

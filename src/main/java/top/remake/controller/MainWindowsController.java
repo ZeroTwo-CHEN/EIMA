@@ -1,15 +1,10 @@
 package top.remake.controller;
 
 import com.leewyatt.rxcontrols.controls.RXTranslationButton;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Bounds;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -50,7 +45,6 @@ public class MainWindowsController implements Initializable {
 
     @FXML
     private ScrollPane imagePreviewPane;
-
 
     private PreviewFlowPane previewFlowPane;
 
@@ -108,30 +102,27 @@ public class MainWindowsController implements Initializable {
 
     private Pane pane;
     private Rectangle rectangle;
+
     /**
      * 初始化缩略图面板
-     *
      */
     private void initPreviewFlowPane() {
-        previewFlowPane=new PreviewFlowPane();
-        rectangle=new Rectangle();
-        pane=new Pane();
-        rectangle.setFill(Color.rgb(50,150,250,.8));
+        previewFlowPane = new PreviewFlowPane();
+        rectangle = new Rectangle();
+        pane = new Pane();
+        rectangle.setFill(Color.rgb(50, 150, 250, .8));
         rectangle.setVisible(false);
-        pane.getChildren().addAll(previewFlowPane,rectangle);
+        pane.getChildren().addAll(previewFlowPane, rectangle);
         addHandler();
-        previewFlowPane.heightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                pane.setMinHeight(previewFlowPane.getHeight());
-            }
-        });
-        imagePreviewPane.viewportBoundsProperty().addListener(new ChangeListener<Bounds>() {
-            @Override
-            public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
-                previewFlowPane.setPrefWidth(newValue.getWidth());
-                if(previewFlowPane.getHeight()<imagePreviewPane.getHeight())
-                    previewFlowPane.setPrefHeight(imagePreviewPane.getHeight());
+
+        previewFlowPane.heightProperty()
+                .addListener((observable, oldValue, newValue) -> pane.setMinHeight(previewFlowPane.getHeight()));
+
+        imagePreviewPane.viewportBoundsProperty()
+                .addListener((observable, oldValue, newValue) -> {
+            previewFlowPane.setPrefWidth(newValue.getWidth());
+            if (previewFlowPane.getHeight() < imagePreviewPane.getHeight()) {
+                previewFlowPane.setPrefHeight(imagePreviewPane.getHeight());
             }
         });
 
@@ -139,7 +130,6 @@ public class MainWindowsController implements Initializable {
         rectangle.setVisible(false);
         //rectangle.toFront();
         imagePreviewPane.setCache(true);
-
     }
 
     /**
@@ -186,7 +176,7 @@ public class MainWindowsController implements Initializable {
     /**
      * 左下角提示栏
      */
-    public void setTipsLabelText(int number, double size) {
+    public void updateTipsLabelText(int number, double size) {
         tipsLabel.setText("共 " + number + " 张照片(" + String.format("%.2f", size) + " MB)");
     }
 
@@ -198,89 +188,79 @@ public class MainWindowsController implements Initializable {
     }
 
 
-    //
-    private double x,y;
+    /**
+     * 鼠标按下时的坐标
+     */
+    private double x, y;
     private double width;
     private double height;
-    private void addHandler(){
 
-
-
-        /**
-         * 对FlowPane添加监听器记录鼠标按下时的坐标，存放于x，y中。
-         */
-        previewFlowPane.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-            @Override
-
-            public void handle(MouseEvent event) {
-                x=event.getX();
-                y=event.getY();
-            }
-        });
-        /**
-         * 通过对FlowPane添加监听器记录并计算矩形（多选框）的坐标，宽高；
-         * 根据得到的坐标和宽高绘制矩形并动态选择图片
-         */
-        previewFlowPane.addEventHandler(MouseEvent.MOUSE_DRAGGED, new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(MouseEvent event) {
-                double x2=event.getX();
-                double y2=event.getY();
-                double endX;double endY;
-                endX=Math.min(x,x2);
-                endY=Math.min(y,y2);
-                width=Math.max(x,x2)-Math.min(x,x2);
-                height=Math.max(y,y2)-Math.min(y,y2);
-                rectangle.setX(endX);
-                rectangle.setY(endY);
-                rectangle.setWidth(width);
-                rectangle.setHeight(height);
-                rectangle.setVisible(true);
-                //选择矩形所经过的图片
-                if(width>=10&&height>=10)
-                   selectImg();
-                //拖拽鼠标向上超出边界时，将ScrollPane上滑
-                if(event.getSceneY()<100)
-                   imagePreviewPane.setVvalue(imagePreviewPane.getVvalue()+(event.getSceneY()-100)/previewFlowPane.getHeight()/100);
-                //拖拽鼠标向下超出边界时。将ScrollPane下滑
-                if(event.getSceneY()>100+imagePreviewPane.getHeight())
-                    imagePreviewPane.setVvalue(imagePreviewPane.getVvalue()+(event.getSceneY()-imagePreviewPane.getHeight()-100)/previewFlowPane.getHeight()/10);
-            }
-        });
-        /***
-         * 处理单击图片或者单击空白面板
-         */
-       previewFlowPane.addEventHandler(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                //选中图片
-                rectangle.setVisible(false);
-            }
+    private void addHandler() {
+        //对FlowPane添加监听器记录鼠标按下时的坐标，存放于x，y中。
+        previewFlowPane.setOnMousePressed(event -> {
+            x = event.getX();
+            y = event.getY();
         });
 
-        /**
-         * 处理单击空白部分时取消已选择的图片
-         */
+        //通过对FlowPane添加监听器记录并计算矩形（多选框）的坐标，宽高；
+        //根据得到的坐标和宽高绘制矩形并动态选择图片
+        previewFlowPane.setOnMouseDragged(event -> {
+            double x2 = event.getX();
+            double y2 = event.getY();
+            double endX = Math.min(x, x2);
+            double endY = Math.min(y, y2);
+            width = Math.max(x, x2) - Math.min(x, x2);
+            height = Math.max(y, y2) - Math.min(y, y2);
+            rectangle.setX(endX);
+            rectangle.setY(endY);
+            rectangle.setWidth(width);
+            rectangle.setHeight(height);
+            rectangle.setVisible(true);
+            //选择矩形所经过的图片
+            if (width >= 10 && height >= 10) {
+                selectImg();
+            }
+            //拖拽鼠标向上超出边界时，将ScrollPane上滑
+            if (event.getSceneY() < 100) {
+                imagePreviewPane.setVvalue(imagePreviewPane.getVvalue() +
+                        (event.getSceneY() - 100) / previewFlowPane.getHeight() / 100);
+            }
+            //拖拽鼠标向下超出边界时。将ScrollPane下滑
+            if (event.getSceneY() > 100 + imagePreviewPane.getHeight()) {
+                imagePreviewPane.setVvalue(imagePreviewPane.getVvalue() +
+                        (event.getSceneY() - imagePreviewPane.getHeight() - 100) / previewFlowPane.getHeight() / 10);
+            }
+        });//处理单击图片或者单击空白面板
+        previewFlowPane.setOnMouseReleased(event -> {
+            //选中图片
+            rectangle.setVisible(false);
+        });
+
+        //处理单击空白部分时取消已选择的图片
         previewFlowPane.setOnMouseClicked(event -> {
-           if(event.getButton()== MouseButton.PRIMARY&&event.getClickCount()==1&&!event.isControlDown()) {
-               if (previewFlowPane.equals(event.getPickResult().getIntersectedNode())) {
-                   previewFlowPane.clearSelect();
-               }
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1 && !event.isControlDown()) {
+                if (previewFlowPane.equals(event.getPickResult().getIntersectedNode())) {
+                    previewFlowPane.clearSelect();
+                }
 
-           }
-       });
+            }
+        });
     }
 
     /**
      * 根据矩形的数据选择图片
      */
-    private void selectImg(){
+    private void selectImg() {
         previewFlowPane.clearSelect();
-        for(ThumbnailPanel pane:previewFlowPane.getThumbnailPanels()){
-            boolean inIntersects = rectangle.intersects(pane.getLayoutX(), pane.getLayoutY(), pane.getWidth(), pane.getHeight());
-            if(inIntersects)
+        for (ThumbnailPanel pane : previewFlowPane.getThumbnailPanels()) {
+            boolean isIntersects = rectangle.intersects(pane.getLayoutX(), pane.getLayoutY(), pane.getWidth(), pane.getHeight());
+            if (isIntersects) {
                 previewFlowPane.addSelect(pane);
+            }
         }
+    }
+
+    public void updateFlowPane() {
+        previewFlowPane.update();
     }
 }
