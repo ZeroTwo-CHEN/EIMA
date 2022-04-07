@@ -14,3 +14,11 @@
 #toolbar{
     -fx-background-color: linear-gradient(to right, #2CD8D5,#C5C1FF);
 }
+
+.label{
+    -fx-font-size: 14;
+}
+
+.image-info-vbox{
+    -fx-spacing: 15px;
+}

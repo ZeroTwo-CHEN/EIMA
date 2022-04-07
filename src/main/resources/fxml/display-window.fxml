@@ -5,30 +5,17 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/display-window.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="top.remake.controller.DisplayWindowsController">
     <children>
         <AnchorPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <AnchorPane fx:id="imagePane" cache="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <children>
-                        <ImageView fx:id="imageView" cache="true" layoutX="4.0" layoutY="5.0" onMouseDragged="#onMouseDragged" onMouseEntered="#onMouseEntered" onMousePressed="#onMousePressed" onScroll="#scrollResize" pickOnBounds="true" preserveRatio="true" />
-                        <Button layoutY="173.0" mnemonicParsing="false" AnchorPane.leftAnchor="0.0">
-                            <graphic>
-                                <ImageView fitWidth="20" preserveRatio="true">
-                                    <Image backgroundLoading="true" url="@../image/btn-left.png" />
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                        <Button layoutX="716.0" layoutY="173.0" mnemonicParsing="false" AnchorPane.rightAnchor="0.0">
-                            <graphic>
-                                <ImageView fitWidth="20" preserveRatio="true">
-                                    <Image backgroundLoading="true" url="@../image/btn-right.png" />
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                    </children>
-                </AnchorPane>
+            <StackPane fx:id="imagePane" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                        <ImageView fx:id="imageView" cache="true" onMouseDragged="#onMouseDragged" onMouseEntered="#onMouseEntered" onMousePressed="#onMousePressed" onScroll="#scrollResize" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </StackPane>
                 <AnchorPane id="toolbar" layoutY="327.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" prefWidth="772.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                     <children>
                         <HBox alignment="CENTER" prefHeight="55.0" prefWidth="636.0" spacing="24.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="68.0" AnchorPane.rightAnchor="68.0" AnchorPane.topAnchor="0.0">
@@ -68,7 +55,7 @@
                                         </ImageView>
                                     </graphic>
                                 </Button>
-                                <Button mnemonicParsing="false">
+                                <Button mnemonicParsing="false" onAction="#previousImage">
                                     <graphic>
                                         <ImageView fitWidth="20" preserveRatio="true">
                                             <Image backgroundLoading="true" url="@../image/btn-left.png" />
@@ -82,7 +69,7 @@
                                         </ImageView>
                                     </graphic>
                                 </Button>
-                                <Button mnemonicParsing="false">
+                                <Button mnemonicParsing="false" onAction="#nextImage">
                                     <graphic>
                                         <ImageView fitWidth="20" preserveRatio="true">
                                             <Image backgroundLoading="true" url="@../image/btn-right.png" />
@@ -96,14 +83,14 @@
                                         </ImageView>
                                     </graphic>
                                 </Button>
-                                <Button mnemonicParsing="false">
+                                <Button mnemonicParsing="false" onAction="#showImageInfo">
                                     <graphic>
                                         <ImageView fitWidth="20" preserveRatio="true">
                                             <Image backgroundLoading="true" url="@../image/btn-info.png" />
                                         </ImageView>
                                     </graphic>
                                 </Button>
-                                <Button mnemonicParsing="false">
+                                <Button mnemonicParsing="false" onAction="#delete">
                                     <graphic>
                                         <ImageView fitWidth="20" preserveRatio="true">
                                             <Image backgroundLoading="true" url="@../image/btn-delete.png" />

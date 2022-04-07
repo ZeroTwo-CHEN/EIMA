@@ -1,15 +1,26 @@
 package top.remake.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 import top.remake.entity.ImageFile;
 import top.remake.entity.SortOrder;
 import top.remake.utils.FileUtil;
@@ -18,7 +29,8 @@ import top.remake.utils.SortUtil;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -29,13 +41,25 @@ public class DisplayWindowsController implements Initializable {
     private ImageView imageView;
 
     @FXML
-    private AnchorPane imagePane;
+    private StackPane imagePane;
 
     private File directory;
 
     private Stage stage;
 
-    private List<ImageFile> imageFiles = new ArrayList<>();
+    private ArrayList<ImageFile> imageFiles = new ArrayList<>();
+
+    private MainWindowsController mainWindowsController;
+
+    /**
+     * 当前展示的图片
+     */
+    private Image image;
+
+    /**
+     * 当前图片指针
+     */
+    private int currentIndex;
 
     /**
      * 图片放大比例
@@ -57,6 +81,12 @@ public class DisplayWindowsController implements Initializable {
      */
     private Point2D point;
 
+    /**
+     * 图片与窗口的间隔
+     * 实际间隔为 MARGIN/2
+     */
+    private final static int MARGIN = 10;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -66,6 +96,7 @@ public class DisplayWindowsController implements Initializable {
         File file = new File(path);
         this.directory = file.getParentFile();
         this.stage = stage;
+        this.mainWindowsController = (MainWindowsController) ControllerMap.getController(MainWindowsController.class);
         File[] images = directory.listFiles(FileUtil::isSupportImageFormat);
         if (images != null) {
             for (File image : images) {
@@ -73,27 +104,85 @@ public class DisplayWindowsController implements Initializable {
                 this.imageFiles.add(imageFile);
             }
         }
-        initImageList();
+        initImageList(file);
 
-        double stageWidth = stage.getWidth();
-        double stageHeight = stage.getHeight();
 
-        Image image = new Image(file.toPath().toUri().toString(), true);
-        imageView.setImage(image);
-        imageView.setFitWidth(stageWidth - 20);
+        //TODO: 实现图片的异步加载
+        image = new Image(file.toPath().toUri().toString());
+        updateImageView();
     }
 
-    private void initImageList() {
-        MainWindowsController controller = (MainWindowsController) ControllerMap.getController(MainWindowsController.class);
-        if (controller != null) {
-            SortUtil.sortImageFile(imageFiles, controller.getSortOrder());
+    /**
+     * 按照主窗口的排序规则排序
+     * 获取当前图片在数组中的下标
+     */
+    private void initImageList(File file) {
+        if (mainWindowsController != null) {
+            SortUtil.sortImageFile(imageFiles, mainWindowsController.getSortOrder());
         } else {
+            mainWindowsController = (MainWindowsController) ControllerMap.getController(MainWindowsController.class);
             SortUtil.sortImageFile(imageFiles, SortOrder.ASC_SORT_BY_NAME);
+        }
+        for (int i = 0; i < imageFiles.size(); i++) {
+            if (imageFiles.get(i).getAbsolutePath().equals(file.getAbsolutePath())) {
+                currentIndex = i;
+            }
         }
     }
 
-    private void setTile() {
+    private void updateImageView() {
+        updateTile();
+        imageView.setImage(image);
 
+        double imageWidth = image.getWidth();
+        double imageHeight = image.getHeight();
+
+        //图片比面板大
+        if (imageWidth > imagePane.getWidth() - MARGIN || imageHeight > imagePane.getHeight() - MARGIN) {
+            imageView.fitWidthProperty().bind(imagePane.widthProperty().subtract(MARGIN));
+            imageView.fitHeightProperty().bind(imagePane.heightProperty().subtract(MARGIN));
+
+            /*
+            一段令人感叹的代码🥴
+
+            //绑定后的比例
+            double boundRatio = imageView.getFitWidth() / imageView.getFitHeight();
+
+            double layoutX;
+            double layoutY;
+
+            //修正宽高并使图片居中
+            if (realRatio >= boundRatio) {
+                layoutX = (imagePane.getWidth() - imageView.getFitWidth()) / 2;
+                layoutY = (imagePane.getHeight() - (imageView.getFitHeight() / realRatio * boundRatio)) / 2;
+            } else {
+                layoutX = (imagePane.getWidth() - (imageView.getFitWidth() / realRatio * boundRatio)) / 2;
+                layoutY = (imagePane.getHeight() - imageView.getFitHeight()) / 2;
+            }
+
+            imageView.setLayoutX(layoutX);
+            imageView.setLayoutY(layoutY);
+            */
+        } else {
+            //图片比面板小
+            imageView.fitWidthProperty().bind(image.widthProperty());
+            imageView.fitHeightProperty().bind(image.heightProperty());
+        }
+    }
+
+    /**
+     * 更新窗口标题
+     */
+    private void updateTile() {
+        ImageFile imageFile = imageFiles.get(currentIndex);
+        stage.setTitle(String.format("%d/%d - %s(%.2fMB,%.0fx%.0f像素)",
+                currentIndex + 1,
+                imageFiles.size(),
+                imageFile.getFileName(),
+                imageFile.getSizeInMagaBytes(),
+                image.getWidth(),
+                image.getHeight()
+        ));
     }
 
     /**
@@ -194,5 +283,116 @@ public class DisplayWindowsController implements Initializable {
     @FXML
     private void onMouseEntered() {
         imageView.setCursor(Cursor.CLOSED_HAND);
+    }
+
+    /**
+     * 上一张图片
+     */
+    @FXML
+    private void nextImage() {
+        currentIndex = ++currentIndex >= imageFiles.size() ? 0 : currentIndex;
+        showTips();
+        image = new Image(imageFiles.get(currentIndex).getURL());
+        updateImageView();
+    }
+
+    /**
+     * 下一张图片
+     */
+    @FXML
+    private void previousImage() {
+        currentIndex = --currentIndex < 0 ? imageFiles.size() - 1 : currentIndex;
+        showTips();
+        image = new Image(imageFiles.get(currentIndex).getURL());
+        updateImageView();
+    }
+
+    private void showTips() {
+        if (currentIndex == imageFiles.size() - 1) {
+            Notifications.create()
+                    .text("最后一张")
+                    .hideAfter(Duration.seconds(2))
+                    .position(Pos.TOP_CENTER)
+                    .owner(stage)
+                    .darkStyle()
+                    .show();
+        } else if (currentIndex == 0) {
+            Notifications.create()
+                    .text("第一张")
+                    .hideAfter(Duration.seconds(2))
+                    .position(Pos.TOP_CENTER)
+                    .owner(stage)
+                    .show();
+        }
+    }
+
+    /**
+     * 弹出一个对话框以展示图片信息
+     */
+    @FXML
+    private void showImageInfo() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initStyle(StageStyle.UTILITY);
+        alert.setTitle(imageFiles.get(currentIndex).getFileName() + " 属性");
+        alert.setGraphic(null);
+        alert.setHeaderText(null);
+
+        VBox key = new VBox();
+        key.getChildren()
+                .addAll(new Label("图片名称：  "),
+                        new Label("图片类型：  "),
+                        new Label("图片大小：  "),
+                        new Label("图片尺寸：  "),
+                        new Label("图片位置：  "),
+                        new Label("创建时间：  "),
+                        new Label("修改时间：  "),
+                        new Label("访问时间：  ")
+                );
+
+        ImageFile imageFile = imageFiles.get(currentIndex);
+        VBox value = new VBox();
+        value.getChildren()
+                .addAll(new Label(imageFile.getFileName()),
+                        new Label(imageFile.getFileType()),
+                        new Label(String.format("%.2f", imageFile.getSizeInMagaBytes()) + "MB"),
+                        new Label(image.getWidth() + "x" + image.getHeight()),
+                        new Label(imageFile.getAbsolutePath()),
+                        new Label(imageFile.getCreationTime()),
+                        new Label(imageFile.getLastModifiedTime()),
+                        new Label(imageFile.getLastAccessTime())
+                );
+
+        HBox hBox = new HBox();
+        hBox.getChildren().addAll(key, value);
+
+
+        key.getStyleClass().add("image-info-vbox");
+        value.getStyleClass().add("image-info-vbox");
+        hBox.getStylesheets()
+                .add(Objects.requireNonNull(getClass().getResource("/css/display-window.css")).toExternalForm());
+
+        alert.getDialogPane().setContent(hBox);
+        alert.initModality(Modality.NONE);
+        alert.show();
+    }
+
+    /**
+     * 删除当前图片并自动切换到下一张图片
+     */
+    @FXML
+    private void delete() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText("确认删除吗？");
+        alert.setContentText("删除后可以在系统回收站找回");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            FileUtil.delete(imageFiles.get(currentIndex).getFile());
+            imageFiles.remove(imageFiles.get(currentIndex));
+            nextImage();
+            Platform.runLater(() -> {
+
+            });
+        }
     }
 }
