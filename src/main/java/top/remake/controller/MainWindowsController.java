@@ -6,6 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -29,13 +30,13 @@ public class MainWindowsController implements Initializable {
     private AnchorPane root;
 
     @FXML
-    private AnchorPane top;
+    private HBox top;
 
     @FXML
     private SplitPane middle;
 
     @FXML
-    private AnchorPane bottom;
+    private HBox bottom;
 
     @FXML
     private TreeView<String> fileTreeView;
@@ -64,7 +65,6 @@ public class MainWindowsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initFileTreeView();
-        initBreadCrumbBar();
         initPreviewFlowPane();
         initAdaptiveLayout();
         initToolsPane();
@@ -94,8 +94,7 @@ public class MainWindowsController implements Initializable {
 
         fileTreeView.getSelectionModel()
                 .selectedItemProperty()
-                .addListener((observable, oldValue, newValue) ->
-                        breadCrumbBar.selectedCrumbProperty().set(newValue));
+                .addListener((observable, oldValue, newValue) -> breadCrumbBar.selectedCrumbProperty().set(newValue));
         fileTreeView.setRoot(treeItem);
         fileTreeView.setShowRoot(false);
     }
@@ -110,7 +109,7 @@ public class MainWindowsController implements Initializable {
         previewFlowPane = new PreviewFlowPane();
         rectangle = new Rectangle();
         pane = new Pane();
-        rectangle.setFill(Color.rgb(50, 150, 250, .8));
+        rectangle.setFill(Color.rgb(70, 170, 227, 0.6));
         rectangle.setVisible(false);
         pane.getChildren().addAll(previewFlowPane, rectangle);
         addHandler();
@@ -120,11 +119,11 @@ public class MainWindowsController implements Initializable {
 
         imagePreviewPane.viewportBoundsProperty()
                 .addListener((observable, oldValue, newValue) -> {
-            previewFlowPane.setPrefWidth(newValue.getWidth());
-            if (previewFlowPane.getHeight() < imagePreviewPane.getHeight()) {
-                previewFlowPane.setPrefHeight(imagePreviewPane.getHeight());
-            }
-        });
+                    previewFlowPane.setPrefWidth(newValue.getWidth());
+                    if (previewFlowPane.getHeight() < imagePreviewPane.getHeight()) {
+                        previewFlowPane.setPrefHeight(imagePreviewPane.getHeight());
+                    }
+                });
 
         imagePreviewPane.setContent(pane);
         rectangle.setVisible(false);
@@ -133,14 +132,15 @@ public class MainWindowsController implements Initializable {
     }
 
     /**
-     * 初始树形目录导航栏
+     * 树形目录导航栏
      */
-    private void initBreadCrumbBar() {
-        breadCrumbBar.selectedCrumbProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    fileTreeView.getSelectionModel().select(newValue);
-                    previewFlowPane.update(((FileTreeItem) newValue).getDirectory());
-                });
+    @FXML
+    private void onCrumbAction(BreadCrumbBar.BreadCrumbActionEvent<String> event) {
+        TreeItem<String> newValue = event.getSelectedCrumb();
+        if (newValue instanceof FileTreeItem) {
+            fileTreeView.getSelectionModel().select(newValue);
+            previewFlowPane.update(((FileTreeItem) newValue).getDirectory());
+        }
     }
 
     /**
@@ -166,18 +166,41 @@ public class MainWindowsController implements Initializable {
         sortOrderComboBox.getSelectionModel().select(0);
         sortOrderComboBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> previewFlowPane.update());
+    }
 
-        //初始化刷新按钮
-        refreshButton.setOnAction(event -> previewFlowPane.update());
-        //初始化全选按钮
-        selectAllButton.setOnAction(event -> previewFlowPane.selectAll());
+    @FXML
+    private void refresh() {
+        previewFlowPane.update();
+    }
+
+    @FXML
+    private void selectAll() {
+        previewFlowPane.selectAll();
+        updateTipsLabelText();
     }
 
     /**
-     * 左下角提示栏
+     * 更新左下角提示栏
      */
-    public void updateTipsLabelText(int number, double size) {
-        tipsLabel.setText("共 " + number + " 张照片(" + String.format("%.2f", size) + " MB)");
+    private void updateTipsLabelText() {
+        updateTipsLabelText(previewFlowPane.getTotalCount(), previewFlowPane.getTotalSize(),
+                previewFlowPane.getSelectedCount(), previewFlowPane.getSelectedSize());
+    }
+
+    /**
+     * 更新左下角提示栏
+     *
+     * @param totalCount    当前目录的图片总数
+     * @param size          总大小
+     * @param selectedCount 被选中的图片的数量
+     * @param selectedSize  被选中的图片的大小
+     */
+    public void updateTipsLabelText(int totalCount, double size, int selectedCount, double selectedSize) {
+        tipsLabel.setText(String.format("共 %d 张照片(%.2f MB) - 选中 %d 张照片(%.2f MB)",
+                totalCount,
+                size,
+                selectedCount,
+                selectedSize));
     }
 
     /**
@@ -242,7 +265,7 @@ public class MainWindowsController implements Initializable {
                 if (previewFlowPane.equals(event.getPickResult().getIntersectedNode())) {
                     previewFlowPane.clearSelect();
                 }
-
+                updateTipsLabelText();
             }
         });
     }
@@ -258,6 +281,7 @@ public class MainWindowsController implements Initializable {
                 previewFlowPane.addSelect(pane);
             }
         }
+        updateTipsLabelText();
     }
 
     public void updateFlowPane() {

@@ -1,14 +1,16 @@
 package top.remake.component;
 
 import javafx.application.Platform;
-import javafx.geometry.Pos;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import top.remake.DisplayWindow;
+import top.remake.controller.ControllerMap;
+import top.remake.controller.MainWindowsController;
 import top.remake.entity.ImageFile;
 
 /**
@@ -16,7 +18,7 @@ import top.remake.entity.ImageFile;
  *
  * @author ZeroTwo_CHEN
  */
-public class ThumbnailPanel extends VBox {
+public class ThumbnailPanel extends BorderPane {
     /**
      * Image
      */
@@ -34,26 +36,31 @@ public class ThumbnailPanel extends VBox {
 
     private Boolean ifSelected;
 
+    private static MainWindowsController mainWindowsControl;
+
+    static {
+        mainWindowsControl = (MainWindowsController) ControllerMap.getController(MainWindowsController.class);
+    }
 
     public ThumbnailPanel(ImageFile imageFile) {
+        this.setMaxSize(110, 150);
+        this.setMinSize(110, 150);
         //关闭cache防止占用内存过大
         this.setCache(false);
+        this.setPadding(new Insets(0, 5, 0, 5));
         this.imageFile = imageFile;
         //保持原比例，启用更好质量的加载算法，启用后台加载
-        this.imageView = new ImageView(new Image(imageFile.getURL(), 100, 100, true, true, true));
+        this.imageView = new ImageView(new Image(imageFile.getURL(), 90, 90, true, true, true));
         this.imageView.setFitWidth(100);
         this.imageView.setFitHeight(100);
         this.imageView.setPreserveRatio(true);
         this.imageName = new Label(imageFile.getFileName());
-        imageName.setWrapText(true);
-        this.imageName.setMaxWidth(90);
-        BorderPane pane = new BorderPane();
-        pane.setMaxSize(110, 110);
-        pane.setMinSize(110, 110);
-        pane.setCenter(imageView);
+        this.imageName.setWrapText(true);
+        this.imageName.setMaxHeight(50);
         ifSelected = false;
-        this.imageName.setAlignment(Pos.CENTER);
-        getChildren().addAll(pane,imageName);
+        this.imageName.setTextAlignment(TextAlignment.CENTER);
+        setCenter(imageView);
+        setBottom(imageName);
 
 
         this.setOnMouseClicked(event -> {
@@ -81,6 +88,9 @@ public class ThumbnailPanel extends VBox {
                         //   this.ifSelected = true;
                         parent.addImgToList(this);
                     }
+                    //更新主界面右下角提示栏
+                    mainWindowsControl.updateTipsLabelText(parent.getTotalCount(), parent.getTotalSize(),
+                            parent.getSelectedCount(), parent.getSelectedSize());
                 }
                 //图片单选
                 else {
@@ -102,12 +112,12 @@ public class ThumbnailPanel extends VBox {
      * 标记该面板是否被选中
      */
     public void select() {
-        this.setStyle("-fx-background-color: #2894FF");
+        this.setStyle("-fx-background-color: #cce8ff");
         this.ifSelected = true;
     }
 
     public void removeSelect() {
-        this.setStyle("-fx-background-color: #ffffff");
+        this.setStyle("-fx-background-color: transparent");
         this.ifSelected = false;
     }
 

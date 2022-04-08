@@ -7,93 +7,103 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/display-window.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="top.remake.controller.DisplayWindowsController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/display-window.css"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="top.remake.controller.DisplayWindowsController">
     <children>
-        <AnchorPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <AnchorPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-            <StackPane fx:id="imagePane" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <children>
-                        <ImageView fx:id="imageView" cache="true" onMouseDragged="#onMouseDragged" onMouseEntered="#onMouseEntered" onMousePressed="#onMousePressed" onScroll="#scrollResize" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </StackPane>
-                <AnchorPane id="toolbar" layoutY="327.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" prefWidth="772.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                <StackPane fx:id="imagePane" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0"
+                           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <children>
-                        <HBox alignment="CENTER" prefHeight="55.0" prefWidth="636.0" spacing="24.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="68.0" AnchorPane.rightAnchor="68.0" AnchorPane.topAnchor="0.0">
+                        <ImageView fx:id="imageView" cache="true" onMouseDragged="#onMouseDragged"
+                                   onMouseEntered="#onMouseEntered" onMousePressed="#onMousePressed"
+                                   onScroll="#scrollResize" pickOnBounds="true" preserveRatio="true"/>
+                    </children>
+                </StackPane>
+                <AnchorPane id="toolbar" layoutY="327.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0"
+                            prefWidth="772.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                            AnchorPane.rightAnchor="0.0">
+                    <children>
+                        <HBox alignment="CENTER" prefHeight="55.0" prefWidth="636.0" spacing="24.0"
+                              AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="68.0" AnchorPane.rightAnchor="68.0"
+                              AnchorPane.topAnchor="0.0">
                             <children>
                                 <Button mnemonicParsing="false" onAction="#originalScale">
                                     <graphic>
                                         <ImageView fitWidth="20" preserveRatio="true">
-                                            <Image backgroundLoading="true" url="@../image/btn-1-1.png" />
+                                            <Image backgroundLoading="true" url="@../image/btn-1-1.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Button>
                                 <Button mnemonicParsing="false" onAction="#zoomIn">
                                     <graphic>
                                         <ImageView fitWidth="20" preserveRatio="true">
-                                            <Image url="@../image/btn-zoom-in.png" />
+                                            <Image url="@../image/btn-zoom-in.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Button>
                                 <Button mnemonicParsing="false" onAction="#zoomOut">
                                     <graphic>
                                         <ImageView fitWidth="20" preserveRatio="true">
-                                            <Image backgroundLoading="true" url="@../image/btn-zoom-out.png" />
+                                            <Image backgroundLoading="true" url="@../image/btn-zoom-out.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Button>
                                 <Button mnemonicParsing="false" onAction="#turnLeft">
                                     <graphic>
                                         <ImageView fitWidth="20" preserveRatio="true">
-                                            <Image backgroundLoading="true" url="@../image/btn-left-rotation.png" />
+                                            <Image backgroundLoading="true" url="@../image/btn-left-rotation.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Button>
                                 <Button mnemonicParsing="false" onAction="#turnRight">
                                     <graphic>
                                         <ImageView fitWidth="20" preserveRatio="true">
-                                            <Image backgroundLoading="true" url="@../image/btn-right-rotation.png" />
+                                            <Image backgroundLoading="true" url="@../image/btn-right-rotation.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Button>
                                 <Button mnemonicParsing="false" onAction="#previousImage">
                                     <graphic>
                                         <ImageView fitWidth="20" preserveRatio="true">
-                                            <Image backgroundLoading="true" url="@../image/btn-left.png" />
+                                            <Image backgroundLoading="true" url="@../image/btn-left.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Button>
                                 <Button id="play-button" mnemonicParsing="false">
                                     <graphic>
                                         <ImageView fitWidth="20" preserveRatio="true">
-                                            <Image backgroundLoading="true" url="@../image/btn-play.png" />
+                                            <Image backgroundLoading="true" url="@../image/btn-play.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Button>
                                 <Button mnemonicParsing="false" onAction="#nextImage">
                                     <graphic>
                                         <ImageView fitWidth="20" preserveRatio="true">
-                                            <Image backgroundLoading="true" url="@../image/btn-right.png" />
+                                            <Image backgroundLoading="true" url="@../image/btn-right.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Button>
                                 <Button mnemonicParsing="false">
                                     <graphic>
                                         <ImageView fitWidth="20" preserveRatio="true">
-                                            <Image backgroundLoading="true" url="@../image/btn-edit.png" />
+                                            <Image backgroundLoading="true" url="@../image/btn-edit.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Button>
                                 <Button mnemonicParsing="false" onAction="#showImageInfo">
                                     <graphic>
                                         <ImageView fitWidth="20" preserveRatio="true">
-                                            <Image backgroundLoading="true" url="@../image/btn-info.png" />
+                                            <Image backgroundLoading="true" url="@../image/btn-info.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Button>
                                 <Button mnemonicParsing="false" onAction="#delete">
                                     <graphic>
                                         <ImageView fitWidth="20" preserveRatio="true">
-                                            <Image backgroundLoading="true" url="@../image/btn-delete.png" />
+                                            <Image backgroundLoading="true" url="@../image/btn-delete.png"/>
                                         </ImageView>
                                     </graphic>
                                 </Button>

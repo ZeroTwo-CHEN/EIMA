@@ -1,8 +1,8 @@
 .rx-translation-button{
     -fx-background-color: linear-gradient(to right,#00fffc,#fff600);
     /*-fx-arc-width: 10;*/
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
 }
 
 .rx-translation-button:pressed{

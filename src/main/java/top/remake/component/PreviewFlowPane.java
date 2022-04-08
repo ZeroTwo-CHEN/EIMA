@@ -30,9 +30,9 @@ public class PreviewFlowPane extends FlowPane {
     /**
      * 被选中图片的数组
      */
-    private List<ThumbnailPanel> newChoices =new ArrayList<>();
-    private List<ThumbnailPanel> oldChoices=new ArrayList<>();
-    private double x,y,x2,y2;
+    private List<ThumbnailPanel> newChoices = new ArrayList<>();
+    private List<ThumbnailPanel> oldChoices = new ArrayList<>();
+
     private MainWindowsController mainWindowsController;
 
     public PreviewFlowPane() {
@@ -43,6 +43,7 @@ public class PreviewFlowPane extends FlowPane {
 
 
     public void update(File directory) {
+        clearSelect();
         this.directory = directory;
         if (mainWindowsController == null) {
             mainWindowsController = (MainWindowsController) ControllerMap.getController(MainWindowsController.class);
@@ -58,11 +59,8 @@ public class PreviewFlowPane extends FlowPane {
         }
         SortUtil.sortThumbnailPanel(this.thumbnailPanels, mainWindowsController.getSortOrder());
         getChildren().setAll(this.thumbnailPanels);
-        double totalSize = 0.0;
-        for (ThumbnailPanel thumbnailPanel : thumbnailPanels) {
-            totalSize += thumbnailPanel.getImageFile().getSizeInMagaBytes();
-        }
-        mainWindowsController.updateTipsLabelText(thumbnailPanels.size(), totalSize);
+        //更新主界面右下角提示栏
+        mainWindowsController.updateTipsLabelText(getTotalCount(), getTotalSize(), getSelectedCount(), getSelectedSize());
     }
 
     /**
@@ -78,7 +76,7 @@ public class PreviewFlowPane extends FlowPane {
         return thumbnailPanels;
     }
 
-    public void addSelect(ThumbnailPanel pane){
+    public void addSelect(ThumbnailPanel pane) {
         newChoices.add(pane);
         pane.select();
     }
@@ -86,20 +84,20 @@ public class PreviewFlowPane extends FlowPane {
     /**
      * 清空存放的已选择图片
      */
-    public void clearSelect(){
+    public void clearSelect() {
         oldChoices.clear();
         oldChoices.addAll(newChoices);
-        for(ThumbnailPanel pane :newChoices) {
+        for (ThumbnailPanel pane : newChoices) {
             pane.removeSelect();
         }
         newChoices.clear();
     }
 
     /**
-     *删除一张已选择的图片
+     * 删除一张已选择的图片
      */
-    public void deleteImgFromList(Object obj){
-        ThumbnailPanel img=(ThumbnailPanel) obj;
+    public void deleteImgFromList(Object obj) {
+        ThumbnailPanel img = (ThumbnailPanel) obj;
         oldChoices.clear();
         oldChoices.addAll(newChoices);
         img.removeSelect();
@@ -108,10 +106,10 @@ public class PreviewFlowPane extends FlowPane {
     }
 
     /**
-     *增加一张图片到已选择图片中
+     * 增加一张图片到已选择图片中
      */
-    public void addImgToList(Object obj){
-        ThumbnailPanel img=(ThumbnailPanel) obj;
+    public void addImgToList(Object obj) {
+        ThumbnailPanel img = (ThumbnailPanel) obj;
         oldChoices.clear();
         oldChoices.addAll(newChoices);
         newChoices.add(img);
@@ -123,18 +121,53 @@ public class PreviewFlowPane extends FlowPane {
      * 选择对未选择的图片
      * 取消选择已选择的图片
      */
-    public void selectAll(){
+    public void selectAll() {
         oldChoices.clear();
         oldChoices.addAll(newChoices);
-        for(ThumbnailPanel img:thumbnailPanels) {
+        for (ThumbnailPanel img : thumbnailPanels) {
             if (img.getIfSelected()) {
                 img.removeSelect();
                 newChoices.remove(img);
-            }
-            else {
+            } else {
                 img.select();
                 newChoices.add(img);
             }
         }
+    }
+
+    /**
+     * @return 当前目录的图片总数
+     */
+    public int getTotalCount() {
+        return thumbnailPanels.size();
+    }
+
+    /**
+     * @return 所有图片的总大小
+     */
+    public double getTotalSize() {
+        double totalSize = 0.0;
+        for (ThumbnailPanel thumbnailPanel : thumbnailPanels) {
+            totalSize += thumbnailPanel.getImageFile().getSizeInMagaBytes();
+        }
+        return totalSize;
+    }
+
+    /**
+     * @return 被选中的图片的数量
+     */
+    public int getSelectedCount() {
+        return newChoices.size();
+    }
+
+    /**
+     * @return 被选中的图片的大小
+     */
+    public double getSelectedSize() {
+        double size = 0.0;
+        for (ThumbnailPanel thumbnailPanel : newChoices) {
+            size += thumbnailPanel.getImageFile().getSizeInMagaBytes();
+        }
+        return size;
     }
 }
