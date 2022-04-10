@@ -1,6 +1,7 @@
 package top.remake.controller;
 
 import com.leewyatt.rxcontrols.controls.RXTranslationButton;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -13,14 +14,12 @@ import javafx.scene.shape.Rectangle;
 import org.controlsfx.control.BreadCrumbBar;
 import top.remake.component.*;
 import top.remake.entity.SortOrder;
+import top.remake.utils.FileUtil;
 
 import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * @author ZeroTwo_CHEN
@@ -94,7 +93,10 @@ public class MainWindowsController implements Initializable {
 
         fileTreeView.getSelectionModel()
                 .selectedItemProperty()
-                .addListener((observable, oldValue, newValue) -> breadCrumbBar.selectedCrumbProperty().set(newValue));
+                .addListener((observable, oldValue, newValue) -> {
+                    breadCrumbBar.selectedCrumbProperty().set(newValue);
+                    previewFlowPane.update(((FileTreeItem) newValue).getDirectory());
+                });
         fileTreeView.setRoot(treeItem);
         fileTreeView.setShowRoot(false);
     }
@@ -284,7 +286,36 @@ public class MainWindowsController implements Initializable {
         updateTipsLabelText();
     }
 
+    /**
+     * 刷新缩略图面板
+     */
     public void updateFlowPane() {
         previewFlowPane.update();
+    }
+
+    /**
+     * 删除图片
+     */
+    @FXML
+    private void deleteImage() {
+        List<ThumbnailPanel> images = previewFlowPane.getNewChoices();
+        if (images.size() == 0) {
+            return;
+        }
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText("确认删除这 " + images.size() + " 张图片吗？");
+        alert.setContentText("删除后可以在系统回收站找回");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            Platform.runLater(() -> {
+                for (ThumbnailPanel image : images) {
+                    FileUtil.delete(image.getImageFile().getFile());
+                }
+                updateFlowPane();
+            });
+        }
+
     }
 }

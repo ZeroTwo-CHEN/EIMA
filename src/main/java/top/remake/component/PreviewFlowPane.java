@@ -170,4 +170,8 @@ public class PreviewFlowPane extends FlowPane {
         }
         return size;
     }
+
+    public List<ThumbnailPanel> getNewChoices() {
+        return newChoices;
+    }
 }
