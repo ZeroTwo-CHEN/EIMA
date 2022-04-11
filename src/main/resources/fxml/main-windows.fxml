@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.BreadCrumbBar?>
 
-<AnchorPane fx:id="root" minHeight="400.0" minWidth="600.0" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="top.remake.controller.MainWindowsController">
+<AnchorPane fx:id="root" minHeight="400.0" minWidth="600.0" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="top.remake.controller.MainWindowsController">
     <children>
         <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -27,7 +27,7 @@
                 </HBox>
                 <SplitPane fx:id="middle" dividerPositions="0.3" prefHeight="635.0">
                     <items>
-                        <TreeView fx:id="fileTreeView" prefHeight="485.0" prefWidth="242.0" />
+                        <TreeView fx:id="fileTreeView" prefHeight="485.0" prefWidth="242.0" showRoot="false" />
                         <AnchorPane>
                             <children>
                                 <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="417.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

@@ -1,25 +1,27 @@
 package top.remake.controller;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import javafx.util.Pair;
 import org.controlsfx.control.Notifications;
 import top.remake.entity.ImageFile;
 import top.remake.entity.SortOrder;
@@ -42,6 +44,9 @@ public class DisplayWindowsController implements Initializable {
     @FXML
     private StackPane imagePane;
 
+    @FXML
+    private AnchorPane toolBar;
+
     private File directory;
 
     private Stage stage;
@@ -49,6 +54,7 @@ public class DisplayWindowsController implements Initializable {
     private ArrayList<ImageFile> imageFiles = new ArrayList<>();
 
     private MainWindowsController mainWindowsController;
+
 
     /**
      * 当前展示的图片
@@ -367,10 +373,6 @@ public class DisplayWindowsController implements Initializable {
 
         key.setStyle("-fx-spacing: 15px");
         value.setStyle("-fx-spacing: 15px");
-//        key.getStyleClass().add("image-info-vbox");
-//        value.getStyleClass().add("image-info-vbox");
-//        hBox.getStylesheets()
-//                .add(Objects.requireNonNull(getClass().getResource("/css/display-window.css")).toExternalForm());
 
         alert.getDialogPane().setContent(hBox);
         alert.initModality(Modality.NONE);
@@ -386,16 +388,201 @@ public class DisplayWindowsController implements Initializable {
         alert.setHeaderText("确认删除吗？");
         alert.setContentText("删除后可以在系统回收站找回");
 
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            FileUtil.delete(imageFiles.get(currentIndex).getFile());
-            imageFiles.remove(imageFiles.get(currentIndex));
-            nextImage();
-            Platform.runLater(() -> mainWindowsController.updateFlowPane());
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                FileUtil.delete(imageFiles.get(currentIndex).getFile());
+                imageFiles.remove(imageFiles.get(currentIndex));
+                nextImage();
+                Platform.runLater(() -> mainWindowsController.updateFlowPane());
+            }
+        });
+    }
+
+    /**
+     * 放映幻灯片
+     */
+    @FXML
+    private void play() {
+        //先弹窗询问播放间隔
+        Dialog<Pair<Double, String>> dialog = new Dialog<>();
+        dialog.setTitle("提示");
+        dialog.setHeaderText("请输入播放时间");
+
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(10, 10, 10, 10));
+
+        Spinner<Double> spinner = new Spinner<>(1.0, 600.0, 5.0, 1.0);
+        spinner.setEditable(true);
+        spinner.getStyleClass().add(Spinner.STYLE_CLASS_ARROWS_ON_RIGHT_HORIZONTAL);
+
+        ComboBox<String> comboBox = new ComboBox<>();
+        comboBox.getItems().addAll("顺序", "逆序");
+        comboBox.getSelectionModel().select(0);
+
+        grid.add(new Label("播放间隔(单位: 秒)"), 0, 0);
+        grid.add(spinner, 1, 0);
+        grid.add(new Label("播放顺序: "), 0, 1);
+        grid.add(comboBox, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.OK) {
+                if (spinner.getValue() != null) {
+                    return new Pair<>(spinner.getValue(), comboBox.getValue());
+                } else {
+                    return new Pair<>(5.0, comboBox.getValue());
+                }
+            }
+            return null;
+        });
+
+        Optional<Pair<Double, String>> result = dialog.showAndWait();
+
+        result.ifPresent(e -> playing(e.getKey(), e.getValue()));
+    }
+
+
+    /**
+     * 全屏播放时使用的布局
+     */
+    private Scene scene;
+    private ImageView imageViewWhenPlaying;
+    private StackPane stackPane;
+    private boolean isPlayingInitialized;
+
+    /**
+     * 定时任务
+     */
+    private Timeline timeline;
+
+    /**
+     * 原Scene
+     */
+    private Scene originalScene;
+
+    /**
+     * 开始播放
+     */
+    private void playing(double interval, String order) {
+        boolean isOrder = "顺序".equals(order);
+        initPlaying();
+
+        Notifications.create()
+                .text("开始播放，按空格可暂停，按方向键可快速切换")
+                .hideAfter(Duration.seconds(3))
+                .position(Pos.TOP_CENTER)
+                .owner(stage)
+                .show();
+
+        //先更新图片，之后开始定时任务
+        stackPane.requestFocus();
+        updatePlayingImage();
+
+        //定时任务
+        timeline = new Timeline(new KeyFrame(Duration.seconds(interval), event -> {
+            stackPane.requestFocus();
+            if (isOrder) {
+                nextImage();
+            } else {
+                previousImage();
+            }
+            updatePlayingImage();
+        }));
+
+        timeline.setCycleCount(Timeline.INDEFINITE);
+
+        timeline.play();
+
+        stage.setFullScreen(true);
+
+        //设置监听事件
+        stackPane.setOnKeyPressed(e -> {
+            switch (e.getCode()) {
+                //退出播放
+                case ESCAPE -> {
+                    timeline.stop();
+                    stage.setFullScreen(false);
+                    //清空监听事件
+                    stackPane.setOnKeyPressed(e2 -> {
+                    });
+                }
+                case SPACE -> {
+                    if (timeline.getStatus() == Animation.Status.PAUSED) {
+                        timeline.play();
+                    } else {
+                        timeline.pause();
+                    }
+                }
+                case RIGHT -> {
+                    nextImage();
+                    updatePlayingImage();
+                }
+                case LEFT -> {
+                    previousImage();
+                    updatePlayingImage();
+                }
+            }
+        });
+    }
+
+    /**
+     * 播放界面的初始化
+     */
+    private void initPlaying() {
+        if (!isPlayingInitialized) {
+            //保存原scene
+            originalScene = stage.getScene();
+
+            imageViewWhenPlaying = new ImageView();
+            imageViewWhenPlaying.setPreserveRatio(true);
+            imageViewWhenPlaying.setSmooth(true);
+            stackPane = new StackPane();
+            stackPane.getChildren().add(imageViewWhenPlaying);
+            this.scene = new Scene(stackPane);
+
+            stage.fullScreenProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue) {
+                    if (scene != null) {
+                        stage.setScene(scene);
+                        stage.setAlwaysOnTop(true);
+                    }
+                } else {
+                    stage.setAlwaysOnTop(false);
+                    if (originalScene != null) {
+                        stage.setScene(originalScene);
+                    }
+                    if (timeline != null) {
+                        timeline.stop();
+                    }
+                }
+            });
+
+            isPlayingInitialized = true;
         }
     }
 
-    private void fullScreen() {
-        stage.setFullScreen(true);
+    /**
+     * 更新播放时的图片
+     */
+    private void updatePlayingImage() {
+        double imageWidth = image.getWidth();
+        double imageHeight = image.getHeight();
+
+        //图片比面板大
+        if (imageWidth > stackPane.getWidth() || imageHeight > stackPane.getHeight()) {
+            imageViewWhenPlaying.fitWidthProperty().bind(stackPane.widthProperty());
+            imageViewWhenPlaying.fitHeightProperty().bind(stackPane.heightProperty());
+        } else {
+            //图片比面板小
+            imageViewWhenPlaying.fitWidthProperty().bind(image.widthProperty());
+            imageViewWhenPlaying.fitHeightProperty().bind(image.heightProperty());
+        }
+
+        imageViewWhenPlaying.setImage(image);
     }
 }

@@ -94,11 +94,12 @@ public class MainWindowsController implements Initializable {
         fileTreeView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> {
-                    breadCrumbBar.selectedCrumbProperty().set(newValue);
-                    previewFlowPane.update(((FileTreeItem) newValue).getDirectory());
+                    if (newValue instanceof FileTreeItem) {
+                        breadCrumbBar.selectedCrumbProperty().set(newValue);
+                        previewFlowPane.update(((FileTreeItem) newValue).getDirectory());
+                    }
                 });
         fileTreeView.setRoot(treeItem);
-        fileTreeView.setShowRoot(false);
     }
 
     private Pane pane;
