@@ -10,7 +10,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -111,6 +110,29 @@ public class DisplayWindowsController implements Initializable {
         }
         initImageList(file);
 
+        //给stage增加监听事件
+        this.stage.fullScreenProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                stage.setAlwaysOnTop(true);
+                //隐藏下方工具栏
+                toolBar.setVisible(false);
+                toolBar.setManaged(false);
+            } else {
+                //还原图片比例
+                originalScale();
+                updateImageView();
+                stage.setAlwaysOnTop(false);
+                toolBar.setManaged(true);
+                toolBar.setVisible(true);
+                if (timeline != null) {
+                    timeline.stop();
+                }
+                //清空展示面板的监听事件
+                imagePane.setOnKeyPressed(e -> {
+                });
+            }
+        });
+
 
         //TODO: 实现图片的异步加载
         image = new Image(file.toPath().toUri().toString());
@@ -146,28 +168,6 @@ public class DisplayWindowsController implements Initializable {
         if (imageWidth > imagePane.getWidth() - MARGIN || imageHeight > imagePane.getHeight() - MARGIN) {
             imageView.fitWidthProperty().bind(imagePane.widthProperty().subtract(MARGIN));
             imageView.fitHeightProperty().bind(imagePane.heightProperty().subtract(MARGIN));
-
-            /*
-            一段令人感叹的代码🥴
-
-            //绑定后的比例
-            double boundRatio = imageView.getFitWidth() / imageView.getFitHeight();
-
-            double layoutX;
-            double layoutY;
-
-            //修正宽高并使图片居中
-            if (realRatio >= boundRatio) {
-                layoutX = (imagePane.getWidth() - imageView.getFitWidth()) / 2;
-                layoutY = (imagePane.getHeight() - (imageView.getFitHeight() / realRatio * boundRatio)) / 2;
-            } else {
-                layoutX = (imagePane.getWidth() - (imageView.getFitWidth() / realRatio * boundRatio)) / 2;
-                layoutY = (imagePane.getHeight() - imageView.getFitHeight()) / 2;
-            }
-
-            imageView.setLayoutX(layoutX);
-            imageView.setLayoutY(layoutY);
-            */
         } else {
             //图片比面板小
             imageView.fitWidthProperty().bind(image.widthProperty());
@@ -446,31 +446,18 @@ public class DisplayWindowsController implements Initializable {
         result.ifPresent(e -> playing(e.getKey(), e.getValue()));
     }
 
-
-    /**
-     * 全屏播放时使用的布局
-     */
-    private Scene scene;
-    private ImageView imageViewWhenPlaying;
-    private StackPane stackPane;
-    private boolean isPlayingInitialized;
-
     /**
      * 定时任务
      */
     private Timeline timeline;
 
     /**
-     * 原Scene
-     */
-    private Scene originalScene;
-
-    /**
      * 开始播放
      */
     private void playing(double interval, String order) {
         boolean isOrder = "顺序".equals(order);
-        initPlaying();
+
+        stage.setFullScreen(true);
 
         Notifications.create()
                 .text("开始播放，按空格可暂停，按方向键可快速切换")
@@ -480,16 +467,19 @@ public class DisplayWindowsController implements Initializable {
                 .show();
 
         //先更新图片，之后开始定时任务
-        stackPane.requestFocus();
+        stage.show();
+        imagePane.requestFocus();
         updatePlayingImage();
 
         //定时任务
         timeline = new Timeline(new KeyFrame(Duration.seconds(interval), event -> {
-            stackPane.requestFocus();
+            imagePane.requestFocus();
             if (isOrder) {
                 nextImage();
+                originalScale();
             } else {
                 previousImage();
+                originalScale();
             }
             updatePlayingImage();
         }));
@@ -498,17 +488,15 @@ public class DisplayWindowsController implements Initializable {
 
         timeline.play();
 
-        stage.setFullScreen(true);
-
         //设置监听事件
-        stackPane.setOnKeyPressed(e -> {
+        imagePane.setOnKeyPressed(e -> {
             switch (e.getCode()) {
                 //退出播放
                 case ESCAPE -> {
                     timeline.stop();
                     stage.setFullScreen(false);
                     //清空监听事件
-                    stackPane.setOnKeyPressed(e2 -> {
+                    imagePane.setOnKeyPressed(e2 -> {
                     });
                 }
                 case SPACE -> {
@@ -531,58 +519,32 @@ public class DisplayWindowsController implements Initializable {
     }
 
     /**
-     * 播放界面的初始化
-     */
-    private void initPlaying() {
-        if (!isPlayingInitialized) {
-            //保存原scene
-            originalScene = stage.getScene();
-
-            imageViewWhenPlaying = new ImageView();
-            imageViewWhenPlaying.setPreserveRatio(true);
-            imageViewWhenPlaying.setSmooth(true);
-            stackPane = new StackPane();
-            stackPane.getChildren().add(imageViewWhenPlaying);
-            this.scene = new Scene(stackPane);
-
-            stage.fullScreenProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue) {
-                    if (scene != null) {
-                        stage.setScene(scene);
-                        stage.setAlwaysOnTop(true);
-                    }
-                } else {
-                    stage.setAlwaysOnTop(false);
-                    if (originalScene != null) {
-                        stage.setScene(originalScene);
-                    }
-                    if (timeline != null) {
-                        timeline.stop();
-                    }
-                }
-            });
-
-            isPlayingInitialized = true;
-        }
-    }
-
-    /**
      * 更新播放时的图片
+     * 与不播放时的区别是与面板之间没有间隔
      */
     private void updatePlayingImage() {
         double imageWidth = image.getWidth();
         double imageHeight = image.getHeight();
 
-        //图片比面板大
-        if (imageWidth > stackPane.getWidth() || imageHeight > stackPane.getHeight()) {
-            imageViewWhenPlaying.fitWidthProperty().bind(stackPane.widthProperty());
-            imageViewWhenPlaying.fitHeightProperty().bind(stackPane.heightProperty());
+        //图片比全屏大
+        if (imageWidth > stage.getWidth() || imageHeight > stage.getHeight()) {
+            imageView.fitWidthProperty().bind(stage.widthProperty());
+            imageView.fitHeightProperty().bind(stage.heightProperty());
         } else {
             //图片比面板小
-            imageViewWhenPlaying.fitWidthProperty().bind(image.widthProperty());
-            imageViewWhenPlaying.fitHeightProperty().bind(image.heightProperty());
+            imageView.fitWidthProperty().bind(image.widthProperty());
+            imageView.fitHeightProperty().bind(image.heightProperty());
         }
 
-        imageViewWhenPlaying.setImage(image);
+        imageView.setImage(image);
+    }
+
+    /**
+     *
+     */
+    public void playByMainWindow(Stage stage, String path) {
+        init(stage, path);
+        play();
+        originalScale();
     }
 }

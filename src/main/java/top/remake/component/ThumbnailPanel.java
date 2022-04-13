@@ -66,13 +66,7 @@ public class ThumbnailPanel extends BorderPane {
         this.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 String[] args = {imageFile.getAbsolutePath()};
-                Platform.runLater(() -> {
-                    try {
-                        DisplayWindow.main(args);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
+                Platform.runLater(() -> DisplayWindow.main(args));
             }
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
                 //按下Ctrl键时对图片进行选择

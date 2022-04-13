@@ -11,10 +11,15 @@ import top.remake.controller.DisplayWindowsController;
  * @author ZeroTwo_CHEN
  */
 public class DisplayWindow extends Application {
-    private static String path = null;
+    /**
+     * 数组的长度用于标记启动方式
+     * 长度为1则为从主窗口双击启动
+     * 长度为2则为从主窗口点击播放键启动
+     */
+    private static String[] path = null;
 
     public static void main(String[] args) {
-        DisplayWindow.path = args[0];
+        DisplayWindow.path = args;
         if (Platform.isFxApplicationThread()) {
             Stage stage = new Stage();
             DisplayWindow displayWindow = new DisplayWindow();
@@ -34,9 +39,15 @@ public class DisplayWindow extends Application {
         Scene scene = new Scene(fxmlLoader.load(), 1100, 700);
         DisplayWindowsController controller = fxmlLoader.getController();
         stage.setScene(scene);
-        stage.show();
         if (path != null) {
-            controller.init(stage, path);
+            //从主界面进入展示界面
+            if (path.length == 1) {
+                stage.show();
+                controller.init(stage, path[0]);
+            } else {
+                //在主界面通过点击播放界面进入 不展示stage
+                controller.playByMainWindow(stage, path[0]);
+            }
         } else {
             controller.init(stage, getParameters().getRaw().get(0));
         }

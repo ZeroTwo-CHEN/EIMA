@@ -4,6 +4,7 @@ import com.leewyatt.rxcontrols.controls.RXTranslationButton;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
@@ -11,7 +12,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import org.controlsfx.control.BreadCrumbBar;
+import org.controlsfx.control.Notifications;
+import top.remake.DisplayWindow;
 import top.remake.component.*;
 import top.remake.entity.SortOrder;
 import top.remake.utils.FileUtil;
@@ -29,7 +33,7 @@ public class MainWindowsController implements Initializable {
     private AnchorPane root;
 
     @FXML
-    private HBox top;
+    private AnchorPane top;
 
     @FXML
     private SplitPane middle;
@@ -318,5 +322,29 @@ public class MainWindowsController implements Initializable {
             });
         }
 
+    }
+
+    /**
+     * 播放幻灯片
+     */
+    @FXML
+    private void play() {
+        int selectedCount = previewFlowPane.getSelectedCount();
+        //如果未选择图片或选择了多张图片，则从第一张开始播放,否则从选择的图片开始播放
+        if (previewFlowPane.getThumbnailPanels().size() == 0) {
+            Notifications.create()
+                    .text("当前目录下没有图片")
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.BOTTOM_RIGHT)
+                    .owner(root)
+                    .show();
+        } else if (selectedCount == 1) {
+            ThumbnailPanel thumbnailPanel = previewFlowPane.getNewChoices().get(0);
+            String[] args = {thumbnailPanel.getImageFile().getAbsolutePath(), ""};
+            Platform.runLater(() -> DisplayWindow.main(args));
+        } else {
+            String[] args = {previewFlowPane.getThumbnailPanels().get(0).getImageFile().getAbsolutePath(), ""};
+            Platform.runLater(() -> DisplayWindow.main(args));
+        }
     }
 }

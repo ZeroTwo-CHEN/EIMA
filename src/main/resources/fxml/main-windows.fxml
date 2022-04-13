@@ -20,11 +20,15 @@
     <children>
         <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <HBox fx:id="top" alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0" prefWidth="654.0">
-                    <children>
-                        <BreadCrumbBar fx:id="breadCrumbBar" onCrumbAction="#onCrumbAction" prefHeight="50.0" />
-                    </children>
-                </HBox>
+            <AnchorPane fx:id="top" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0">
+               <children>
+                      <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0" prefWidth="522.0">
+                          <children>
+                              <BreadCrumbBar fx:id="breadCrumbBar" onCrumbAction="#onCrumbAction" prefHeight="50.0" />
+                          </children>
+                      </HBox>
+               </children>
+            </AnchorPane>
                 <SplitPane fx:id="middle" dividerPositions="0.3" prefHeight="635.0">
                     <items>
                         <TreeView fx:id="fileTreeView" prefHeight="485.0" prefWidth="242.0" showRoot="false" />
@@ -37,7 +41,7 @@
                                                 <RXTranslationButton fx:id="selectAllButton" onAction="#selectAll" prefHeight="24.0" prefWidth="45.0" text="全选">
                                                     <graphic>
                                                         <ImageView fitHeight="22" preserveRatio="true">
-                                                            <Image backgroundLoading="true" url="@../image/btn-refresh.png" />
+                                                            <Image backgroundLoading="true" url="@../image/btn-select-all.png" />
                                                         </ImageView>
                                                     </graphic>
                                                     <font>
@@ -103,6 +107,16 @@
                                                 <Font size="14.0" />
                                             </font>
                                         </RXTranslationButton>
+                              <RXTranslationButton id="btn-play" layoutX="310.0" layoutY="-16.0" onAction="#play" prefHeight="24.0" prefWidth="45.0" text="播放" AnchorPane.bottomAnchor="13.0" AnchorPane.rightAnchor="230.0" AnchorPane.topAnchor="13.0">
+                                  <graphic>
+                                      <ImageView fitHeight="22" preserveRatio="true">
+                                          <Image backgroundLoading="true" url="@../image/btn-play.png" />
+                                      </ImageView>
+                                  </graphic>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </RXTranslationButton>
                                     </children>
                                 </AnchorPane>
                                 <ScrollPane fx:id="imagePreviewPane" cache="true" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="273.0" prefWidth="417.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
