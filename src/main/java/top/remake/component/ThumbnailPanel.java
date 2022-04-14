@@ -1,8 +1,9 @@
 package top.remake.component;
 
+import com.leewyatt.rxcontrols.controls.RXHighlightText;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
-import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -20,6 +21,11 @@ import top.remake.entity.ImageFile;
  */
 public class ThumbnailPanel extends BorderPane {
     /**
+     * 能显示的最长文件名
+     */
+    private static final int MAX_LENGTH = 25;
+
+    /**
      * Image
      */
     private ImageFile imageFile;
@@ -32,14 +38,17 @@ public class ThumbnailPanel extends BorderPane {
     /**
      * 图片名称
      */
-    private Label imageName;
+    private RXHighlightText imageName;
 
-    private Boolean ifSelected;
+    private Boolean isSelected;
 
     private static MainWindowsController mainWindowsControl;
 
+    private static TextField searchKey;
+
     static {
         mainWindowsControl = (MainWindowsController) ControllerMap.getController(MainWindowsController.class);
+        searchKey = mainWindowsControl.getSearchField();
     }
 
     public ThumbnailPanel(ImageFile imageFile) {
@@ -54,10 +63,22 @@ public class ThumbnailPanel extends BorderPane {
         this.imageView.setFitWidth(100);
         this.imageView.setFitHeight(100);
         this.imageView.setPreserveRatio(true);
-        this.imageName = new Label(imageFile.getFileName());
-        this.imageName.setWrapText(true);
+
+        int length = imageFile.getFileName().length();
+        //名字长度大于限定就剪切
+        if (length > MAX_LENGTH) {
+            this.imageName = new RXHighlightText(imageFile.getFileName().substring(0, MAX_LENGTH) + "...");
+        } else {
+            this.imageName = new RXHighlightText(imageFile.getFileName());
+        }
         this.imageName.setMaxHeight(50);
-        ifSelected = false;
+        this.imageName.setPrefHeight(50);
+
+        //绑定首页搜索框
+        this.imageName.keywordsProperty().bind(searchKey.textProperty());
+        this.imageName.setMatchRules(RXHighlightText.MatchRules.IGNORE_CASE);
+
+        isSelected = false;
         this.imageName.setTextAlignment(TextAlignment.CENTER);
         setCenter(imageView);
         setBottom(imageName);
@@ -73,7 +94,7 @@ public class ThumbnailPanel extends BorderPane {
                 PreviewFlowPane parent = (PreviewFlowPane) this.getParent();
                 if (event.isControlDown()) {
                     //图片已经选中，则取消选中
-                    if (this.getIfSelected()) {
+                    if (this.getIsSelected()) {
                         // this.ifSelected = false;
                         parent.deleteImgFromList(this);
                     }
@@ -89,7 +110,7 @@ public class ThumbnailPanel extends BorderPane {
                 //图片单选
                 else {
                     //如果图片已经被选中，则取消选中
-                    if (this.getIfSelected()) {
+                    if (this.getIsSelected()) {
                         parent.clearSelect();
                     }
                     //否则就选中图片
@@ -107,12 +128,12 @@ public class ThumbnailPanel extends BorderPane {
      */
     public void select() {
         this.setStyle("-fx-background-color: #cce8ff");
-        this.ifSelected = true;
+        this.isSelected = true;
     }
 
     public void removeSelect() {
         this.setStyle("-fx-background-color: transparent");
-        this.ifSelected = false;
+        this.isSelected = false;
     }
 
 
@@ -124,15 +145,15 @@ public class ThumbnailPanel extends BorderPane {
         return imageView;
     }
 
-    public Label getImageName() {
+    public RXHighlightText getImageName() {
         return imageName;
     }
 
-    public Boolean getIfSelected() {
-        return ifSelected;
+    public Boolean getIsSelected() {
+        return isSelected;
     }
 
-    public void setIfSelected(Boolean ifSelected) {
-        this.ifSelected = ifSelected;
+    public void setIsSelected(Boolean isSelected) {
+        this.isSelected = isSelected;
     }
 }

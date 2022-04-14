@@ -49,6 +49,7 @@ public class PreviewFlowPane extends FlowPane {
             mainWindowsController = (MainWindowsController) ControllerMap.getController(MainWindowsController.class);
         }
         this.thumbnailPanels.clear();
+        //TODO: 优化加载效率，读取到文件之后不要一次性加载所有缩略图
         File[] files = directory.listFiles(FileUtil::isSupportImageFormat);
         if (files != null) {
             for (File file : files) {
@@ -125,7 +126,7 @@ public class PreviewFlowPane extends FlowPane {
         oldChoices.clear();
         oldChoices.addAll(newChoices);
         for (ThumbnailPanel img : thumbnailPanels) {
-            if (img.getIfSelected()) {
+            if (img.getIsSelected()) {
                 img.removeSelect();
                 newChoices.remove(img);
             } else {

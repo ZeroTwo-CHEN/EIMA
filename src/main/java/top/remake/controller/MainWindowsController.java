@@ -1,6 +1,7 @@
 package top.remake.controller;
 
 import com.leewyatt.rxcontrols.controls.RXTranslationButton;
+import com.leewyatt.rxcontrols.utils.StringUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,6 +14,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import javafx.util.Pair;
 import org.controlsfx.control.BreadCrumbBar;
 import org.controlsfx.control.Notifications;
 import top.remake.DisplayWindow;
@@ -64,6 +66,9 @@ public class MainWindowsController implements Initializable {
     @FXML
     private RXTranslationButton selectAllButton;
 
+    @FXML
+    private TextField searchField;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -71,6 +76,45 @@ public class MainWindowsController implements Initializable {
         initPreviewFlowPane();
         initAdaptiveLayout();
         initToolsPane();
+        initSearch();
+    }
+
+    /**
+     * 为搜索框加上监听事件，实现搜索内容的高亮显示
+     * 当前为实时搜索，不用按下回车键
+     */
+    private void initSearch() {
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+
+            List<ThumbnailPanel> thumbnailPanels = previewFlowPane.getThumbnailPanels();
+
+            //为空时显示全部
+            if (searchField.getText().isEmpty()) {
+                previewFlowPane.getChildren().setAll(thumbnailPanels);
+                return;
+            }
+
+            //非空时开始过滤匹配
+            List<ThumbnailPanel> filtered = thumbnailPanels.stream()
+                    .filter(t -> {
+                        final boolean[] result = {false};
+
+                        if (t.getImageName().isMatch()) {
+                            return result[0] = true;
+                        }
+
+                        ArrayList<Pair<String, Boolean>> pairs = StringUtil.parseText(t.getImageFile().getFileName(), newValue, true);
+                        pairs.forEach(pair -> {
+                            if (pair.getValue()) {
+                                result[0] = true;
+                            }
+                        });
+
+                        return result[0];
+                    }).toList();
+
+            previewFlowPane.getChildren().setAll(filtered);
+        });
     }
 
 
@@ -346,5 +390,9 @@ public class MainWindowsController implements Initializable {
             String[] args = {previewFlowPane.getThumbnailPanels().get(0).getImageFile().getAbsolutePath(), ""};
             Platform.runLater(() -> DisplayWindow.main(args));
         }
+    }
+
+    public TextField getSearchField() {
+        return searchField;
     }
 }
