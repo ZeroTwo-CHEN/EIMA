@@ -79,7 +79,7 @@
                                         </ImageView>
                                     </graphic>
                                 </Button>
-                                <Button mnemonicParsing="false">
+                                <Button mnemonicParsing="false" onAction="#editImage">
                                     <graphic>
                                         <ImageView fitWidth="20" preserveRatio="true">
                                             <Image backgroundLoading="true" url="@../image/btn-edit.png" />

@@ -1,0 +1,27 @@
+.button {
+    -fx-background-color: transparent;
+}
+
+.button:hover{
+    -fx-background-color: #ffd65b;
+}
+
+.button:pressed{
+    -fx-opacity: 0.7;
+}
+
+.color-picker{
+    -fx-background-color: transparent;
+}
+
+.color-picker:hover{
+    -fx-background-color: #ffd65b;
+}
+
+.color-picker:pressed{
+    -fx-opacity: 0.7;
+}
+
+#toolbar{
+    -fx-background-color: linear-gradient(to right, #2CD8D5,#C5C1FF);
+}

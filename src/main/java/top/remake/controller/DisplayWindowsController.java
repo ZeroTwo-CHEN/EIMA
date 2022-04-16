@@ -22,6 +22,7 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import org.controlsfx.control.Notifications;
+import top.remake.EditWindow;
 import top.remake.entity.ImageFile;
 import top.remake.entity.SortOrder;
 import top.remake.utils.FileUtil;
@@ -546,5 +547,11 @@ public class DisplayWindowsController implements Initializable {
         init(stage, path);
         play();
         originalScale();
+    }
+
+    @FXML
+    private void editImage() {
+        String[] args = {imageFiles.get(currentIndex).getAbsolutePath()};
+        Platform.runLater(() -> EditWindow.main(args));
     }
 }

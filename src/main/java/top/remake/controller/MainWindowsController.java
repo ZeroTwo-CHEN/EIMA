@@ -283,8 +283,8 @@ public class MainWindowsController implements Initializable {
             double y2 = event.getY();
             double endX = Math.min(x, x2);
             double endY = Math.min(y, y2);
-            width = Math.max(x, x2) - Math.min(x, x2);
-            height = Math.max(y, y2) - Math.min(y, y2);
+            width = Math.abs(x - x2);
+            height = Math.abs(y-y2);
             rectangle.setX(endX);
             rectangle.setY(endY);
             rectangle.setWidth(width);
