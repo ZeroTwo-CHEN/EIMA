@@ -16,6 +16,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
+import javafx.scene.transform.Translate;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -74,7 +77,7 @@ public class DisplayWindowsController implements Initializable {
     /**
      * 最大比例
      */
-    private final static int MAX_SCALE = 3200;
+    private final static int MAX_SCALE = 800;
 
     /**
      * 最小比例
@@ -198,8 +201,16 @@ public class DisplayWindowsController implements Initializable {
     private void zoomIn() {
         if (scale < MAX_SCALE) {
             scale += 10;
-            imageView.setScaleX(imageView.getScaleX() + 0.1);
-            imageView.setScaleY(imageView.getScaleY() + 0.1);
+            imageView.getTransforms()
+                    .add(new Scale(1.1, 1.1, imageView.getFitWidth() / 2, imageView.getFitHeight() / 2));
+        }
+    }
+
+    private void zoomIn(double pivotX, double pivotY) {
+        if (scale < MAX_SCALE) {
+            scale += 10;
+            imageView.getTransforms()
+                    .add(new Scale(1.1, 1.1, pivotX, pivotY));
         }
     }
 
@@ -210,8 +221,16 @@ public class DisplayWindowsController implements Initializable {
     private void zoomOut() {
         if (scale > MIN_SCALE) {
             scale -= 10;
-            imageView.setScaleX(imageView.getScaleX() - 0.1);
-            imageView.setScaleY(imageView.getScaleY() - 0.1);
+            imageView.getTransforms()
+                    .add(new Scale(0.9, 0.9, imageView.getFitWidth() / 2, imageView.getFitHeight() / 2));
+        }
+    }
+
+    private void zoomOut(double pivotX, double pivotY) {
+        if (scale > MIN_SCALE) {
+            scale -= 10;
+            imageView.getTransforms()
+                    .add(new Scale(0.9, 0.9, pivotX, pivotY));
         }
     }
 
@@ -221,23 +240,20 @@ public class DisplayWindowsController implements Initializable {
     @FXML
     private void originalScale() {
         scale = 100;
-        imageView.setScaleX(1);
-        imageView.setScaleY(1);
-        imageView.setTranslateX(0);
-        imageView.setTranslateY(0);
-        imageView.setRotate(0);
+        imageView.getTransforms().clear();
+
     }
 
     /**
      * 鼠标滚动调节图片大小
      */
     @FXML
-    private void scrollResize(ScrollEvent event) {
-        double deltaY = event.getDeltaY();
+    private void scrollResize(ScrollEvent e) {
+        double deltaY = e.getDeltaY();
         if (deltaY > 0) {
-            zoomIn();
+            zoomIn(e.getX(), e.getY());
         } else {
-            zoomOut();
+            zoomOut(e.getX(), e.getY());
         }
     }
 
@@ -258,13 +274,8 @@ public class DisplayWindowsController implements Initializable {
         double offsetX = e.getX() - point.getX();
         double offsetY = e.getY() - point.getY();
 
-        //修正坐标
-        double modifiedX = offsetX * imageView.getScaleX();
-        double modifiedY = offsetY * imageView.getScaleY();
-
         //移动图片
-        imageView.setTranslateX(imageView.getTranslateX() + modifiedX);
-        imageView.setTranslateY(imageView.getTranslateY() + modifiedY);
+        imageView.getTransforms().add(new Translate(offsetX, offsetY));
     }
 
     /**
@@ -272,7 +283,8 @@ public class DisplayWindowsController implements Initializable {
      */
     @FXML
     private void turnLeft() {
-        imageView.setRotate(imageView.getRotate() - 90);
+        imageView.getTransforms()
+                .add(new Rotate(-90, imageView.getFitWidth() / 2, imageView.getFitHeight() / 2));
     }
 
     /**
@@ -280,7 +292,8 @@ public class DisplayWindowsController implements Initializable {
      */
     @FXML
     private void turnRight() {
-        imageView.setRotate(imageView.getRotate() + 90);
+        imageView.getTransforms()
+                .add(new Rotate(90, imageView.getFitWidth() / 2, imageView.getFitHeight() / 2));
     }
 
     /**
