@@ -19,7 +19,7 @@ public class ImageFile {
     /**
      * 图片的file对象
      */
-    private final File file;
+    private  File file;
 
     /**
      * 文件名
@@ -102,6 +102,11 @@ public class ImageFile {
 
     public File getFile() {
         return file;
+    }
+
+    public void setFile(File file){
+        this.file=file;
+        this.fileName=file.getName();
     }
 
     public String getFileName() {

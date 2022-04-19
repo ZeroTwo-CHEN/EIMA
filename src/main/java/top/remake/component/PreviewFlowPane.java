@@ -22,6 +22,10 @@ public class PreviewFlowPane extends FlowPane {
      */
     private List<ThumbnailPanel> thumbnailPanels = new ArrayList<>();
 
+    public File getDirectory() {
+        return directory;
+    }
+
     /**
      * 当前展示的文件夹
      */
