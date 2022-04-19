@@ -2,6 +2,7 @@ package top.remake.entity;
 
 /**
  * 返回重命名时用户选择的名称前缀、起始编号、编号位数
+ * @author gzz
  */
 public class RenameData {
     private final String name;

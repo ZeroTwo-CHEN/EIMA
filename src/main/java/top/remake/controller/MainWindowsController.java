@@ -1,6 +1,5 @@
 package top.remake.controller;
 
-import com.leewyatt.rxcontrols.controls.RXTranslationButton;
 import com.leewyatt.rxcontrols.utils.StringUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -66,12 +65,6 @@ public class MainWindowsController implements Initializable {
 
     @FXML
     private ComboBox<String> sortOrderComboBox;
-
-    @FXML
-    private RXTranslationButton refreshButton;
-
-    @FXML
-    private RXTranslationButton selectAllButton;
 
     @FXML
     private TextField searchField;
@@ -299,7 +292,7 @@ public class MainWindowsController implements Initializable {
             double endX = Math.min(x, x2);
             double endY = Math.min(y, y2);
             width = Math.abs(x - x2);
-            height = Math.abs(y-y2);
+            height = Math.abs(y - y2);
             rectangle.setX(endX);
             rectangle.setY(endY);
             rectangle.setWidth(width);
@@ -405,34 +398,35 @@ public class MainWindowsController implements Initializable {
         return copyImg;
     }
 
-    private List<ThumbnailPanel> copyImg=new ArrayList<>();
+    private List<ThumbnailPanel> copyImg = new ArrayList<>();
 
     /**
      * 复制图片
      */
     @FXML
-    private void copyImage(){
+    private void copyImage() {
         copyImg.clear();
-        copyImg.addAll(previewFlowPane.getNewChoices()) ;
+        copyImg.addAll(previewFlowPane.getNewChoices());
 
     }
+
     @FXML
-    private void pasteImage(){
+    private void pasteImage() {
         List<ThumbnailPanel> images = getCopyImg();
         if (images.size() == 0) {
             return;
         }
-        File resource,target;
-        File directory=previewFlowPane.getDirectory();
-        for(ThumbnailPanel image:images){
-            resource=image.getImageFile().getFile();
-            String out=directory.getAbsolutePath()+"\\"+resource.getName();
-            target=new File(out);
+        File resource, target;
+        File directory = previewFlowPane.getDirectory();
+        for (ThumbnailPanel image : images) {
+            resource = image.getImageFile().getFile();
+            String out = directory.getAbsolutePath() + "\\" + resource.getName();
+            target = new File(out);
             try {
-                while(target.exists()) {
-                    String suffix=out.substring(out.lastIndexOf(".") );
-                    out=out.replace(suffix,"-副本")+suffix;
-                    target=new File(out);
+                while (target.exists()) {
+                    String suffix = out.substring(out.lastIndexOf("."));
+                    out = out.replace(suffix, "-副本") + suffix;
+                    target = new File(out);
                 }
                 Files.copy(resource.toPath(), target.toPath());
             } catch (Exception e) {
@@ -444,16 +438,16 @@ public class MainWindowsController implements Initializable {
     }
 
     @FXML
-    private void renameImage(){
+    private void renameImage() {
         //判断是否有图片被选中
-        if(previewFlowPane.getNewChoices().isEmpty()){
-            Dialog dialog=new Dialog();
-            Label label=new Label("未选择图片！");
+        if (previewFlowPane.getNewChoices().isEmpty()) {
+            Dialog<RenameData> dialog = new Dialog<>();
+            Label label = new Label("未选择图片！");
             label.setTextAlignment(TextAlignment.CENTER);
             dialog.getDialogPane().setContent(label);
             dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
-            dialog.setResultConverter(dialogButton->{
-                if(dialogButton==ButtonType.OK){
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == ButtonType.OK) {
                     return null;
                 }
                 return null;
@@ -462,63 +456,66 @@ public class MainWindowsController implements Initializable {
             return;
         }
         //确认已有选中图片
-        RenameImage renameImage=new RenameImage();
-        Optional<RenameData> data=renameImage.showAndWait();
-        data.ifPresent(e->{
-            RenameData data1=data.get();
+        RenameImage renameImage = new RenameImage();
+        Optional<RenameData> data = renameImage.showAndWait();
+        data.ifPresent(e -> {
+            RenameData data1 = data.get();
             renameImage(data1.getName(), data1.getStartNum(), data1.getDigit());
+            refresh();
         });
-        refresh();
-
     }
 
     /**
-     *根据用户所给信息对选中文件进行批量重命名
+     * 根据用户所给信息对选中文件进行批量重命名
      */
-    private void renameImage(String name,int startNum,int digit){
+    private void renameImage(String name, int startNum, int digit) {
         File file;
-        String newName;
         List<ThumbnailPanel> images = previewFlowPane.getNewChoices();
-        NumberFormat nf=NumberFormat.getNumberInstance();
+        NumberFormat nf = NumberFormat.getNumberInstance();
         nf.setMinimumIntegerDigits(digit);
         nf.setGroupingUsed(false);
 
-        for(ThumbnailPanel image:images){
-            String tempName= image.getImageFile().getFile().getParentFile().getAbsolutePath()+"\\"+ RandomUtil.randomName();
-            String type=image.getImageFile().getFileType();
-            File newFile =new File(tempName+"."+type);
+        for (ThumbnailPanel image : images) {
+            String tempName = image.getImageFile().getFile().getParentFile().getAbsolutePath() + "\\" + RandomUtil.randomName();
+            String type = image.getImageFile().getFileType();
+            File newFile = new File(tempName + "." + type);
             image.getImageFile().getFile().renameTo(newFile);
             image.getImageFile().setFile(newFile);
-
         }
 
-        for(ThumbnailPanel image:images){
-            //生成图片新名称 eg：abc001.png
-            newName=name+nf.format(startNum)+"."+image.getImageFile().getFileType().toLowerCase(Locale.ROOT);
-            file=image.getImageFile().getFile();
+        for (ThumbnailPanel image : images) {
+            StringBuilder newName = new StringBuilder();
 
             //生成新图片的绝对路径 eg：C:\\User\Code\abc001.png
-            newName=file.getParentFile().getAbsolutePath()+"\\"+newName;
-            File dest=new File(newName);
-            int choice=renameCheck(dest);
-            if(choice==1){
+            file = image.getImageFile().getFile();
+            newName.append(file.getParentFile().getAbsolutePath()).append("\\");
+
+            //生成图片新名称 eg：abc001.png
+            newName.append(name)
+                    .append(nf.format(startNum))
+                    .append(".")
+                    .append(image.getImageFile().getFileType().toLowerCase(Locale.ROOT));
+
+            File dest = new File(newName.toString());
+            int choice = renameCheck(dest);
+            if (choice == 1) {
                 //替换已存在图片
                 dest.delete();
                 file.renameTo(dest);
                 image.getImageFile().setFile(dest);
             }
 
-            if(choice==-1){
+            if (choice == -1) {
                 //跳过该图片的重命名
             }
 
-            if(choice==0){
+            if (choice == 0) {
                 //取消剩下的重命名操作
                 break;
             }
-            if(choice==2){
-              System.out.println(file.renameTo(dest));
-              image.getImageFile().setFile(dest);
+            if (choice == 2) {
+                file.renameTo(dest);
+                image.getImageFile().setFile(dest);
             }
             startNum++;
         }
@@ -529,50 +526,53 @@ public class MainWindowsController implements Initializable {
      * 判断该文件新名称在该路径下是否已经存在
      * 如果已存在
      */
-    private int renameCheck(File file){
-        if(file.exists()){
-            Dialog<Integer> dialog= new Dialog<>();
-            GridPane gridPane=new GridPane();
-            dialog.setTitle(file.getName()+"已存在！");
-            Label label1=new Label("替换:替换已存在的图片");
-            Label label2=new Label("跳过:跳过该图片重命名");
-            Label label3=new Label("取消:取消重命名图片  ");
+    private int renameCheck(File file) {
+        if (file.exists()) {
+            Dialog<Integer> dialog = new Dialog<>();
+            GridPane gridPane = new GridPane();
+            dialog.setTitle(file.getName() + "已存在！");
+            Label label1 = new Label("替换:替换已存在的图片");
+            Label label2 = new Label("跳过:跳过该图片重命名");
+            Label label3 = new Label("取消:取消重命名图片  ");
             label1.setAlignment(Pos.CENTER);
             label2.setAlignment(Pos.CENTER);
             label3.setAlignment(Pos.CENTER);
-            gridPane.add(label1,0,0);
-            gridPane.add(label2,0,1);
-            gridPane.add(label3,0,2);
-            gridPane.setPadding(new Insets(10,10,10,10));
+            gridPane.add(label1, 0, 0);
+            gridPane.add(label2, 0, 1);
+            gridPane.add(label3, 0, 2);
+            gridPane.setPadding(new Insets(10, 10, 10, 10));
             gridPane.setHgap(10);
 
             ButtonType buttonType1 = new ButtonType("替换");
-            ButtonType buttonType2=new ButtonType("跳过");
+            ButtonType buttonType2 = new ButtonType("跳过");
             dialog.getDialogPane().setContent(gridPane);
-            dialog.getDialogPane().getButtonTypes().addAll(buttonType1,buttonType2,ButtonType.CANCEL);
-            dialog.setResultConverter(e->{
-                if(e==buttonType1){
+            dialog.getDialogPane().getButtonTypes().addAll(buttonType1, buttonType2, ButtonType.CANCEL);
+            dialog.setResultConverter(e -> {
+                if (e == buttonType1) {
                     //替换按钮
                     return 1;
                 }
-                if(e==buttonType2){
+                if (e == buttonType2) {
                     //跳过按钮
                     return -1;
                 }
                 //取消按钮
                 return 0;
             });
-            Optional<Integer>data=dialog.showAndWait();
-            return data.get();
+            Optional<Integer> data = dialog.showAndWait();
+            if (data.isPresent()) {
+                return data.get();
+            }
         }
         return 2;
     }
-    private void menu(){
-        ContextMenu menu=new ContextMenu();
-        MenuItem delete=new MenuItem("删除");
-        MenuItem copy=new MenuItem("复制");
-        MenuItem paste=new MenuItem("粘贴");
-        MenuItem rename=new MenuItem("重命名");
+
+    private void menu() {
+        ContextMenu menu = new ContextMenu();
+        MenuItem delete = new MenuItem("删除");
+        MenuItem copy = new MenuItem("复制");
+        MenuItem paste = new MenuItem("粘贴");
+        MenuItem rename = new MenuItem("重命名");
 
     }
 }
