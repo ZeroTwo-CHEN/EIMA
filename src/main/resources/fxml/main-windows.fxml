@@ -55,7 +55,7 @@
                                                               <Insets />
                                                           </HBox.margin>
                                                       </RXTranslationButton>
-                                                      <RXTranslationButton prefHeight="24.0" prefWidth="45.0" text="复制">
+                                                      <RXTranslationButton onAction="#copyImage" prefHeight="24.0" prefWidth="45.0" text="复制">
                                                           <graphic>
                                                               <ImageView fitHeight="22" preserveRatio="true">
                                                                   <Image backgroundLoading="true" url="@../image/btn-copy.png" />
@@ -65,7 +65,7 @@
                                                               <Font size="14.0" />
                                                           </font>
                                                       </RXTranslationButton>
-                                                      <RXTranslationButton prefHeight="24.0" prefWidth="45.0" text="粘贴">
+                                                      <RXTranslationButton onAction="#pasteImage" prefHeight="24.0" prefWidth="45.0" text="粘贴">
                                                           <graphic>
                                                               <ImageView fitHeight="22" preserveRatio="true">
                                                                   <Image backgroundLoading="true" url="@../image/btn-paste.png" />
@@ -75,7 +75,7 @@
                                                               <Font size="14.0" />
                                                           </font>
                                                       </RXTranslationButton>
-                                                      <RXTranslationButton prefHeight="24.0" prefWidth="45.0" text="重命名">
+                                                      <RXTranslationButton onAction="#renameImage" prefHeight="24.0" prefWidth="45.0" text="重命名">
                                                           <graphic>
                                                               <ImageView fitHeight="22" preserveRatio="true">
                                                                   <Image backgroundLoading="true" url="@../image/btn-rename.png" />

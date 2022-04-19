@@ -128,7 +128,7 @@ public class TestFileSystemView {
 
     @Test
     public void test08() {
-        String absolutePath = new File("C:\\Users\\cjhaz\\Pictures\\God of War\\ScreenShot-2022-2-1_10-46-30.png").getAbsolutePath();
+        String absolutePath = new File("C:\\Users\\Gao\\Desktop\\1.png").getAbsolutePath();
         String[] args = {absolutePath};
         DisplayWindow.main(args);
     }
