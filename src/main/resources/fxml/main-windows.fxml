@@ -13,6 +13,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.BreadCrumbBar?>
@@ -132,7 +133,10 @@
                               </HBox>
                                     </children>
                                 </AnchorPane>
-                                <ScrollPane fx:id="imagePreviewPane" cache="true" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="273.0" prefWidth="417.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+                                <ScrollPane fx:id="imagePreviewPane" cache="true" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="273.0" prefWidth="417.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
+                           <content>
+                              <Pane fx:id="pane" prefHeight="200.0" prefWidth="200.0" />
+                           </content></ScrollPane>
                             </children>
                         </AnchorPane>
                     </items>

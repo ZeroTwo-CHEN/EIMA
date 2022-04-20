@@ -7,11 +7,11 @@ import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -94,7 +94,7 @@ public class EditWindowController implements Initializable {
         this.image = new Image(file.toPath().toUri().toString());
 
         updateImageView();
-
+        initColorAdjust();
     }
 
     private boolean isOutOfBounds;
@@ -144,7 +144,7 @@ public class EditWindowController implements Initializable {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("保存图片");
-        fileChooser.setInitialFileName("Edit-"+file.getName());
+        fileChooser.setInitialFileName("Edit-" + file.getName());
         fileChooser.setInitialDirectory(file.getParentFile());
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PNG", ".png"));
 
@@ -181,18 +181,8 @@ public class EditWindowController implements Initializable {
         updateTile();
         imageView.setImage(image);
 
-        double imageWidth = image.getWidth();
-        double imageHeight = image.getHeight();
-
-        //图片比面板大
-        if (imageWidth > imagePane.getWidth() - MARGIN || imageHeight > imagePane.getHeight() - MARGIN) {
-            imageView.fitWidthProperty().bind(imagePane.widthProperty().subtract(MARGIN));
-            imageView.fitHeightProperty().bind(imagePane.heightProperty().subtract(MARGIN));
-        } else {
-            //图片比面板小
-            imageView.fitWidthProperty().bind(image.widthProperty());
-            imageView.fitHeightProperty().bind(image.heightProperty());
-        }
+        imageView.setFitWidth(imagePane.getWidth() - MARGIN);
+        imageView.setFitHeight(imagePane.getHeight() - MARGIN);
     }
 
     /**
@@ -228,5 +218,111 @@ public class EditWindowController implements Initializable {
             drawShapeUtil.setBrushType(BrushType.RECTANGLE);
             btnRectangle.setStyle("-fx-background-color: #ffd65b");
         });
+    }
+
+
+    /**
+     * 色相
+     */
+    private double hue;
+    /**
+     * 饱和度
+     */
+    private double saturation;
+    /**
+     * 明度
+     */
+    private double brightness;
+    /**
+     * 对比度
+     */
+    private double contrast;
+
+    private final ColorAdjust colorAdjust = new ColorAdjust();
+
+
+    @FXML
+    private Slider hueSlider = new Slider();
+
+    @FXML
+    private Slider saturationSlider = new Slider();
+
+    @FXML
+    private Slider brightnessSlider = new Slider();
+
+    @FXML
+    private Slider contrastSlider = new Slider();
+
+
+    private void initColorAdjust() {
+        hueSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            hue = newValue.doubleValue();
+            colorAdjust();
+        });
+        saturationSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            saturation = newValue.doubleValue();
+            colorAdjust();
+        });
+        brightnessSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            brightness = newValue.doubleValue();
+            colorAdjust();
+        });
+        contrastSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            contrast = newValue.doubleValue();
+            colorAdjust();
+        });
+        imageView.setEffect(colorAdjust);
+    }
+
+    @FXML
+    private void colorAdjust() {
+        colorAdjust.setHue(hue);
+        colorAdjust.setSaturation(saturation);
+        colorAdjust.setBrightness(brightness);
+        colorAdjust.setContrast(contrast);
+    }
+
+    @FXML
+    private void resetColorAdjust() {
+        hueSlider.setValue(0);
+        saturationSlider.setValue(0);
+        brightnessSlider.setValue(0);
+        contrastSlider.setValue(0);
+        imageView.setImage(image);
+    }
+
+    @FXML
+    private void grayscale() {
+        pixelProcess(0);
+    }
+
+    @FXML
+    private void invert() {
+        pixelProcess(1);
+    }
+
+
+    /**
+     * @param type 0为灰度处理 1为颜色反转
+     */
+    private void pixelProcess(int type) {
+        //读取原图片像素
+        PixelReader pixelReader = image.getPixelReader();
+        WritableImage writableImage = new WritableImage((int) image.getWidth(), (int) image.getHeight());
+        PixelWriter pixelWriter = writableImage.getPixelWriter();
+
+        for (var x = 0; x < image.getWidth(); x++) {
+            for (var y = 0; y < image.getHeight(); y++) {
+                Color color = pixelReader.getColor(x, y);
+                if (type == 0) {
+                    color = color.grayscale();
+                } else {
+                    color = color.invert();
+                }
+                pixelWriter.setColor(x, y, color);
+            }
+        }
+
+        imageView.setImage(writableImage);
     }
 }

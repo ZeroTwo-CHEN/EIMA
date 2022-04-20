@@ -150,7 +150,9 @@ public class MainWindowsController implements Initializable {
         fileTreeView.setRoot(treeItem);
     }
 
+    @FXML
     private Pane pane;
+
     private Rectangle rectangle;
 
     /**
@@ -159,7 +161,6 @@ public class MainWindowsController implements Initializable {
     private void initPreviewFlowPane() {
         previewFlowPane = new PreviewFlowPane();
         rectangle = new Rectangle();
-        pane = new Pane();
         rectangle.setFill(Color.rgb(70, 170, 227, 0.6));
         rectangle.setVisible(false);
         pane.getChildren().addAll(previewFlowPane, rectangle);
@@ -176,10 +177,8 @@ public class MainWindowsController implements Initializable {
                     }
                 });
 
-        imagePreviewPane.setContent(pane);
         rectangle.setVisible(false);
         //rectangle.toFront();
-        imagePreviewPane.setCache(true);
     }
 
     /**

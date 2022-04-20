@@ -1,27 +1,98 @@
 .button {
     -fx-background-color: transparent;
+    -fx-border-color: black;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
 }
 
-.button:hover{
+.button:hover {
     -fx-background-color: #ffd65b;
 }
 
-.button:pressed{
+.button:pressed {
     -fx-opacity: 0.7;
 }
 
-.color-picker{
+.color-picker {
+    -fx-background-color: transparent;
+    -fx-border-color: black;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+}
+
+.color-picker:hover {
+    -fx-background-color: #ffd65b;
+}
+
+.color-picker:pressed {
+    -fx-opacity: 0.7;
+}
+
+#toolbar {
+    -fx-background-color: linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1);
+}
+
+
+.tab-pane .tab-header-background {
+    -fx-background-color: #f4f4f4;
+}
+
+.tab-pane.plain .tab-header-background {
     -fx-background-color: transparent;
 }
 
-.color-picker:hover{
-    -fx-background-color: #ffd65b;
+.tab-pane .tab-header-area .tab {
+    -fx-border-radius: 4 4 0 0;
+    -fx-background-radius: 5 5 0 0;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 3 10 5 10;
+    -fx-background-insets: 0;
 }
 
-.color-picker:pressed{
-    -fx-opacity: 0.7;
+.tab-pane .tab-header-area .tab .tab-label {
+    -fx-text-fill: #337ab7;
 }
 
-#toolbar{
-    -fx-background-color: linear-gradient(to right, #2CD8D5,#C5C1FF);
+.tab-pane .tab-header-area .tab:hover {
+    -fx-background-color: #eeeeee;
+}
+
+.tab-pane .tab-header-area .tab:disabled:hover {
+    -fx-background-color: transparent;
+}
+
+.tab-pane .tab-header-area .tab:selected {
+    -fx-focus-color: transparent;
+    -fx-border-color: #dddddd #dddddd white #dddddd;
+    -fx-background-color: white;
+}
+
+.tab-pane .tab-header-area .tab:selected .tab-label {
+    -fx-text-fill: #333333;
+}
+
+.tab-pane > .tab-content-area {
+    -fx-background-color: white;
+}
+
+.tab-pane .tab-header-area .tab .tab-label {
+    -fx-focus-color: transparent;
+}
+
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-color: transparent;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-close-button {
+    -fx-background-color: #337ab7;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected > .tab-container > .tab-close-button {
+    -fx-background-color: #333333;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-close-button:hover {
+    -fx-background-color: red;
+    -fx-cursor: hand;
 }

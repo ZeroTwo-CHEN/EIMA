@@ -4,10 +4,12 @@ import com.leewyatt.rxcontrols.controls.RXHighlightText;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import top.remake.DisplayWindow;
 import top.remake.controller.ControllerMap;
@@ -42,13 +44,23 @@ public class ThumbnailPanel extends BorderPane {
 
     private Boolean isSelected;
 
-    private static MainWindowsController mainWindowsControl;
+    private static final MainWindowsController MAIN_WINDOWS_CONTROLLER;
 
     private static TextField searchKey;
 
+    /**
+     * 图片的阴影效果
+     */
+    private static final DropShadow DROP_SHADOW = new DropShadow(8, 3, 3, Color.GRAY);
+
+    /**
+     * 边距
+     */
+    private static final Insets INSETS = new Insets(5, 5, 0, 5);
+
     static {
-        mainWindowsControl = (MainWindowsController) ControllerMap.getController(MainWindowsController.class);
-        searchKey = mainWindowsControl.getSearchField();
+        MAIN_WINDOWS_CONTROLLER = (MainWindowsController) ControllerMap.getController(MainWindowsController.class);
+        searchKey = MAIN_WINDOWS_CONTROLLER.getSearchField();
     }
 
     public ThumbnailPanel(ImageFile imageFile) {
@@ -56,13 +68,16 @@ public class ThumbnailPanel extends BorderPane {
         this.setMinSize(110, 150);
         //关闭cache防止占用内存过大
         this.setCache(false);
-        this.setPadding(new Insets(0, 5, 0, 5));
+        this.setPadding(INSETS);
         this.imageFile = imageFile;
         //保持原比例，启用更好质量的加载算法，启用后台加载
         this.imageView = new ImageView(new Image(imageFile.getURL(), 90, 90, true, true, true));
         this.imageView.setFitWidth(100);
         this.imageView.setFitHeight(100);
         this.imageView.setPreserveRatio(true);
+
+        //给图片添加阴影效果
+        this.imageView.setEffect(DROP_SHADOW);
 
         int length = imageFile.getFileName().length();
         //名字长度大于限定就剪切
@@ -104,7 +119,7 @@ public class ThumbnailPanel extends BorderPane {
                         parent.addImgToList(this);
                     }
                     //更新主界面右下角提示栏
-                    mainWindowsControl.updateTipsLabelText(parent.getTotalCount(), parent.getTotalSize(),
+                    MAIN_WINDOWS_CONTROLLER.updateTipsLabelText(parent.getTotalCount(), parent.getTotalSize(),
                             parent.getSelectedCount(), parent.getSelectedSize());
                 }
                 //图片单选
