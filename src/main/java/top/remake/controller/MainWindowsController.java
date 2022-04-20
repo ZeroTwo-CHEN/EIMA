@@ -268,12 +268,14 @@ public class MainWindowsController implements Initializable {
     private double x, y;
     private double width;
     private double height;
+    private Menu menu=new Menu();
 
     private void addHandler() {
         //对FlowPane添加监听器记录鼠标按下时的坐标，存放于x，y中。
         previewFlowPane.setOnMousePressed(event -> {
             x = event.getX();
             y = event.getY();
+            menu.close();
 
             //处理单击空白部分时取消已选择的图片
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1 && !event.isControlDown()) {
@@ -282,6 +284,13 @@ public class MainWindowsController implements Initializable {
                 }
                 updateTipsLabelText();
             }
+            //右键菜单
+            if(event.getButton()==MouseButton.SECONDARY){
+                menu.show(event.getScreenX(),event.getScreenY());
+            }
+
+            //拖拽鼠标向上超出边界时，将ScrollPane上滑
+
         });
 
         //通过对FlowPane添加监听器记录并计算矩形（多选框）的坐标，宽高；
@@ -302,16 +311,18 @@ public class MainWindowsController implements Initializable {
             if (width >= 10 && height >= 10) {
                 selectImg();
             }
-            //拖拽鼠标向上超出边界时，将ScrollPane上滑
+
+             //拖拽鼠标向上超出边界时，将ScrollPane上滑
             if (event.getSceneY() < 100) {
                 imagePreviewPane.setVvalue(imagePreviewPane.getVvalue() +
-                        (event.getSceneY() - 100) / previewFlowPane.getHeight() / 100);
+                        (event.getSceneY() - 100) / previewFlowPane.getHeight() / 10);
             }
             //拖拽鼠标向下超出边界时。将ScrollPane下滑
             if (event.getSceneY() > 100 + imagePreviewPane.getHeight()) {
                 imagePreviewPane.setVvalue(imagePreviewPane.getVvalue() +
                         (event.getSceneY() - imagePreviewPane.getHeight() - 100) / previewFlowPane.getHeight() / 10);
             }
+
         });
         previewFlowPane.setOnMouseReleased(event -> {
             //选中图片
@@ -423,6 +434,7 @@ public class MainWindowsController implements Initializable {
             String out = directory.getAbsolutePath() + "\\" + resource.getName();
             target = new File(out);
             try {
+                //目标文件已存在时，在文件名后加“-副本后缀”
                 while (target.exists()) {
                     String suffix = out.substring(out.lastIndexOf("."));
                     out = out.replace(suffix, "-副本") + suffix;
@@ -471,11 +483,13 @@ public class MainWindowsController implements Initializable {
     private void renameImage(String name, int startNum, int digit) {
         File file;
         List<ThumbnailPanel> images = previewFlowPane.getNewChoices();
+        List<String> pasts=new ArrayList<>();
         NumberFormat nf = NumberFormat.getNumberInstance();
         nf.setMinimumIntegerDigits(digit);
         nf.setGroupingUsed(false);
 
         for (ThumbnailPanel image : images) {
+            pasts.add(image.getImageFile().getFile().getParentFile().getAbsolutePath() + "\\"+image.getImageFile().getFileName());
             String tempName = image.getImageFile().getFile().getParentFile().getAbsolutePath() + "\\" + RandomUtil.randomName();
             String type = image.getImageFile().getFileType();
             File newFile = new File(tempName + "." + type);
@@ -507,10 +521,19 @@ public class MainWindowsController implements Initializable {
 
             if (choice == -1) {
                 //跳过该图片的重命名
+                dest=new File(pasts.get(images.indexOf(image)));
+                file.renameTo(dest);
+                image.getImageFile().setFile(dest);
             }
 
             if (choice == 0) {
-                //取消剩下的重命名操作
+                //取消所有的重命名操作
+                for(ThumbnailPanel image1 : images){
+                    file = image1.getImageFile().getFile();
+                    dest=new File(pasts.get(images.indexOf(image1)));
+                    file.renameTo(dest);
+                    image1.getImageFile().setFile(dest);
+                }
                 break;
             }
             if (choice == 2) {
@@ -567,12 +590,25 @@ public class MainWindowsController implements Initializable {
         return 2;
     }
 
-    private void menu() {
-        ContextMenu menu = new ContextMenu();
-        MenuItem delete = new MenuItem("删除");
-        MenuItem copy = new MenuItem("复制");
-        MenuItem paste = new MenuItem("粘贴");
-        MenuItem rename = new MenuItem("重命名");
+    class Menu {
+        public  ContextMenu menu = new ContextMenu();
 
+          Menu() {
+            MenuItem delete = new MenuItem("删除");
+            MenuItem copy = new MenuItem("复制");
+            MenuItem paste = new MenuItem("粘贴");
+            MenuItem rename = new MenuItem("重命名");
+            delete.setOnAction(e -> deleteImage());
+            copy.setOnAction(e -> copyImage());
+            paste.setOnAction(e -> pasteImage());
+            rename.setOnAction(e -> renameImage());
+            menu.getItems().addAll(delete, copy, paste, rename);
+        }
+        void show(double x,double y){
+            menu.show(pane,x,y);
+        }
+        void close(){
+             menu.hide();
+        }
     }
 }
