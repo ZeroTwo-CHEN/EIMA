@@ -24,15 +24,13 @@ public class DrawShapeUtil {
      * 当前笔刷的颜色
      * 默认为红色
      */
-    //private Color brushColor = Color.RED;
-
-    private ObjectProperty<Color> brushColor=new SimpleObjectProperty<>(Color.RED);
+    private final ObjectProperty<Color> brushColor=new SimpleObjectProperty<>(Color.RED);
 
     /**
      * 笔刷粗细
      * 默认为3
      */
-    private DoubleProperty strokeWidth = new SimpleDoubleProperty(3.0);
+    private final DoubleProperty strokeWidth = new SimpleDoubleProperty(3.0);
 
     /**
      * 鼠标开始按下的X坐标
@@ -43,16 +41,6 @@ public class DrawShapeUtil {
      * 鼠标开始按下的Y坐标
      */
     private double startY;
-
-    /**
-     * 鼠标的最后X坐标
-     */
-    private double endX;
-
-    /**
-     * 鼠标的最后Y坐标
-     */
-    private double endY;
 
     /**
      * 当笔刷为铅笔时使用
@@ -113,9 +101,6 @@ public class DrawShapeUtil {
     }
 
     public void updateShape(double x, double y) {
-        endX = x;
-        endY = y;
-
         switch (brushType) {
             case PENCIL -> polyline.getPoints().addAll(x, y);
             case LINE -> {

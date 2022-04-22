@@ -1,99 +1,211 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/edit-window.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="top.remake.controller.EditWindowController">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/edit-window.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="top.remake.controller.EditWindowController">
     <children>
         <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <bottom>
-                <HBox id="toolbar" alignment="CENTER" fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0" spacing="10.0" BorderPane.alignment="CENTER">
-                    <children>
-                        <Button mnemonicParsing="false" onAction="#undo">
-                            <graphic>
-                                <ImageView fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image backgroundLoading="true" url="@../image/btn-undo.png" />
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                        <Label text="画笔粗细" />
-                        <Slider fx:id="brushWidth" max="15.0" min="1.0" value="5.0" />
-                        <Button fx:id="btnPencil" mnemonicParsing="false">
-                            <graphic>
-                                <ImageView fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image backgroundLoading="true" url="@../image/icon-pencil.png" />
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                        <Button fx:id="btnLine" mnemonicParsing="false">
-                            <graphic>
-                                <ImageView fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image backgroundLoading="true" url="@../image/icon-line.png" />
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                        <Button fx:id="btnRectangle" mnemonicParsing="false">
-                            <graphic>
-                                <ImageView fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image backgroundLoading="true" url="@../image/icon-rectangle.png" />
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                        <Button fx:id="btnCircle" mnemonicParsing="false">
-                            <graphic>
-                                <ImageView fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image backgroundLoading="true" url="@../image/icon-circle.png" />
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                        <ColorPicker fx:id="colorPicker">
-                            <value>
-                                <Color red="1.0" />
-                            </value>
-                        </ColorPicker>
-                        <Button mnemonicParsing="false" onAction="#save">
-                            <graphic>
-                                <ImageView fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image backgroundLoading="true" url="@../image/btn-save.png" />
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                    </children>
-                </HBox>
-            </bottom>
             <center>
-                <StackPane fx:id="imagePane" BorderPane.alignment="CENTER">
-                    <children>
-                        <Group fx:id="canvasGroup">
-                            <children>
-                                <ImageView fx:id="imageView" onMouseDragged="#onMouseDragged" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" pickOnBounds="true" preserveRatio="true" />
-                            </children>
-                        </Group>
-                    </children>
-                </StackPane>
+            <ScrollPane fitToHeight="true" fitToWidth="true">
+               <content>
+                      <StackPane fx:id="imagePane">
+                          <children>
+                              <Group fx:id="canvasGroup" autoSizeChildren="false" pickOnBounds="true">
+                                  <children>
+                                      <ImageView fx:id="imageView" onMouseDragged="#onMouseDragged" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" pickOnBounds="true" preserveRatio="true" />
+                                  </children>
+                              </Group>
+                          </children>
+                      </StackPane>
+               </content>
+            </ScrollPane>
             </center>
+         <right>
+            <TabPane prefHeight="200.0" prefWidth="125.0" stylesheets="@../css/edit-window.css" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+              <tabs>
+                <Tab text="画图">
+                  <content>
+                        <VBox id="toolbar" prefWidth="195.0" spacing="25.0">
+                           <children>
+                              <GridPane alignment="CENTER" vgap="10.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Button fx:id="btnPencil" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" GridPane.halignment="CENTER">
+                                       <graphic>
+                                          <ImageView fitHeight="26.0" fitWidth="29.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image backgroundLoading="true" url="@../image/icon-pencil.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button fx:id="btnLine" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                                       <graphic>
+                                          <ImageView fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image backgroundLoading="true" url="@../image/icon-line.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button fx:id="btnRectangle" mnemonicParsing="false" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                                       <graphic>
+                                          <ImageView fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image backgroundLoading="true" url="@../image/icon-rectangle.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button fx:id="btnCircle" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                                       <graphic>
+                                          <ImageView fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image backgroundLoading="true" url="@../image/icon-circle.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button mnemonicParsing="false" onAction="#undo" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                                       <graphic>
+                                          <ImageView fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image backgroundLoading="true" url="@../image/btn-undo.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </GridPane>
+                              <Label text="笔刷颜色：">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                                    <ColorPicker fx:id="colorPicker">
+                                        <value>
+                                            <Color red="1.0" />
+                                        </value>
+                                    </ColorPicker>
+                              <Label text="画笔粗细：">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Slider fx:id="brushWidth" max="15.0" min="1.0" value="5.0" />
+                              <HBox alignment="CENTER">
+                                 <children>
+                                     <Button mnemonicParsing="false" onAction="#save" text="保存">
+                                         <graphic>
+                                             <ImageView fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                 <image>
+                                                     <Image backgroundLoading="true" url="@../image/btn-save.png" />
+                                                 </image>
+                                             </ImageView>
+                                         </graphic>
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                     </Button>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                  </content>
+                </Tab>
+                <Tab text="色彩">
+                  <content>
+                        <VBox id="toolbar" spacing="15.0">
+                           <children>
+                              <Label text="色相">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font></Label>
+                              <Slider fx:id="hueSlider" max="1.0" min="-1.0" />
+                              <Label text="饱和度">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font></Label>
+                              <Slider fx:id="saturationSlider" max="1.0" min="-1.0" />
+                              <Label text="明度">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font></Label>
+                              <Slider fx:id="brightnessSlider" max="1.0" min="-1.0" />
+                              <Label text="对比度">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font></Label>
+                              <Slider fx:id="contrastSlider" max="1.0" min="-1.0" />
+                              <VBox alignment="CENTER" spacing="15.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" onAction="#grayscale" text="灰度处理">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Button>
+                                    <Button mnemonicParsing="false" onAction="#invert" text="颜色反转">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Button>
+                                    <Button mnemonicParsing="false" onAction="#resetColorAdjust" text="重置">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Button>
+                                    <Button mnemonicParsing="false" onAction="#save" text="保存">
+                                       <graphic>
+                                          <ImageView fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image backgroundLoading="true" url="@../image/btn-save.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Button>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                  </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+         </right>
         </BorderPane>
     </children>
 </AnchorPane>

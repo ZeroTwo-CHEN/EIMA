@@ -6,6 +6,9 @@ package top.remake.entity;
  * @author ZeroTwo_CHEN
  */
 public final class SortOrder {
+    private SortOrder() {
+    }
+
     /**
      * 按名称升序
      */
