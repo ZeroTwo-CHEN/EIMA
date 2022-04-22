@@ -4,6 +4,7 @@ import com.leewyatt.rxcontrols.controls.RXHighlightText;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -45,6 +46,7 @@ public class ThumbnailPanel extends BorderPane {
     private static MainWindowsController mainWindowsControl;
 
     private static TextField searchKey;
+    private  Tooltip tooltip;
 
     static {
         mainWindowsControl = (MainWindowsController) ControllerMap.getController(MainWindowsController.class);
@@ -103,9 +105,6 @@ public class ThumbnailPanel extends BorderPane {
                         //   this.ifSelected = true;
                         parent.addImgToList(this);
                     }
-                    //更新主界面右下角提示栏
-                    mainWindowsControl.updateTipsLabelText(parent.getTotalCount(), parent.getTotalSize(),
-                            parent.getSelectedCount(), parent.getSelectedSize());
                 }
                 //图片单选
                 else {
@@ -118,9 +117,15 @@ public class ThumbnailPanel extends BorderPane {
                         parent.clearSelect();
                         parent.addImgToList(this);
                     }
+
                 }
+                //更新主界面右下角提示栏
+                mainWindowsControl.updateTipsLabelText(parent.getTotalCount(), parent.getTotalSize(),
+                        parent.getSelectedCount(), parent.getSelectedSize());
             }
         });
+
+        this.setOnMouseEntered(e-> toolTips());
     }
 
     /**
@@ -134,6 +139,17 @@ public class ThumbnailPanel extends BorderPane {
     public void removeSelect() {
         this.setStyle("-fx-background-color: transparent");
         this.isSelected = false;
+    }
+
+    /**
+     * 添加图片信息
+     */
+    private void toolTips(){
+        String format = String.format("%.2f", this.imageFile.getSizeInMagaBytes());
+         tooltip=new Tooltip("名称:"+this.imageFile.getFileName()+"\n类型:"+this.imageFile.getFileType()+"\n大小:"+format+"MB");
+        tooltip.setAutoHide(true);
+        tooltip.setAutoFix(true);
+        Tooltip.install(this,tooltip);
     }
 
 

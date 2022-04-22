@@ -289,7 +289,6 @@ public class MainWindowsController implements Initializable {
                 menu.show(event.getScreenX(),event.getScreenY());
             }
 
-            //拖拽鼠标向上超出边界时，将ScrollPane上滑
 
         });
 
@@ -312,15 +311,18 @@ public class MainWindowsController implements Initializable {
                 selectImg();
             }
 
+
              //拖拽鼠标向上超出边界时，将ScrollPane上滑
             if (event.getSceneY() < 100) {
+                System.out.println("111");
                 imagePreviewPane.setVvalue(imagePreviewPane.getVvalue() +
                         (event.getSceneY() - 100) / previewFlowPane.getHeight() / 10);
             }
             //拖拽鼠标向下超出边界时。将ScrollPane下滑
-            if (event.getSceneY() > 100 + imagePreviewPane.getHeight()) {
+            if (event.getSceneY() > 80 + imagePreviewPane.getHeight()) {
+                System.out.println("000");
                 imagePreviewPane.setVvalue(imagePreviewPane.getVvalue() +
-                        (event.getSceneY() - imagePreviewPane.getHeight() - 100) / previewFlowPane.getHeight() / 10);
+                        (event.getSceneY() - imagePreviewPane.getHeight() - 80) / previewFlowPane.getHeight() / 10);
             }
 
         });
@@ -468,13 +470,34 @@ public class MainWindowsController implements Initializable {
             return;
         }
         //确认已有选中图片
-        RenameImage renameImage = new RenameImage();
-        Optional<RenameData> data = renameImage.showAndWait();
-        data.ifPresent(e -> {
-            RenameData data1 = data.get();
-            renameImage(data1.getName(), data1.getStartNum(), data1.getDigit());
+        if(previewFlowPane.getNewChoices().size()==1){
+            Dialog<String> dialog=new Dialog<>();
+            dialog.setTitle("重命名");
+            Label label=new Label("新名称:");
+            TextField textField=new TextField();
+            GridPane gridPane=new GridPane();
+            gridPane.add(label,0,0);
+            gridPane.add(textField,1,0);
+            dialog.getDialogPane().setContent(gridPane);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == ButtonType.OK) {
+                    return textField.getText();
+                }
+                return null;
+            });
+            Optional<String>string1=dialog.showAndWait();
+            string1.ifPresent(e->renameImage(string1.get(), -1,-1));
             refresh();
-        });
+        }else {
+            RenameImage renameImage = new RenameImage();
+            Optional<RenameData> data = renameImage.showAndWait();
+            data.ifPresent(e -> {
+                RenameData data1 = data.get();
+                renameImage(data1.getName(), data1.getStartNum(), data1.getDigit());
+                refresh();
+            });
+        }
     }
 
     /**
@@ -487,6 +510,42 @@ public class MainWindowsController implements Initializable {
         NumberFormat nf = NumberFormat.getNumberInstance();
         nf.setMinimumIntegerDigits(digit);
         nf.setGroupingUsed(false);
+        if(digit==-1&&startNum==-1){
+            StringBuilder newName = new StringBuilder();
+            ThumbnailPanel image=images.get(0);
+            file = image.getImageFile().getFile();
+            newName.append(file.getParentFile().getAbsolutePath()).append("\\");
+            newName.append(name)
+                    .append(".")
+                    .append(image.getImageFile().getFileType().toLowerCase(Locale.ROOT));
+            File dest=new File(newName.toString());
+           if(dest.exists()){
+               Dialog<Boolean> dialog=new Dialog<>();
+               dialog.setTitle("图片已存在");
+               Label label=new Label("请选择:");
+               GridPane gridPane=new GridPane();
+               gridPane.setPadding(new Insets(10, 10, 10, 10));
+               gridPane.setHgap(10);
+               dialog.getDialogPane().setContent(gridPane);
+               ButtonType buttonType = new ButtonType("替换");
+               dialog.getDialogPane().getButtonTypes().addAll(buttonType, ButtonType.CANCEL);
+               dialog.setResultConverter(e-> e == buttonType);
+               Optional<Boolean> result=dialog.showAndWait();
+               File finalFile = file;
+               result.ifPresent(e->{
+                   if(result.get()){
+                       System.out.println("ff");
+                       dest.delete();
+                       finalFile.renameTo(dest);
+                       image.getImageFile().setFile(dest);
+                   }
+               });
+
+           }
+           file.renameTo(dest);
+           image.getImageFile().setFile(dest);
+           return;
+        }
 
         for (ThumbnailPanel image : images) {
             pasts.add(image.getImageFile().getFile().getParentFile().getAbsolutePath() + "\\"+image.getImageFile().getFileName());
@@ -495,6 +554,8 @@ public class MainWindowsController implements Initializable {
             File newFile = new File(tempName + "." + type);
             image.getImageFile().getFile().renameTo(newFile);
             image.getImageFile().setFile(newFile);
+
+
         }
 
         for (ThumbnailPanel image : images) {
