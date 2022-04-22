@@ -487,7 +487,6 @@ public class MainWindowsController implements Initializable {
             });
             Optional<String>string1=dialog.showAndWait();
             string1.ifPresent(e->renameImage(string1.get(), -1,-1));
-            refresh();
         }else {
             RenameImage renameImage = new RenameImage();
             Optional<RenameData> data = renameImage.showAndWait();
@@ -523,6 +522,7 @@ public class MainWindowsController implements Initializable {
                dialog.setTitle("图片已存在");
                Label label=new Label("请选择:");
                GridPane gridPane=new GridPane();
+               gridPane.add(label,0,0);
                gridPane.setPadding(new Insets(10, 10, 10, 10));
                gridPane.setHgap(10);
                dialog.getDialogPane().setContent(gridPane);
@@ -533,17 +533,20 @@ public class MainWindowsController implements Initializable {
                File finalFile = file;
                result.ifPresent(e->{
                    if(result.get()){
-                       System.out.println("ff");
                        dest.delete();
                        finalFile.renameTo(dest);
                        image.getImageFile().setFile(dest);
+                       refresh();
                    }
                });
 
            }
-           file.renameTo(dest);
-           image.getImageFile().setFile(dest);
-           return;
+           else{
+               file.renameTo(dest);
+               image.getImageFile().setFile(dest);
+               refresh();
+               return;
+           }
         }
 
         for (ThumbnailPanel image : images) {
