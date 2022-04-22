@@ -530,9 +530,9 @@ public class MainWindowsController implements Initializable {
             Dialog<Integer> dialog = new Dialog<>();
             GridPane gridPane = new GridPane();
             dialog.setTitle(file.getName() + "已存在！");
-            Label label1 = new Label("替换:替换已存在的图片");
-            Label label2 = new Label("跳过:跳过该图片重命名");
-            Label label3 = new Label("取消:取消重命名图片  ");
+            Label label1 = new Label("替换: 替换已存在的图片");
+            Label label2 = new Label("跳过: 跳过该图片重命名");
+            Label label3 = new Label("取消: 取消重命名图片  ");
             label1.setAlignment(Pos.CENTER);
             label2.setAlignment(Pos.CENTER);
             label3.setAlignment(Pos.CENTER);
@@ -540,7 +540,7 @@ public class MainWindowsController implements Initializable {
             gridPane.add(label2, 0, 1);
             gridPane.add(label3, 0, 2);
             gridPane.setPadding(new Insets(10, 10, 10, 10));
-            gridPane.setHgap(10);
+            gridPane.setVgap(20);
 
             ButtonType buttonType1 = new ButtonType("替换");
             ButtonType buttonType2 = new ButtonType("跳过");

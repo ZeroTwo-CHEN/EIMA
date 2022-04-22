@@ -2,8 +2,6 @@ package top.remake.component;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
-import javafx.event.EventType;
 import javafx.scene.control.TreeItem;
 import top.remake.utils.FileUtil;
 
@@ -40,20 +38,20 @@ public class FileTreeItem extends TreeItem<String> {
      */
     private final Callable<List<? extends TreeItem<String>>> callable;
 
-    private static final EventType<?> PRE_ADD_LOADED_CHILDREN
-            = new EventType<>(treeNotificationEvent(), "PRE_ADD_LOADED_CHILDREN");
-    private static final EventType<?> POST_ADD_LOADED_CHILDREN
-            = new EventType<>(treeNotificationEvent(), "POST_ADD_LOADED_CHILDREN");
-
-    @SuppressWarnings("unchecked")
-    static <T> EventType<TreeModificationEvent<T>> preAddLoadedChildrenEvent() {
-        return (EventType<TreeModificationEvent<T>>) PRE_ADD_LOADED_CHILDREN;
-    }
-
-    @SuppressWarnings("unchecked")
-    static <T> EventType<TreeModificationEvent<T>> postAddLoadedChildrenEvent() {
-        return (EventType<TreeModificationEvent<T>>) POST_ADD_LOADED_CHILDREN;
-    }
+//    private static final EventType<?> PRE_ADD_LOADED_CHILDREN
+//            = new EventType<>(treeNotificationEvent(), "PRE_ADD_LOADED_CHILDREN");
+//    private static final EventType<?> POST_ADD_LOADED_CHILDREN
+//            = new EventType<>(treeNotificationEvent(), "POST_ADD_LOADED_CHILDREN");
+//
+//    @SuppressWarnings("unchecked")
+//    static <T> EventType<TreeModificationEvent<T>> preAddLoadedChildrenEvent() {
+//        return (EventType<TreeModificationEvent<T>>) PRE_ADD_LOADED_CHILDREN;
+//    }
+//
+//    @SuppressWarnings("unchecked")
+//    static <T> EventType<TreeModificationEvent<T>> postAddLoadedChildrenEvent() {
+//        return (EventType<TreeModificationEvent<T>>) POST_ADD_LOADED_CHILDREN;
+//    }
 
     public FileTreeItem(File directory, Callable<List<? extends TreeItem<String>>> callable) {
         super(FileUtil.getFilename(directory), FileUtil.getFileIcon(directory));
@@ -87,7 +85,7 @@ public class FileTreeItem extends TreeItem<String> {
 
     /**
      * 展开监听器
-     * 当未加载完成时关闭的item 则取消异步加载
+     * 当关闭item时：取消异步加载 并将初始化标记位置为false
      */
     @SuppressWarnings("unchecked")
     private void addExpandedListener() {
@@ -97,6 +95,7 @@ public class FileTreeItem extends TreeItem<String> {
                 if (future != null) {
                     future.cancel(true);
                 }
+                //清空其子结点
                 super.getChildren().setAll(new TreeItem<>());
             }
         });
@@ -112,9 +111,9 @@ public class FileTreeItem extends TreeItem<String> {
             Thread.currentThread().getUncaughtExceptionHandler()
                     .uncaughtException(Thread.currentThread(), th);
         } else {
-            Event.fireEvent(this, new TreeModificationEvent<>(preAddLoadedChildrenEvent(), this));
+            //Event.fireEvent(this, new TreeModificationEvent<>(preAddLoadedChildrenEvent(), this));
             super.getChildren().setAll(result);
-            Event.fireEvent(this, new TreeModificationEvent<>(postAddLoadedChildrenEvent(), this));
+            //Event.fireEvent(this, new TreeModificationEvent<>(postAddLoadedChildrenEvent(), this));
         }
         future = null;
     }
