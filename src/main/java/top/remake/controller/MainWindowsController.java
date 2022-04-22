@@ -267,12 +267,14 @@ public class MainWindowsController implements Initializable {
     private double x, y;
     private double width;
     private double height;
+    private Menu menu=new Menu();
 
     private void addHandler() {
         //对FlowPane添加监听器记录鼠标按下时的坐标，存放于x，y中。
         previewFlowPane.setOnMousePressed(event -> {
             x = event.getX();
             y = event.getY();
+            menu.close();
 
             //处理单击空白部分时取消已选择的图片
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1 && !event.isControlDown()) {
@@ -281,6 +283,12 @@ public class MainWindowsController implements Initializable {
                 }
                 updateTipsLabelText();
             }
+            //右键菜单
+            if(event.getButton()==MouseButton.SECONDARY){
+                menu.show(event.getScreenX(),event.getScreenY());
+            }
+
+
         });
 
         //通过对FlowPane添加监听器记录并计算矩形（多选框）的坐标，宽高；
@@ -301,16 +309,21 @@ public class MainWindowsController implements Initializable {
             if (width >= 10 && height >= 10) {
                 selectImg();
             }
-            //拖拽鼠标向上超出边界时，将ScrollPane上滑
+
+
+             //拖拽鼠标向上超出边界时，将ScrollPane上滑
             if (event.getSceneY() < 100) {
+                System.out.println("111");
                 imagePreviewPane.setVvalue(imagePreviewPane.getVvalue() +
-                        (event.getSceneY() - 100) / previewFlowPane.getHeight() / 100);
+                        (event.getSceneY() - 100) / previewFlowPane.getHeight() / 10);
             }
             //拖拽鼠标向下超出边界时。将ScrollPane下滑
-            if (event.getSceneY() > 100 + imagePreviewPane.getHeight()) {
+            if (event.getSceneY() > 80 + imagePreviewPane.getHeight()) {
+                System.out.println("000");
                 imagePreviewPane.setVvalue(imagePreviewPane.getVvalue() +
-                        (event.getSceneY() - imagePreviewPane.getHeight() - 100) / previewFlowPane.getHeight() / 10);
+                        (event.getSceneY() - imagePreviewPane.getHeight() - 80) / previewFlowPane.getHeight() / 10);
             }
+
         });
         previewFlowPane.setOnMouseReleased(event -> {
             //选中图片
@@ -422,6 +435,7 @@ public class MainWindowsController implements Initializable {
             String out = directory.getAbsolutePath() + "\\" + resource.getName();
             target = new File(out);
             try {
+                //目标文件已存在时，在文件名后加“-副本后缀”
                 while (target.exists()) {
                     String suffix = out.substring(out.lastIndexOf("."));
                     out = out.replace(suffix, "-副本") + suffix;
@@ -455,13 +469,34 @@ public class MainWindowsController implements Initializable {
             return;
         }
         //确认已有选中图片
-        RenameImage renameImage = new RenameImage();
-        Optional<RenameData> data = renameImage.showAndWait();
-        data.ifPresent(e -> {
-            RenameData data1 = data.get();
-            renameImage(data1.getName(), data1.getStartNum(), data1.getDigit());
+        if(previewFlowPane.getNewChoices().size()==1){
+            Dialog<String> dialog=new Dialog<>();
+            dialog.setTitle("重命名");
+            Label label=new Label("新名称:");
+            TextField textField=new TextField();
+            GridPane gridPane=new GridPane();
+            gridPane.add(label,0,0);
+            gridPane.add(textField,1,0);
+            dialog.getDialogPane().setContent(gridPane);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == ButtonType.OK) {
+                    return textField.getText();
+                }
+                return null;
+            });
+            Optional<String>string1=dialog.showAndWait();
+            string1.ifPresent(e->renameImage(string1.get(), -1,-1));
             refresh();
-        });
+        }else {
+            RenameImage renameImage = new RenameImage();
+            Optional<RenameData> data = renameImage.showAndWait();
+            data.ifPresent(e -> {
+                RenameData data1 = data.get();
+                renameImage(data1.getName(), data1.getStartNum(), data1.getDigit());
+                refresh();
+            });
+        }
     }
 
     /**
@@ -470,16 +505,56 @@ public class MainWindowsController implements Initializable {
     private void renameImage(String name, int startNum, int digit) {
         File file;
         List<ThumbnailPanel> images = previewFlowPane.getNewChoices();
+        List<String> pasts=new ArrayList<>();
         NumberFormat nf = NumberFormat.getNumberInstance();
         nf.setMinimumIntegerDigits(digit);
         nf.setGroupingUsed(false);
+        if(digit==-1&&startNum==-1){
+            StringBuilder newName = new StringBuilder();
+            ThumbnailPanel image=images.get(0);
+            file = image.getImageFile().getFile();
+            newName.append(file.getParentFile().getAbsolutePath()).append("\\");
+            newName.append(name)
+                    .append(".")
+                    .append(image.getImageFile().getFileType().toLowerCase(Locale.ROOT));
+            File dest=new File(newName.toString());
+           if(dest.exists()){
+               Dialog<Boolean> dialog=new Dialog<>();
+               dialog.setTitle("图片已存在");
+               Label label=new Label("请选择:");
+               GridPane gridPane=new GridPane();
+               gridPane.setPadding(new Insets(10, 10, 10, 10));
+               gridPane.setHgap(10);
+               dialog.getDialogPane().setContent(gridPane);
+               ButtonType buttonType = new ButtonType("替换");
+               dialog.getDialogPane().getButtonTypes().addAll(buttonType, ButtonType.CANCEL);
+               dialog.setResultConverter(e-> e == buttonType);
+               Optional<Boolean> result=dialog.showAndWait();
+               File finalFile = file;
+               result.ifPresent(e->{
+                   if(result.get()){
+                       System.out.println("ff");
+                       dest.delete();
+                       finalFile.renameTo(dest);
+                       image.getImageFile().setFile(dest);
+                   }
+               });
+
+           }
+           file.renameTo(dest);
+           image.getImageFile().setFile(dest);
+           return;
+        }
 
         for (ThumbnailPanel image : images) {
+            pasts.add(image.getImageFile().getFile().getParentFile().getAbsolutePath() + "\\"+image.getImageFile().getFileName());
             String tempName = image.getImageFile().getFile().getParentFile().getAbsolutePath() + "\\" + RandomUtil.randomName();
             String type = image.getImageFile().getFileType();
             File newFile = new File(tempName + "." + type);
             image.getImageFile().getFile().renameTo(newFile);
             image.getImageFile().setFile(newFile);
+
+
         }
 
         for (ThumbnailPanel image : images) {
@@ -506,10 +581,19 @@ public class MainWindowsController implements Initializable {
 
             if (choice == -1) {
                 //跳过该图片的重命名
+                dest=new File(pasts.get(images.indexOf(image)));
+                file.renameTo(dest);
+                image.getImageFile().setFile(dest);
             }
 
             if (choice == 0) {
-                //取消剩下的重命名操作
+                //取消所有的重命名操作
+                for(ThumbnailPanel image1 : images){
+                    file = image1.getImageFile().getFile();
+                    dest=new File(pasts.get(images.indexOf(image1)));
+                    file.renameTo(dest);
+                    image1.getImageFile().setFile(dest);
+                }
                 break;
             }
             if (choice == 2) {
@@ -566,12 +650,25 @@ public class MainWindowsController implements Initializable {
         return 2;
     }
 
-    private void menu() {
-        ContextMenu menu = new ContextMenu();
-        MenuItem delete = new MenuItem("删除");
-        MenuItem copy = new MenuItem("复制");
-        MenuItem paste = new MenuItem("粘贴");
-        MenuItem rename = new MenuItem("重命名");
+    class Menu {
+        public  ContextMenu menu = new ContextMenu();
 
+          Menu() {
+            MenuItem delete = new MenuItem("删除");
+            MenuItem copy = new MenuItem("复制");
+            MenuItem paste = new MenuItem("粘贴");
+            MenuItem rename = new MenuItem("重命名");
+            delete.setOnAction(e -> deleteImage());
+            copy.setOnAction(e -> copyImage());
+            paste.setOnAction(e -> pasteImage());
+            rename.setOnAction(e -> renameImage());
+            menu.getItems().addAll(delete, copy, paste, rename);
+        }
+        void show(double x,double y){
+            menu.show(pane,x,y);
+        }
+        void close(){
+             menu.hide();
+        }
     }
 }

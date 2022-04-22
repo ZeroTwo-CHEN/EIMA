@@ -4,6 +4,7 @@ import com.leewyatt.rxcontrols.controls.RXHighlightText;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -47,6 +48,7 @@ public class ThumbnailPanel extends BorderPane {
     private static final MainWindowsController MAIN_WINDOWS_CONTROLLER;
 
     private static TextField searchKey;
+    private  Tooltip tooltip;
 
     /**
      * 图片的阴影效果
@@ -118,9 +120,6 @@ public class ThumbnailPanel extends BorderPane {
                         //   this.ifSelected = true;
                         parent.addImgToList(this);
                     }
-                    //更新主界面右下角提示栏
-                    MAIN_WINDOWS_CONTROLLER.updateTipsLabelText(parent.getTotalCount(), parent.getTotalSize(),
-                            parent.getSelectedCount(), parent.getSelectedSize());
                 }
                 //图片单选
                 else {
@@ -133,9 +132,15 @@ public class ThumbnailPanel extends BorderPane {
                         parent.clearSelect();
                         parent.addImgToList(this);
                     }
+
                 }
+                //更新主界面右下角提示栏
+                MAIN_WINDOWS_CONTROLLER.updateTipsLabelText(parent.getTotalCount(), parent.getTotalSize(),
+                        parent.getSelectedCount(), parent.getSelectedSize());
             }
         });
+
+        this.setOnMouseEntered(e-> toolTips());
     }
 
     /**
@@ -149,6 +154,17 @@ public class ThumbnailPanel extends BorderPane {
     public void removeSelect() {
         this.setStyle("-fx-background-color: transparent");
         this.isSelected = false;
+    }
+
+    /**
+     * 添加图片信息
+     */
+    private void toolTips(){
+        String format = String.format("%.2f", this.imageFile.getSizeInMagaBytes());
+         tooltip=new Tooltip("名称:"+this.imageFile.getFileName()+"\n类型:"+this.imageFile.getFileType()+"\n大小:"+format+"MB");
+        tooltip.setAutoHide(true);
+        tooltip.setAutoFix(true);
+        Tooltip.install(this,tooltip);
     }
 
 
