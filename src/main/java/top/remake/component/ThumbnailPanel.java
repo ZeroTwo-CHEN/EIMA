@@ -14,7 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import top.remake.DisplayWindow;
 import top.remake.controller.ControllerMap;
-import top.remake.controller.MainWindowsController;
+import top.remake.controller.MainWindowController;
 import top.remake.entity.ImageFile;
 
 /**
@@ -45,7 +45,7 @@ public class ThumbnailPanel extends BorderPane {
 
     private Boolean isSelected;
 
-    private static final MainWindowsController MAIN_WINDOWS_CONTROLLER;
+    private static final MainWindowController MAIN_WINDOWS_CONTROLLER;
 
     private static TextField searchKey;
     private  Tooltip tooltip;
@@ -61,7 +61,7 @@ public class ThumbnailPanel extends BorderPane {
     private static final Insets INSETS = new Insets(5, 5, 0, 5);
 
     static {
-        MAIN_WINDOWS_CONTROLLER = (MainWindowsController) ControllerMap.getController(MainWindowsController.class);
+        MAIN_WINDOWS_CONTROLLER = (MainWindowController) ControllerMap.getController(MainWindowController.class);
         searchKey = MAIN_WINDOWS_CONTROLLER.getSearchField();
     }
 

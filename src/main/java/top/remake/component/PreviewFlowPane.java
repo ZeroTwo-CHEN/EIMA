@@ -2,7 +2,7 @@ package top.remake.component;
 
 import javafx.scene.layout.FlowPane;
 import top.remake.controller.ControllerMap;
-import top.remake.controller.MainWindowsController;
+import top.remake.controller.MainWindowController;
 import top.remake.entity.ImageFile;
 import top.remake.utils.FileUtil;
 import top.remake.utils.SortUtil;
@@ -37,7 +37,7 @@ public class PreviewFlowPane extends FlowPane {
     private List<ThumbnailPanel> newChoices = new ArrayList<>();
     private List<ThumbnailPanel> oldChoices = new ArrayList<>();
 
-    private MainWindowsController mainWindowsController;
+    private MainWindowController mainWindowController;
 
     public PreviewFlowPane() {
         setCache(true);
@@ -49,8 +49,8 @@ public class PreviewFlowPane extends FlowPane {
     public void update(File directory) {
         clearSelect();
         this.directory = directory;
-        if (mainWindowsController == null) {
-            mainWindowsController = (MainWindowsController) ControllerMap.getController(MainWindowsController.class);
+        if (mainWindowController == null) {
+            mainWindowController = (MainWindowController) ControllerMap.getController(MainWindowController.class);
         }
         this.thumbnailPanels.clear();
         //TODO: 优化加载效率，读取到文件之后不要一次性加载所有缩略图
@@ -62,10 +62,10 @@ public class PreviewFlowPane extends FlowPane {
                 this.thumbnailPanels.add(thumbnailPanel);
             }
         }
-        SortUtil.sortThumbnailPanel(this.thumbnailPanels, mainWindowsController.getSortOrder());
+        SortUtil.sortThumbnailPanel(this.thumbnailPanels, mainWindowController.getSortOrder());
         getChildren().setAll(this.thumbnailPanels);
         //更新主界面右下角提示栏
-        mainWindowsController.updateTipsLabelText(getTotalCount(), getTotalSize(), getSelectedCount(), getSelectedSize());
+        mainWindowController.updateTipsLabelText(getTotalCount(), getTotalSize(), getSelectedCount(), getSelectedSize());
     }
 
     /**

@@ -35,8 +35,9 @@ import java.util.*;
 
 /**
  * @author ZeroTwo_CHEN
+ * @author gzz
  */
-public class MainWindowsController implements Initializable {
+public class MainWindowController implements Initializable {
     @FXML
     private AnchorPane root;
 
@@ -77,6 +78,7 @@ public class MainWindowsController implements Initializable {
         initAdaptiveLayout();
         initToolsPane();
         initSearch();
+        initRedoUndo();
     }
 
     /**
@@ -178,7 +180,6 @@ public class MainWindowsController implements Initializable {
                 });
 
         rectangle.setVisible(false);
-        //rectangle.toFront();
     }
 
     /**
@@ -267,7 +268,7 @@ public class MainWindowsController implements Initializable {
     private double x, y;
     private double width;
     private double height;
-    private Menu menu=new Menu();
+    private Menu menu = new Menu();
 
     private void addHandler() {
         //对FlowPane添加监听器记录鼠标按下时的坐标，存放于x，y中。
@@ -284,8 +285,8 @@ public class MainWindowsController implements Initializable {
                 updateTipsLabelText();
             }
             //右键菜单
-            if(event.getButton()==MouseButton.SECONDARY){
-                menu.show(event.getScreenX(),event.getScreenY());
+            if (event.getButton() == MouseButton.SECONDARY) {
+                menu.show(event.getScreenX(), event.getScreenY());
             }
 
 
@@ -311,15 +312,13 @@ public class MainWindowsController implements Initializable {
             }
 
 
-             //拖拽鼠标向上超出边界时，将ScrollPane上滑
+            //拖拽鼠标向上超出边界时，将ScrollPane上滑
             if (event.getSceneY() < 100) {
-                System.out.println("111");
                 imagePreviewPane.setVvalue(imagePreviewPane.getVvalue() +
                         (event.getSceneY() - 100) / previewFlowPane.getHeight() / 10);
             }
             //拖拽鼠标向下超出边界时。将ScrollPane下滑
             if (event.getSceneY() > 80 + imagePreviewPane.getHeight()) {
-                System.out.println("000");
                 imagePreviewPane.setVvalue(imagePreviewPane.getVvalue() +
                         (event.getSceneY() - imagePreviewPane.getHeight() - 80) / previewFlowPane.getHeight() / 10);
             }
@@ -469,14 +468,14 @@ public class MainWindowsController implements Initializable {
             return;
         }
         //确认已有选中图片
-        if(previewFlowPane.getNewChoices().size()==1){
-            Dialog<String> dialog=new Dialog<>();
+        if (previewFlowPane.getNewChoices().size() == 1) {
+            Dialog<String> dialog = new Dialog<>();
             dialog.setTitle("重命名");
-            Label label=new Label("新名称:");
-            TextField textField=new TextField();
-            GridPane gridPane=new GridPane();
-            gridPane.add(label,0,0);
-            gridPane.add(textField,1,0);
+            Label label = new Label("新名称:");
+            TextField textField = new TextField();
+            GridPane gridPane = new GridPane();
+            gridPane.add(label, 0, 0);
+            gridPane.add(textField, 1, 0);
             dialog.getDialogPane().setContent(gridPane);
             dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
             dialog.setResultConverter(dialogButton -> {
@@ -485,9 +484,9 @@ public class MainWindowsController implements Initializable {
                 }
                 return null;
             });
-            Optional<String>string1=dialog.showAndWait();
-            string1.ifPresent(e->renameImage(string1.get(), -1,-1));
-        }else {
+            Optional<String> string1 = dialog.showAndWait();
+            string1.ifPresent(e -> renameImage(string1.get(), -1, -1));
+        } else {
             RenameImage renameImage = new RenameImage();
             Optional<RenameData> data = renameImage.showAndWait();
             data.ifPresent(e -> {
@@ -504,53 +503,52 @@ public class MainWindowsController implements Initializable {
     private void renameImage(String name, int startNum, int digit) {
         File file;
         List<ThumbnailPanel> images = previewFlowPane.getNewChoices();
-        List<String> pasts=new ArrayList<>();
+        List<String> pasts = new ArrayList<>();
         NumberFormat nf = NumberFormat.getNumberInstance();
         nf.setMinimumIntegerDigits(digit);
         nf.setGroupingUsed(false);
-        if(digit==-1&&startNum==-1){
+        if (digit == -1 && startNum == -1) {
             StringBuilder newName = new StringBuilder();
-            ThumbnailPanel image=images.get(0);
+            ThumbnailPanel image = images.get(0);
             file = image.getImageFile().getFile();
             newName.append(file.getParentFile().getAbsolutePath()).append("\\");
             newName.append(name)
                     .append(".")
                     .append(image.getImageFile().getFileType().toLowerCase(Locale.ROOT));
-            File dest=new File(newName.toString());
-           if(dest.exists()){
-               Dialog<Boolean> dialog=new Dialog<>();
-               dialog.setTitle("图片已存在");
-               Label label=new Label("请选择:");
-               GridPane gridPane=new GridPane();
-               gridPane.add(label,0,0);
-               gridPane.setPadding(new Insets(10, 10, 10, 10));
-               gridPane.setHgap(10);
-               dialog.getDialogPane().setContent(gridPane);
-               ButtonType buttonType = new ButtonType("替换");
-               dialog.getDialogPane().getButtonTypes().addAll(buttonType, ButtonType.CANCEL);
-               dialog.setResultConverter(e-> e == buttonType);
-               Optional<Boolean> result=dialog.showAndWait();
-               File finalFile = file;
-               result.ifPresent(e->{
-                   if(result.get()){
-                       dest.delete();
-                       finalFile.renameTo(dest);
-                       image.getImageFile().setFile(dest);
-                       refresh();
-                   }
-               });
+            File dest = new File(newName.toString());
+            if (dest.exists()) {
+                Dialog<Boolean> dialog = new Dialog<>();
+                dialog.setTitle("图片已存在");
+                Label label = new Label("请选择:");
+                GridPane gridPane = new GridPane();
+                gridPane.add(label, 0, 0);
+                gridPane.setPadding(new Insets(10, 10, 10, 10));
+                gridPane.setHgap(10);
+                dialog.getDialogPane().setContent(gridPane);
+                ButtonType buttonType = new ButtonType("替换");
+                dialog.getDialogPane().getButtonTypes().addAll(buttonType, ButtonType.CANCEL);
+                dialog.setResultConverter(e -> e == buttonType);
+                Optional<Boolean> result = dialog.showAndWait();
+                File finalFile = file;
+                result.ifPresent(e -> {
+                    if (result.get()) {
+                        dest.delete();
+                        finalFile.renameTo(dest);
+                        image.getImageFile().setFile(dest);
+                        refresh();
+                    }
+                });
 
-           }
-           else{
-               file.renameTo(dest);
-               image.getImageFile().setFile(dest);
-               refresh();
-               return;
-           }
+            } else {
+                file.renameTo(dest);
+                image.getImageFile().setFile(dest);
+                refresh();
+                return;
+            }
         }
 
         for (ThumbnailPanel image : images) {
-            pasts.add(image.getImageFile().getFile().getParentFile().getAbsolutePath() + "\\"+image.getImageFile().getFileName());
+            pasts.add(image.getImageFile().getFile().getParentFile().getAbsolutePath() + "\\" + image.getImageFile().getFileName());
             String tempName = image.getImageFile().getFile().getParentFile().getAbsolutePath() + "\\" + RandomUtil.randomName();
             String type = image.getImageFile().getFileType();
             File newFile = new File(tempName + "." + type);
@@ -584,16 +582,16 @@ public class MainWindowsController implements Initializable {
 
             if (choice == -1) {
                 //跳过该图片的重命名
-                dest=new File(pasts.get(images.indexOf(image)));
+                dest = new File(pasts.get(images.indexOf(image)));
                 file.renameTo(dest);
                 image.getImageFile().setFile(dest);
             }
 
             if (choice == 0) {
                 //取消所有的重命名操作
-                for(ThumbnailPanel image1 : images){
+                for (ThumbnailPanel image1 : images) {
                     file = image1.getImageFile().getFile();
-                    dest=new File(pasts.get(images.indexOf(image1)));
+                    dest = new File(pasts.get(images.indexOf(image1)));
                     file.renameTo(dest);
                     image1.getImageFile().setFile(dest);
                 }
@@ -653,10 +651,8 @@ public class MainWindowsController implements Initializable {
         return 2;
     }
 
-    class Menu {
-        public  ContextMenu menu = new ContextMenu();
-
-          Menu() {
+    class Menu extends ContextMenu {
+        Menu() {
             MenuItem delete = new MenuItem("删除");
             MenuItem copy = new MenuItem("复制");
             MenuItem paste = new MenuItem("粘贴");
@@ -665,13 +661,73 @@ public class MainWindowsController implements Initializable {
             copy.setOnAction(e -> copyImage());
             paste.setOnAction(e -> pasteImage());
             rename.setOnAction(e -> renameImage());
-            menu.getItems().addAll(delete, copy, paste, rename);
+            getItems().addAll(delete, copy, paste, rename);
         }
-        void show(double x,double y){
-            menu.show(pane,x,y);
+
+        void show(double x, double y) {
+            show(pane, x, y);
         }
-        void close(){
-             menu.hide();
+
+        void close() {
+            hide();
+        }
+    }
+
+    @FXML
+    private void selectParent() {
+        TreeItem<String> selectedItem = fileTreeView.getSelectionModel().getSelectedItem();
+        if (selectedItem instanceof FileTreeItem) {
+            fileTreeView.getSelectionModel().select(selectedItem.getParent());
+        }
+    }
+
+    /**
+     * 目录树的redo/undo功能
+     */
+    private final Stack<FileTreeItem> forwardStack = new Stack<>();
+
+    private final Stack<FileTreeItem> backwardStack = new Stack<>();
+
+    private void initRedoUndo() {
+        fileTreeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (!(newValue instanceof FileTreeItem)) {
+                return;
+            }
+            if (!forwardStack.isEmpty()) {
+                if (forwardStack.peek().equals(newValue)) {
+                    return;
+                }
+            }
+            if (!backwardStack.isEmpty()) {
+                if (backwardStack.peek().equals(newValue)) {
+                    return;
+                }
+            }
+            backwardStack.push((FileTreeItem) newValue);
+            forwardStack.clear();
+        });
+    }
+
+
+    @FXML
+    private void forward() {
+        if (!forwardStack.isEmpty()) {
+            FileTreeItem pop = forwardStack.pop();
+            backwardStack.push(pop);
+            if (!forwardStack.isEmpty()) {
+                fileTreeView.getSelectionModel().select(forwardStack.peek());
+            }
+        }
+    }
+
+    @FXML
+    private void backward() {
+        if (!backwardStack.isEmpty()) {
+            FileTreeItem pop = backwardStack.pop();
+            forwardStack.push(pop);
+            if (!backwardStack.isEmpty()) {
+                fileTreeView.getSelectionModel().select(backwardStack.peek());
+            }
         }
     }
 }

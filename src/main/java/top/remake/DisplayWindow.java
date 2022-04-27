@@ -5,7 +5,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import top.remake.controller.DisplayWindowsController;
+import top.remake.controller.DisplayWindowController;
 
 /**
  * @author ZeroTwo_CHEN
@@ -37,7 +37,7 @@ public class DisplayWindow extends Application {
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/display-window.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1100, 700);
-        DisplayWindowsController controller = fxmlLoader.getController();
+        DisplayWindowController controller = fxmlLoader.getController();
         stage.setScene(scene);
         if (path != null) {
             //从主界面进入展示界面

@@ -14,3 +14,9 @@
     -fx-background-radius: 6;
     -fx-border-radius: 6;
 }
+
+#navigation{
+    -fx-background-color: transparent;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+}

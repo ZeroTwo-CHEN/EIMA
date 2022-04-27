@@ -40,7 +40,7 @@ import java.util.ResourceBundle;
 /**
  * @author ZeroTwo_CHEN
  */
-public class DisplayWindowsController implements Initializable {
+public class DisplayWindowController implements Initializable {
     @FXML
     private ImageView imageView;
 
@@ -56,7 +56,7 @@ public class DisplayWindowsController implements Initializable {
 
     private ArrayList<ImageFile> imageFiles = new ArrayList<>();
 
-    private MainWindowsController mainWindowsController;
+    private MainWindowController mainWindowController;
 
 
     /**
@@ -104,7 +104,7 @@ public class DisplayWindowsController implements Initializable {
         File file = new File(path);
         this.directory = file.getParentFile();
         this.stage = stage;
-        this.mainWindowsController = (MainWindowsController) ControllerMap.getController(MainWindowsController.class);
+        this.mainWindowController = (MainWindowController) ControllerMap.getController(MainWindowController.class);
         File[] images = directory.listFiles(FileUtil::isSupportImageFormat);
         if (images != null) {
             for (File image : images) {
@@ -148,10 +148,10 @@ public class DisplayWindowsController implements Initializable {
      * 获取当前图片在数组中的下标
      */
     private void initImageList(File file) {
-        if (mainWindowsController != null) {
-            SortUtil.sortImageFile(imageFiles, mainWindowsController.getSortOrder());
+        if (mainWindowController != null) {
+            SortUtil.sortImageFile(imageFiles, mainWindowController.getSortOrder());
         } else {
-            mainWindowsController = (MainWindowsController) ControllerMap.getController(MainWindowsController.class);
+            mainWindowController = (MainWindowController) ControllerMap.getController(MainWindowController.class);
             SortUtil.sortImageFile(imageFiles, SortOrder.ASC_SORT_BY_NAME);
         }
         for (int i = 0; i < imageFiles.size(); i++) {
@@ -407,7 +407,7 @@ public class DisplayWindowsController implements Initializable {
                 FileUtil.delete(imageFiles.get(currentIndex).getFile());
                 imageFiles.remove(imageFiles.get(currentIndex));
                 nextImage();
-                Platform.runLater(() -> mainWindowsController.updateFlowPane());
+                Platform.runLater(() -> mainWindowController.updateFlowPane());
             }
         });
     }
