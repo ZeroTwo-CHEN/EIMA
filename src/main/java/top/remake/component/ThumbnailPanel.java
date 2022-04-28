@@ -48,7 +48,7 @@ public class ThumbnailPanel extends BorderPane {
     private static final MainWindowController MAIN_WINDOWS_CONTROLLER;
 
     private static TextField searchKey;
-    private  Tooltip tooltip;
+    private Tooltip tooltip;
 
     /**
      * 图片的阴影效果
@@ -140,7 +140,7 @@ public class ThumbnailPanel extends BorderPane {
             }
         });
 
-        this.setOnMouseEntered(e-> toolTips());
+        this.setOnMouseEntered(e -> toolTips());
     }
 
     /**
@@ -159,12 +159,12 @@ public class ThumbnailPanel extends BorderPane {
     /**
      * 添加图片信息
      */
-    private void toolTips(){
+    private void toolTips() {
         String format = String.format("%.2f", this.imageFile.getSizeInMagaBytes());
-         tooltip=new Tooltip("名称:"+this.imageFile.getFileName()+"\n类型:"+this.imageFile.getFileType()+"\n大小:"+format+"MB");
+        tooltip = new Tooltip("名称:" + this.imageFile.getFileName() + "\n类型:" + this.imageFile.getFileType() + "\n大小:" + format + "MB");
         tooltip.setAutoHide(true);
         tooltip.setAutoFix(true);
-        Tooltip.install(this,tooltip);
+        Tooltip.install(this, tooltip);
     }
 
 

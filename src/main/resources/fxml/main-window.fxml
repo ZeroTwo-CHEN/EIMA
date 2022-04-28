@@ -25,7 +25,7 @@
             <children>
                 <AnchorPane fx:id="top" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0">
                     <children>
-                        <HBox alignment="CENTER_LEFT" fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0" prefWidth="522.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <HBox alignment="CENTER_LEFT" fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0" prefWidth="933.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <children>
                                 <Button id="navigation" mnemonicParsing="false" onAction="#backward" stylesheets="@../css/main-window.css">
                                     <graphic>
@@ -55,7 +55,11 @@
                                 </BreadCrumbBar>
                             </children>
                         </HBox>
-                        <TextField fx:id="searchField" layoutX="936.0" layoutY="2.0" promptText="搜索当前目录下的图片" AnchorPane.rightAnchor="5.0" />
+                  <HBox alignment="CENTER_RIGHT" fillHeight="false" layoutX="522.4000244140625" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                              <TextField fx:id="searchField" promptText="搜索当前目录下的图片" />
+                     </children>
+                  </HBox>
                     </children>
                 </AnchorPane>
                 <SplitPane fx:id="middle" dividerPositions="0.3" prefHeight="635.0">
@@ -179,6 +183,9 @@
                             </font>
                         </Label>
                     </children>
+               <VBox.margin>
+                  <Insets left="5.0" />
+               </VBox.margin>
                 </HBox>
             </children>
         </VBox>
