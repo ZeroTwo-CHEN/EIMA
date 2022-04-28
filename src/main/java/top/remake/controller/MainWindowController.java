@@ -453,6 +453,9 @@ public class MainWindowController implements Initializable {
     private void renameImage() {
         //判断是否有图片被选中
         if (previewFlowPane.getNewChoices().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("提示");
+            alert.setContentText("未选择图片！");
             Dialog<RenameData> dialog = new Dialog<>();
             Label label = new Label("未选择图片！");
             label.setTextAlignment(TextAlignment.CENTER);
