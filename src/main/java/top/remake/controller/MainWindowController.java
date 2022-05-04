@@ -8,10 +8,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.TextAlignment;
@@ -21,6 +18,7 @@ import org.controlsfx.control.BreadCrumbBar;
 import org.controlsfx.control.Notifications;
 import top.remake.DisplayWindow;
 import top.remake.component.*;
+import top.remake.entity.ImageFile;
 import top.remake.entity.RenameData;
 import top.remake.entity.SortOrder;
 import top.remake.utils.FileUtil;
@@ -269,6 +267,7 @@ public class MainWindowController implements Initializable {
     private double width;
     private double height;
     private Menu menu = new Menu();
+    private int from,to,signal;
 
     private void addHandler() {
         //对FlowPane添加监听器记录鼠标按下时的坐标，存放于x，y中。
@@ -286,6 +285,11 @@ public class MainWindowController implements Initializable {
             }
             //右键菜单
             if (event.getButton() == MouseButton.SECONDARY) {
+                if(previewFlowPane.getNewChoices().size()==1){
+                    menu.attributeDisable(false);
+                }else{
+                    menu.attributeDisable(true);
+                }
                 menu.show(event.getScreenX(), event.getScreenY());
             }
 
@@ -654,17 +658,59 @@ public class MainWindowController implements Initializable {
         return 2;
     }
 
+    private void  attribute(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        ImageFile imageFile =previewFlowPane.getNewChoices().get(0).getImageFile();
+        alert.setTitle(imageFile.getFileName()+ " 属性");
+        alert.setGraphic(null);
+        alert.setHeaderText(null);
+        VBox key = new VBox();
+        key.getChildren()
+                .addAll(new Label("图片名称：  "),
+                        new Label("图片类型：  "),
+                        new Label("图片大小：  "),
+                        new Label("图片尺寸：  "),
+                        new Label("图片位置：  "),
+                        new Label("创建时间：  "),
+                        new Label("修改时间：  "),
+                        new Label("访问时间：  ")
+                );
+        VBox value = new VBox();
+        value.getChildren()
+                .addAll(new Label(imageFile.getFileName()),
+                        new Label(imageFile.getFileType()),
+                        new Label(String.format("%.2f", imageFile.getSizeInMagaBytes()) + "MB"),
+                        new Label(imageFile.getImageWidth() + "x" + imageFile.getImageHeight()),
+                        new Label(imageFile.getAbsolutePath()),
+                        new Label(imageFile.getCreationTime()),
+                        new Label(imageFile.getLastModifiedTime()),
+                        new Label(imageFile.getLastAccessTime())
+                );
+        HBox hBox = new HBox();
+        hBox.getChildren().addAll(key, value);
+        key.setStyle("-fx-spacing: 15px");
+        value.setStyle("-fx-spacing: 15px");
+        alert.getDialogPane().setContent(hBox);
+        alert.show();
+    }
+
     class Menu extends ContextMenu {
+        MenuItem delete = new MenuItem("删除");
+        MenuItem copy = new MenuItem("复制");
+        MenuItem paste = new MenuItem("粘贴");
+        MenuItem rename = new MenuItem("重命名");
+        MenuItem  attribute=new MenuItem("属性");
         Menu() {
-            MenuItem delete = new MenuItem("删除");
-            MenuItem copy = new MenuItem("复制");
-            MenuItem paste = new MenuItem("粘贴");
-            MenuItem rename = new MenuItem("重命名");
             delete.setOnAction(e -> deleteImage());
             copy.setOnAction(e -> copyImage());
             paste.setOnAction(e -> pasteImage());
             rename.setOnAction(e -> renameImage());
-            getItems().addAll(delete, copy, paste, rename);
+            attribute.setOnAction(e-> attribute());
+            getItems().addAll(delete, copy, paste, rename,attribute);
+        }
+
+        void attributeDisable(Boolean flag){
+            attribute.setDisable(flag);
         }
 
         void show(double x, double y) {
