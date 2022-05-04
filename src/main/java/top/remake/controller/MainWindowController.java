@@ -281,6 +281,7 @@ public class MainWindowController implements Initializable {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1 && !event.isControlDown()) {
                 if (previewFlowPane.equals(event.getPickResult().getIntersectedNode())) {
                     previewFlowPane.clearSelect();
+                    previewFlowPane.setShiftSign(false);
                 }
                 updateTipsLabelText();
             }

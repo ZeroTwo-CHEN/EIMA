@@ -108,9 +108,8 @@ public class ThumbnailPanel extends BorderPane {
                 Platform.runLater(() -> DisplayWindow.main(args));
             }
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
-                //按下Ctrl键时对图片进行选择
                 PreviewFlowPane parent = (PreviewFlowPane) this.getParent();
-                parent.setShiftSign(false);
+                //按下Ctrl键时对图片进行选择
                 if (event.isControlDown()) {
                     //图片已经选中，则取消选中
                     if (this.getIsSelected()) {
@@ -121,8 +120,8 @@ public class ThumbnailPanel extends BorderPane {
                         parent.addImgToList(this);
                     }
                 }
+                //shift多选
                 else if(event.isShiftDown()){
-                    parent.setShiftSign(true);
                     parent.setTo(parent.getThumbnailPanels().indexOf(this));
                     parent.shiftSelect();
                 }
@@ -137,6 +136,7 @@ public class ThumbnailPanel extends BorderPane {
                         parent.clearSelect();
                         parent.addImgToList(this);
                         //标记为shift多选的起始位置
+                        parent.setShiftSign(true);
                         parent.setFrom(parent.getThumbnailPanels().indexOf(this));
                     }
 
