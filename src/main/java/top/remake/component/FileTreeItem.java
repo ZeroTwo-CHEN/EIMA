@@ -38,21 +38,6 @@ public class FileTreeItem extends TreeItem<String> {
      */
     private final Callable<List<? extends TreeItem<String>>> callable;
 
-//    private static final EventType<?> PRE_ADD_LOADED_CHILDREN
-//            = new EventType<>(treeNotificationEvent(), "PRE_ADD_LOADED_CHILDREN");
-//    private static final EventType<?> POST_ADD_LOADED_CHILDREN
-//            = new EventType<>(treeNotificationEvent(), "POST_ADD_LOADED_CHILDREN");
-//
-//    @SuppressWarnings("unchecked")
-//    static <T> EventType<TreeModificationEvent<T>> preAddLoadedChildrenEvent() {
-//        return (EventType<TreeModificationEvent<T>>) PRE_ADD_LOADED_CHILDREN;
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    static <T> EventType<TreeModificationEvent<T>> postAddLoadedChildrenEvent() {
-//        return (EventType<TreeModificationEvent<T>>) POST_ADD_LOADED_CHILDREN;
-//    }
-
     public FileTreeItem(File directory, Callable<List<? extends TreeItem<String>>> callable) {
         super(FileUtil.getFilename(directory), FileUtil.getFileIcon(directory));
         this.directory = directory;
@@ -111,9 +96,7 @@ public class FileTreeItem extends TreeItem<String> {
             Thread.currentThread().getUncaughtExceptionHandler()
                     .uncaughtException(Thread.currentThread(), th);
         } else {
-            //Event.fireEvent(this, new TreeModificationEvent<>(preAddLoadedChildrenEvent(), this));
             super.getChildren().setAll(result);
-            //Event.fireEvent(this, new TreeModificationEvent<>(postAddLoadedChildrenEvent(), this));
         }
         future = null;
     }

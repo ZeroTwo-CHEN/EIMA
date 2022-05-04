@@ -4,8 +4,11 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import top.remake.controller.EditWindowController;
+
+import java.util.Objects;
 
 /**
  * @author ZeroTwo_CHEN
@@ -34,6 +37,7 @@ public class EditWindow extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/edit-window.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1100, 700);
         EditWindowController controller = fxmlLoader.getController();
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResource("/image/icon.png")).toExternalForm()));
         stage.setScene(scene);
         stage.show();
         if (path != null) {

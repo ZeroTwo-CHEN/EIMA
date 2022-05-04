@@ -4,8 +4,11 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import top.remake.controller.DisplayWindowController;
+
+import java.util.Objects;
 
 /**
  * @author ZeroTwo_CHEN
@@ -38,6 +41,7 @@ public class DisplayWindow extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/display-window.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1100, 700);
         DisplayWindowController controller = fxmlLoader.getController();
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResource("/image/icon.png")).toExternalForm()));
         stage.setScene(scene);
         if (path != null) {
             //从主界面进入展示界面

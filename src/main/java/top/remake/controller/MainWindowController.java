@@ -11,7 +11,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.TextAlignment;
+import javafx.stage.Modality;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import org.controlsfx.control.BreadCrumbBar;
@@ -74,7 +75,7 @@ public class MainWindowController implements Initializable {
         initFileTreeView();
         initPreviewFlowPane();
         initAdaptiveLayout();
-        initToolsPane();
+        initSortPane();
         initSearch();
         initRedoUndo();
     }
@@ -206,7 +207,7 @@ public class MainWindowController implements Initializable {
     /**
      * 初始化工具栏
      */
-    private void initToolsPane() {
+    private void initSortPane() {
         //排序选择框
         sortOrderComboBox.getItems()
                 .addAll(SortOrder.ASC_SORT_BY_NAME, SortOrder.DESC_SORT_BY_NAME,
@@ -457,21 +458,12 @@ public class MainWindowController implements Initializable {
     private void renameImage() {
         //判断是否有图片被选中
         if (previewFlowPane.getNewChoices().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("提示");
-            alert.setContentText("未选择图片！");
-            Dialog<RenameData> dialog = new Dialog<>();
-            Label label = new Label("未选择图片！");
-            label.setTextAlignment(TextAlignment.CENTER);
-            dialog.getDialogPane().setContent(label);
-            dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
-            dialog.setResultConverter(dialogButton -> {
-                if (dialogButton == ButtonType.OK) {
-                    return null;
-                }
-                return null;
-            });
-            dialog.showAndWait();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.initModality(Modality.NONE);
+            alert.setHeaderText("提示");
+            alert.setContentText("您未选择图片！");
+            alert.showAndWait();
             return;
         }
         //确认已有选中图片
