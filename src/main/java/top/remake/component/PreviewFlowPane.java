@@ -36,8 +36,8 @@ public class PreviewFlowPane extends FlowPane {
      */
     private List<ThumbnailPanel> newChoices = new ArrayList<>();
     private List<ThumbnailPanel> oldChoices = new ArrayList<>();
-
     private MainWindowController mainWindowController;
+
 
     public PreviewFlowPane() {
         setCache(true);
@@ -178,5 +178,43 @@ public class PreviewFlowPane extends FlowPane {
 
     public List<ThumbnailPanel> getNewChoices() {
         return newChoices;
+    }
+
+    public void setFrom(int from) {
+        this.from = from;
+    }
+
+    public int getFrom() {
+        return from;
+    }
+
+    private int from;
+
+    public void setTo(int to) {
+        this.to = to;
+    }
+
+    private int to;
+
+    public void setShiftSign(Boolean shiftSign) {
+        this.shiftSign = shiftSign;
+    }
+
+    private Boolean shiftSign=false;
+
+    public void shiftSelect(){
+        clearSelect();
+        if(!shiftSign){
+            from=0;
+        }
+        if(from>to){
+            newChoices.addAll(thumbnailPanels.subList(to,from+1));
+        }
+        else {
+            newChoices.addAll(thumbnailPanels.subList(from,to+1));
+        }
+        for(ThumbnailPanel pane:newChoices){
+            pane.select();
+        }
     }
 }
