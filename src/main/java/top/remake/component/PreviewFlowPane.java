@@ -58,7 +58,7 @@ public class PreviewFlowPane extends FlowPane {
         if (files != null) {
             for (File file : files) {
                 ImageFile imageFile = new ImageFile(file);
-                ThumbnailPanel thumbnailPanel = new ThumbnailPanel(imageFile);
+                ThumbnailPanel thumbnailPanel = new ThumbnailPanel(imageFile,mainWindowController.getThumbnailSize());
                 this.thumbnailPanels.add(thumbnailPanel);
             }
         }

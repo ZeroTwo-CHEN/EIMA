@@ -66,17 +66,17 @@ public class ThumbnailPanel extends BorderPane {
         searchKey = MAIN_WINDOWS_CONTROLLER.getSearchField();
     }
 
-    public ThumbnailPanel(ImageFile imageFile) {
-        this.setMaxSize(110, 150);
-        this.setMinSize(110, 150);
+    public ThumbnailPanel(ImageFile imageFile,double size) {
+        this.setMaxSize(size+10, size+50);
+        this.setMinSize(size+10, size+50);
         //关闭cache防止占用内存过大
         this.setCache(false);
         this.setPadding(INSETS);
         this.imageFile = imageFile;
         //保持原比例，启用更好质量的加载算法，启用后台加载
         this.imageView = new ImageView(new Image(imageFile.getURL(), 90, 90, true, true, true));
-        this.imageView.setFitWidth(100);
-        this.imageView.setFitHeight(100);
+        this.imageView.setFitWidth(size);
+        this.imageView.setFitHeight(size);
         this.imageView.setPreserveRatio(true);
 
         //给图片添加阴影效果
@@ -96,7 +96,7 @@ public class ThumbnailPanel extends BorderPane {
         this.imageName.keywordsProperty().bind(searchKey.textProperty());
         this.imageName.setMatchRules(RXHighlightText.MatchRules.IGNORE_CASE);
 
-        isSelected = false;
+        this.isSelected = false;
         this.imageName.setTextAlignment(TextAlignment.CENTER);
         setCenter(imageView);
         setBottom(imageName);

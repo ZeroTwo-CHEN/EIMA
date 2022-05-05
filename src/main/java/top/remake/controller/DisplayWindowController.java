@@ -15,17 +15,18 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import org.controlsfx.control.Notifications;
 import top.remake.EditWindow;
+import top.remake.component.AttributeAlert;
 import top.remake.entity.ImageFile;
 import top.remake.entity.SortOrder;
 import top.remake.utils.FileUtil;
@@ -54,7 +55,7 @@ public class DisplayWindowController implements Initializable {
 
     private Stage stage;
 
-    private ArrayList<ImageFile> imageFiles = new ArrayList<>();
+    private final ArrayList<ImageFile> imageFiles = new ArrayList<>();
 
     private MainWindowController mainWindowController;
 
@@ -241,7 +242,6 @@ public class DisplayWindowController implements Initializable {
     private void originalScale() {
         scale = 100;
         imageView.getTransforms().clear();
-
     }
 
     /**
@@ -350,46 +350,7 @@ public class DisplayWindowController implements Initializable {
      */
     @FXML
     private void showImageInfo() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.initStyle(StageStyle.UTILITY);
-        alert.setTitle(imageFiles.get(currentIndex).getFileName() + " 属性");
-        alert.setGraphic(null);
-        alert.setHeaderText(null);
-
-        VBox key = new VBox();
-        key.getChildren()
-                .addAll(new Label("图片名称：  "),
-                        new Label("图片类型：  "),
-                        new Label("图片大小：  "),
-                        new Label("图片尺寸：  "),
-                        new Label("图片位置：  "),
-                        new Label("创建时间：  "),
-                        new Label("修改时间：  "),
-                        new Label("访问时间：  ")
-                );
-
-        ImageFile imageFile = imageFiles.get(currentIndex);
-        VBox value = new VBox();
-        value.getChildren()
-                .addAll(new Label(imageFile.getFileName()),
-                        new Label(imageFile.getFileType()),
-                        new Label(String.format("%.2f", imageFile.getSizeInMagaBytes()) + "MB"),
-                        new Label(image.getWidth() + "x" + image.getHeight()),
-                        new Label(imageFile.getAbsolutePath()),
-                        new Label(imageFile.getCreationTime()),
-                        new Label(imageFile.getLastModifiedTime()),
-                        new Label(imageFile.getLastAccessTime())
-                );
-
-        HBox hBox = new HBox();
-        hBox.getChildren().addAll(key, value);
-
-
-        key.setStyle("-fx-spacing: 15px");
-        value.setStyle("-fx-spacing: 15px");
-
-        alert.getDialogPane().setContent(hBox);
-        alert.initModality(Modality.NONE);
+        AttributeAlert alert = new AttributeAlert(imageFiles.get(currentIndex));
         alert.show();
     }
 

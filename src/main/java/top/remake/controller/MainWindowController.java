@@ -8,7 +8,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
@@ -19,7 +22,6 @@ import org.controlsfx.control.BreadCrumbBar;
 import org.controlsfx.control.Notifications;
 import top.remake.DisplayWindow;
 import top.remake.component.*;
-import top.remake.entity.ImageFile;
 import top.remake.entity.RenameData;
 import top.remake.entity.SortOrder;
 import top.remake.utils.FileUtil;
@@ -78,6 +80,7 @@ public class MainWindowController implements Initializable {
         initSortPane();
         initSearch();
         initRedoUndo();
+        initSizeSlider();
     }
 
     /**
@@ -167,6 +170,7 @@ public class MainWindowController implements Initializable {
         pane.getChildren().addAll(previewFlowPane, rectangle);
         addHandler();
 
+        //将previewFlowPane的类型从Pane换成StackPane后，下列代码可注释
         previewFlowPane.heightProperty()
                 .addListener((observable, oldValue, newValue) -> pane.setMinHeight(previewFlowPane.getHeight()));
 
@@ -267,8 +271,7 @@ public class MainWindowController implements Initializable {
     private double x, y;
     private double width;
     private double height;
-    private Menu menu = new Menu();
-    private int from,to,signal;
+    private final Menu menu = new Menu();
 
     private void addHandler() {
         //对FlowPane添加监听器记录鼠标按下时的坐标，存放于x，y中。
@@ -287,14 +290,9 @@ public class MainWindowController implements Initializable {
             }
             //右键菜单
             if (event.getButton() == MouseButton.SECONDARY) {
-                if(previewFlowPane.getNewChoices().size()==1){
-                    menu.attributeDisable(false);
-                }else{
-                    menu.attributeDisable(true);
-                }
+                menu.attributeDisable(previewFlowPane.getNewChoices().size() != 1);
                 menu.show(event.getScreenX(), event.getScreenY());
             }
-
 
         });
 
@@ -342,7 +340,7 @@ public class MainWindowController implements Initializable {
     private void selectImg() {
         previewFlowPane.clearSelect();
         for (ThumbnailPanel pane : previewFlowPane.getThumbnailPanels()) {
-            boolean isIntersects = rectangle.intersects(pane.getLayoutX(), pane.getLayoutY(), pane.getWidth(), pane.getHeight());
+            boolean isIntersects = rectangle.intersects(pane.getBoundsInParent());
             if (isIntersects) {
                 previewFlowPane.addSelect(pane);
             }
@@ -652,38 +650,7 @@ public class MainWindowController implements Initializable {
     }
 
     private void  attribute(){
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        ImageFile imageFile =previewFlowPane.getNewChoices().get(0).getImageFile();
-        alert.setTitle(imageFile.getFileName()+ " 属性");
-        alert.setGraphic(null);
-        alert.setHeaderText(null);
-        VBox key = new VBox();
-        key.getChildren()
-                .addAll(new Label("图片名称：  "),
-                        new Label("图片类型：  "),
-                        new Label("图片大小：  "),
-                        new Label("图片尺寸：  "),
-                        new Label("图片位置：  "),
-                        new Label("创建时间：  "),
-                        new Label("修改时间：  "),
-                        new Label("访问时间：  ")
-                );
-        VBox value = new VBox();
-        value.getChildren()
-                .addAll(new Label(imageFile.getFileName()),
-                        new Label(imageFile.getFileType()),
-                        new Label(String.format("%.2f", imageFile.getSizeInMagaBytes()) + "MB"),
-                        new Label(imageFile.getImageWidth() + "x" + imageFile.getImageHeight()),
-                        new Label(imageFile.getAbsolutePath()),
-                        new Label(imageFile.getCreationTime()),
-                        new Label(imageFile.getLastModifiedTime()),
-                        new Label(imageFile.getLastAccessTime())
-                );
-        HBox hBox = new HBox();
-        hBox.getChildren().addAll(key, value);
-        key.setStyle("-fx-spacing: 15px");
-        value.setStyle("-fx-spacing: 15px");
-        alert.getDialogPane().setContent(hBox);
+        AttributeAlert alert = new AttributeAlert(previewFlowPane.getNewChoices().get(0).getImageFile());
         alert.show();
     }
 
@@ -771,5 +738,23 @@ public class MainWindowController implements Initializable {
                 fileTreeView.getSelectionModel().select(backwardStack.peek());
             }
         }
+    }
+
+    @FXML
+    private Slider thumbnailSizeSlider;
+
+    private void initSizeSlider() {
+        thumbnailSizeSlider.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            int i = newValue.intValue() % 20;
+            if (i == 0) {
+                previewFlowPane.update();
+            }else {
+                thumbnailSizeSlider.setValue(newValue.intValue() + 20 - i);
+            }
+        }));
+    }
+
+    public double getThumbnailSize() {
+        return thumbnailSizeSlider.getValue();
     }
 }

@@ -7,6 +7,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeView?>
@@ -69,104 +70,101 @@
                             <children>
                                 <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="417.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                                        <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                            <children>
-                                                <HBox alignment="CENTER_LEFT" fillHeight="false" maxWidth="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="350.0" spacing="15.0">
-                                                    <children>
-                                                        <RXTranslationButton fx:id="selectAllButton" onAction="#selectAll" prefHeight="24.0" prefWidth="45.0" text="全选">
-                                                            <graphic>
-                                                                <ImageView fitHeight="22" preserveRatio="true">
-                                                                    <Image backgroundLoading="true" url="@../image/btn-select-all.png" />
-                                                                </ImageView>
-                                                            </graphic>
-                                                            <font>
-                                                                <Font size="14.0" />
-                                                            </font>
-                                                            <HBox.margin>
-                                                                <Insets />
-                                                            </HBox.margin>
-                                                        </RXTranslationButton>
-                                                        <RXTranslationButton onAction="#copyImage" prefHeight="24.0" prefWidth="45.0" text="复制">
-                                                            <graphic>
-                                                                <ImageView fitHeight="22" preserveRatio="true">
-                                                                    <Image backgroundLoading="true" url="@../image/btn-copy.png" />
-                                                                </ImageView>
-                                                            </graphic>
-                                                            <font>
-                                                                <Font size="14.0" />
-                                                            </font>
-                                                        </RXTranslationButton>
-                                                        <RXTranslationButton onAction="#pasteImage" prefHeight="24.0" prefWidth="45.0" text="粘贴">
-                                                            <graphic>
-                                                                <ImageView fitHeight="22" preserveRatio="true">
-                                                                    <Image backgroundLoading="true" url="@../image/btn-paste.png" />
-                                                                </ImageView>
-                                                            </graphic>
-                                                            <font>
-                                                                <Font size="14.0" />
-                                                            </font>
-                                                        </RXTranslationButton>
-                                                        <RXTranslationButton onAction="#renameImage" prefHeight="24.0" prefWidth="45.0" text="重命名">
-                                                            <graphic>
-                                                                <ImageView fitHeight="22" preserveRatio="true">
-                                                                    <Image backgroundLoading="true" url="@../image/btn-rename.png" />
-                                                                </ImageView>
-                                                            </graphic>
-                                                            <font>
-                                                                <Font size="14.0" />
-                                                            </font>
-                                                        </RXTranslationButton>
-                                                        <RXTranslationButton onAction="#deleteImage" prefHeight="24.0" prefWidth="45.0" text="删除">
-                                                            <graphic>
-                                                                <ImageView fitHeight="22" preserveRatio="true">
-                                                                    <Image backgroundLoading="true" url="@../image/btn-delete-fill.png" />
-                                                                </ImageView>
-                                                            </graphic>
-                                                            <font>
-                                                                <Font size="14.0" />
-                                                            </font>
-                                                        </RXTranslationButton>
-                                                    </children>
-                                                    <padding>
-                                                        <Insets left="10.0" />
-                                                    </padding>
-                                                </HBox>
-                                                <HBox alignment="CENTER_RIGHT" fillHeight="false" prefHeight="50.0" prefWidth="416.0" spacing="15.0">
-                                                    <children>
-                                                        <RXTranslationButton id="btn-play" onAction="#play" prefHeight="24.0" prefWidth="45.0" text="播放">
-                                                            <graphic>
-                                                                <ImageView fitHeight="22" preserveRatio="true">
-                                                                    <Image backgroundLoading="true" url="@../image/btn-play.png" />
-                                                                </ImageView>
-                                                            </graphic>
-                                                            <font>
-                                                                <Font size="14.0" />
-                                                            </font>
-                                                        </RXTranslationButton>
-                                                        <RXTranslationButton fx:id="refreshButton" onAction="#refresh" prefHeight="24.0" prefWidth="45.0" text="刷新">
-                                                            <graphic>
-                                                                <ImageView fitHeight="22" preserveRatio="true">
-                                                                    <Image backgroundLoading="true" url="@../image/btn-refresh.png" />
-                                                                </ImageView>
-                                                            </graphic>
-                                                            <font>
-                                                                <Font size="14.0" />
-                                                            </font>
-                                                        </RXTranslationButton>
-                                                        <ComboBox fx:id="sortOrderComboBox" prefWidth="150.0" />
-                                                    </children>
-                                                    <padding>
-                                                        <Insets right="10.0" />
-                                                    </padding>
-                                                </HBox>
-                                            </children>
-                                        </HBox>
+                                          <HBox alignment="CENTER_LEFT" fillHeight="false" maxWidth="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="326.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                              <children>
+                                                  <RXTranslationButton onAction="#selectAll" prefHeight="24.0" prefWidth="45.0" text="全选">
+                                                      <graphic>
+                                                          <ImageView fitHeight="22" preserveRatio="true">
+                                                              <Image backgroundLoading="true" url="@../image/btn-select-all.png" />
+                                                          </ImageView>
+                                                      </graphic>
+                                                      <font>
+                                                          <Font size="14.0" />
+                                                      </font>
+                                                      <HBox.margin>
+                                                          <Insets />
+                                                      </HBox.margin>
+                                                  </RXTranslationButton>
+                                                  <RXTranslationButton onAction="#copyImage" prefHeight="24.0" prefWidth="45.0" text="复制">
+                                                      <graphic>
+                                                          <ImageView fitHeight="22" preserveRatio="true">
+                                                              <Image backgroundLoading="true" url="@../image/btn-copy.png" />
+                                                          </ImageView>
+                                                      </graphic>
+                                                      <font>
+                                                          <Font size="14.0" />
+                                                      </font>
+                                                  </RXTranslationButton>
+                                                  <RXTranslationButton onAction="#pasteImage" prefHeight="24.0" prefWidth="45.0" text="粘贴">
+                                                      <graphic>
+                                                          <ImageView fitHeight="22" preserveRatio="true">
+                                                              <Image backgroundLoading="true" url="@../image/btn-paste.png" />
+                                                          </ImageView>
+                                                      </graphic>
+                                                      <font>
+                                                          <Font size="14.0" />
+                                                      </font>
+                                                  </RXTranslationButton>
+                                                  <RXTranslationButton onAction="#renameImage" prefHeight="24.0" prefWidth="45.0" text="重命名">
+                                                      <graphic>
+                                                          <ImageView fitHeight="22" preserveRatio="true">
+                                                              <Image backgroundLoading="true" url="@../image/btn-rename.png" />
+                                                          </ImageView>
+                                                      </graphic>
+                                                      <font>
+                                                          <Font size="14.0" />
+                                                      </font>
+                                                  </RXTranslationButton>
+                                                  <RXTranslationButton onAction="#deleteImage" prefHeight="24.0" prefWidth="45.0" text="删除">
+                                                      <graphic>
+                                                          <ImageView fitHeight="22" preserveRatio="true">
+                                                              <Image backgroundLoading="true" url="@../image/btn-delete-fill.png" />
+                                                          </ImageView>
+                                                      </graphic>
+                                                      <font>
+                                                          <Font size="14.0" />
+                                                      </font>
+                                                  </RXTranslationButton>
+                                              </children>
+                                              <padding>
+                                                  <Insets left="10.0" />
+                                              </padding>
+                                          </HBox>
+                                          <HBox alignment="CENTER_RIGHT" fillHeight="false" layoutX="349.6000061035156" prefHeight="50.0" prefWidth="442.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                              <children>
+                                    <Slider fx:id="thumbnailSizeSlider" max="200.0" min="50.0" value="100.0" />
+                                                  <RXTranslationButton id="btn-play" onAction="#play" prefHeight="24.0" prefWidth="45.0" text="播放">
+                                                      <graphic>
+                                                          <ImageView fitHeight="22" preserveRatio="true">
+                                                              <Image backgroundLoading="true" url="@../image/btn-play.png" />
+                                                          </ImageView>
+                                                      </graphic>
+                                                      <font>
+                                                          <Font size="14.0" />
+                                                      </font>
+                                                  </RXTranslationButton>
+                                                  <RXTranslationButton onAction="#refresh" prefHeight="24.0" prefWidth="45.0" text="刷新">
+                                                      <graphic>
+                                                          <ImageView fitHeight="22" preserveRatio="true">
+                                                              <Image backgroundLoading="true" url="@../image/btn-refresh.png" />
+                                                          </ImageView>
+                                                      </graphic>
+                                                      <font>
+                                                          <Font size="14.0" />
+                                                      </font>
+                                                  </RXTranslationButton>
+                                                  <ComboBox fx:id="sortOrderComboBox" prefWidth="150.0" />
+                                              </children>
+                                              <padding>
+                                                  <Insets right="10.0" />
+                                              </padding>
+                                          </HBox>
                                     </children>
                                 </AnchorPane>
                                 <ScrollPane fx:id="imagePreviewPane" cache="true" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="273.0" prefWidth="417.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
-                                    <content>
-                                        <Pane fx:id="pane" prefHeight="200.0" prefWidth="200.0" />
-                                    </content>
+                           <content>
+                              <Pane fx:id="pane" />
+                           </content>
                                 </ScrollPane>
                             </children>
                         </AnchorPane>
