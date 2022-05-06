@@ -5,6 +5,7 @@ module EIMA {
     requires javafx.graphics;
     requires org.controlsfx.controls;
     requires rxcontrols;
+    requires thumbnailator;
 
     opens top.remake to javafx.fxml;
     opens top.remake.controller to javafx.fxml;

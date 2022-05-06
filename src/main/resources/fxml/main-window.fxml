@@ -49,20 +49,21 @@
                                         </ImageView>
                                     </graphic>
                                 </Button>
-                                <BreadCrumbBar fx:id="breadCrumbBar" onCrumbAction="#onCrumbAction" prefHeight="50.0">
-                                    <HBox.margin>
-                                        <Insets top="2.0" />
-                                    </HBox.margin>
-                                </BreadCrumbBar>
+                        <TextField fx:id="pathField" focusTraversable="false" onAction="#goPath" prefWidth="552.0" />
                             </children>
                         </HBox>
-                  <HBox alignment="CENTER_RIGHT" fillHeight="false" layoutX="522.4000244140625" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <HBox alignment="CENTER_RIGHT" fillHeight="false" layoutX="522.4000244140625" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                      <children>
                               <TextField fx:id="searchField" promptText="搜索当前目录下的图片" />
                      </children>
                   </HBox>
                     </children>
                 </AnchorPane>
+            <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0" prefWidth="200.0">
+               <children>
+                          <BreadCrumbBar fx:id="breadCrumbBar" layoutX="259.0" layoutY="1.0" onCrumbAction="#onCrumbAction" prefHeight="31.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0" />
+                                <ComboBox fx:id="sortOrderComboBox" layoutX="932.0" layoutY="-2.0" prefWidth="150.0" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="2.0" />
+               </children></AnchorPane>
                 <SplitPane fx:id="middle" dividerPositions="0.3" prefHeight="635.0">
                     <items>
                         <TreeView fx:id="fileTreeView" prefHeight="485.0" prefWidth="242.0" showRoot="false" />
@@ -70,7 +71,7 @@
                             <children>
                                 <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="417.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                                          <HBox alignment="CENTER_LEFT" fillHeight="false" maxWidth="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="326.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <HBox alignment="CENTER_LEFT" fillHeight="false" maxWidth="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="394.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                               <children>
                                                   <RXTranslationButton onAction="#selectAll" prefHeight="24.0" prefWidth="45.0" text="全选">
                                                       <graphic>
@@ -125,14 +126,14 @@
                                                           <Font size="14.0" />
                                                       </font>
                                                   </RXTranslationButton>
+                                    <Button mnemonicParsing="false" onAction="#compressImage" text="压缩" />
                                               </children>
                                               <padding>
                                                   <Insets left="10.0" />
                                               </padding>
                                           </HBox>
-                                          <HBox alignment="CENTER_RIGHT" fillHeight="false" layoutX="349.6000061035156" prefHeight="50.0" prefWidth="442.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <HBox alignment="CENTER_RIGHT" fillHeight="false" layoutX="349.6000061035156" prefHeight="50.0" prefWidth="295.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                               <children>
-                                    <Slider fx:id="thumbnailSizeSlider" max="200.0" min="50.0" value="100.0" />
                                                   <RXTranslationButton id="btn-play" onAction="#play" prefHeight="24.0" prefWidth="45.0" text="播放">
                                                       <graphic>
                                                           <ImageView fitHeight="22" preserveRatio="true">
@@ -153,7 +154,7 @@
                                                           <Font size="14.0" />
                                                       </font>
                                                   </RXTranslationButton>
-                                                  <ComboBox fx:id="sortOrderComboBox" prefWidth="150.0" />
+                                    <Slider fx:id="thumbnailSizeSlider" max="200.0" min="50.0" value="100.0" />
                                               </children>
                                               <padding>
                                                   <Insets right="10.0" />

@@ -1,3 +1,5 @@
+import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.name.Rename;
 import org.junit.jupiter.api.Test;
 import top.remake.DisplayWindow;
 import top.remake.EditWindow;
@@ -138,5 +140,20 @@ public class TestFileSystemView {
         String absolutePath = new File("C:\\Users\\cjhaz\\Pictures\\God of War\\ScreenShot-2022-2-1_10-46-30.png").getAbsolutePath();
         String[] args = {absolutePath};
         EditWindow.main(args);
+    }
+
+    @Test
+    public void test10() {
+        File file = new File("C:\\Users\\cjhaz\\Desktop\\111.jpg");
+        File dest = new File("C:\\Users\\cjhaz\\Desktop");
+        try {
+            Thumbnails.of(file)
+                    .scale(1)
+                    .outputQuality(0.25)
+                    .outputFormat("jpg")
+                    .toFiles(dest, Rename.PREFIX_HYPHEN_THUMBNAIL);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

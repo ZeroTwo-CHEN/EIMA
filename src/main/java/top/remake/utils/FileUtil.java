@@ -3,12 +3,16 @@ package top.remake.utils;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.name.Rename;
+import top.remake.entity.ImageFile;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * 工具类
@@ -56,5 +60,27 @@ public class FileUtil {
      */
     public static void delete(File file) {
         Desktop.getDesktop().moveToTrash(file);
+    }
+
+    /**
+     * 压缩照片
+     *
+     * @param imageFile 要压缩的照片
+     * @param quality    压缩质量 取值0-1
+     */
+    public static void compressImage(ImageFile imageFile, double quality) throws IOException {
+            File file = imageFile.getFile();
+            if ("PNG".equals(imageFile.getFileType())) {
+                Thumbnails.of(file)
+                        .scale(1)
+                        .outputQuality(quality)
+                        .outputFormat("jpg")
+                        .toFiles(file.getParentFile(), Rename.PREFIX_HYPHEN_THUMBNAIL);
+            }else {
+                Thumbnails.of(file)
+                        .scale(1)
+                        .outputQuality(quality)
+                        .toFiles(file.getParentFile(), Rename.PREFIX_HYPHEN_THUMBNAIL);
+            }
     }
 }

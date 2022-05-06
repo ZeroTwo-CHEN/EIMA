@@ -29,6 +29,7 @@ import top.remake.utils.RandomUtil;
 
 import javax.swing.filechooser.FileSystemView;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.text.NumberFormat;
@@ -70,6 +71,9 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private TextField searchField;
+
+    @FXML
+    private TextField pathField;
 
 
     @Override
@@ -149,6 +153,7 @@ public class MainWindowController implements Initializable {
                     if (newValue instanceof FileTreeItem) {
                         breadCrumbBar.selectedCrumbProperty().set(newValue);
                         previewFlowPane.update(((FileTreeItem) newValue).getDirectory());
+                        pathField.setText(((FileTreeItem) newValue).getDirectory().getAbsolutePath());
                     }
                 });
         fileTreeView.setRoot(treeItem);
@@ -170,7 +175,6 @@ public class MainWindowController implements Initializable {
         pane.getChildren().addAll(previewFlowPane, rectangle);
         addHandler();
 
-        //将previewFlowPane的类型从Pane换成StackPane后，下列代码可注释
         previewFlowPane.heightProperty()
                 .addListener((observable, oldValue, newValue) -> pane.setMinHeight(previewFlowPane.getHeight()));
 
@@ -290,7 +294,6 @@ public class MainWindowController implements Initializable {
             }
             //右键菜单
             if (event.getButton() == MouseButton.SECONDARY) {
-                menu.attributeDisable(previewFlowPane.getNewChoices().size() != 1);
                 menu.show(event.getScreenX(), event.getScreenY());
             }
 
@@ -649,31 +652,51 @@ public class MainWindowController implements Initializable {
         return 2;
     }
 
-    private void  attribute(){
+    private void showImageAttribute() {
         AttributeAlert alert = new AttributeAlert(previewFlowPane.getNewChoices().get(0).getImageFile());
         alert.show();
     }
 
     class Menu extends ContextMenu {
         MenuItem delete = new MenuItem("删除");
+
         MenuItem copy = new MenuItem("复制");
+
         MenuItem paste = new MenuItem("粘贴");
+
         MenuItem rename = new MenuItem("重命名");
-        MenuItem  attribute=new MenuItem("属性");
+
+        MenuItem attribute = new MenuItem("属性");
+
+        MenuItem compress = new MenuItem("压缩");
+
         Menu() {
             delete.setOnAction(e -> deleteImage());
             copy.setOnAction(e -> copyImage());
             paste.setOnAction(e -> pasteImage());
             rename.setOnAction(e -> renameImage());
-            attribute.setOnAction(e-> attribute());
-            getItems().addAll(delete, copy, paste, rename,attribute);
-        }
-
-        void attributeDisable(Boolean flag){
-            attribute.setDisable(flag);
+            attribute.setOnAction(e -> showImageAttribute());
+            compress.setOnAction(e -> compressImage());
+            getItems().addAll(delete, copy, paste, rename, attribute,compress);
         }
 
         void show(double x, double y) {
+            if (previewFlowPane.getSelectedCount() == 0) {
+                delete.setDisable(true);
+                copy.setDisable(true);
+                rename.setDisable(true);
+                compress.setDisable(true);
+            }else {
+                delete.setDisable(false);
+                copy.setDisable(false);
+                rename.setDisable(false);
+                compress.setDisable(false);
+            }
+
+            paste.setDisable(copyImg.size() == 0);
+
+            attribute.setDisable(previewFlowPane.getSelectedCount() != 1);
+
             show(pane, x, y);
         }
 
@@ -748,7 +771,7 @@ public class MainWindowController implements Initializable {
             int i = newValue.intValue() % 20;
             if (i == 0) {
                 previewFlowPane.update();
-            }else {
+            } else {
                 thumbnailSizeSlider.setValue(newValue.intValue() + 20 - i);
             }
         }));
@@ -756,5 +779,80 @@ public class MainWindowController implements Initializable {
 
     public double getThumbnailSize() {
         return thumbnailSizeSlider.getValue();
+    }
+
+    /**
+     * 导航到指定路径
+     */
+    @FXML
+    private void goPath() {
+        String path = pathField.getText();
+        if (StringUtil.isEmpty(path)) {
+            return;
+        }
+        File file = new File(path);
+        previewFlowPane.update(file);
+    }
+
+    /**
+     * 压缩图片
+     */
+    @FXML
+    private void compressImage() {
+        if (previewFlowPane.getSelectedCount() == 0) {
+            return;
+        }
+
+        Dialog<Double> dialog = new Dialog<>();
+        dialog.setTitle("提示");
+        dialog.setHeaderText("请选择压缩后的质量");
+
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(10, 10, 10, 10));
+        grid.getStylesheets()
+                .add(Objects.requireNonNull(getClass().getResource("/css/bootstrap3.css")).toExternalForm());
+
+        Slider slider = new Slider(0.0, 1.0, 0.7);
+        slider.setShowTickLabels(true);
+        slider.setShowTickMarks(true);
+        slider.setMajorTickUnit(0.25);
+        slider.setMinorTickCount(5);
+
+
+        grid.add(new Label("压缩质量："), 0, 0);
+        grid.add(slider, 1, 0);
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                return slider.getValue();
+            }
+            return null;
+        });
+
+        dialog.showAndWait().ifPresent(result -> {
+            List<ThumbnailPanel> newChoices = previewFlowPane.getNewChoices();
+            Platform.runLater(() -> {
+                for (ThumbnailPanel t : newChoices) {
+                    try {
+                        FileUtil.compressImage(t.getImageFile(), result);
+                    } catch (IOException e) {
+                        Notifications.create()
+                                .text("图片:" + t.getImageFile().getFileName() + "压缩失败！")
+                                .hideAfter(Duration.seconds(2))
+                                .position(Pos.TOP_CENTER)
+                                .owner(root)
+                                .show();
+                        throw new RuntimeException(e);
+                    }
+                }
+                previewFlowPane.update();
+            });
+        });
     }
 }
