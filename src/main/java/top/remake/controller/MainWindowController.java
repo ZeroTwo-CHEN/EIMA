@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -22,6 +23,7 @@ import org.controlsfx.control.BreadCrumbBar;
 import org.controlsfx.control.Notifications;
 import top.remake.DisplayWindow;
 import top.remake.component.*;
+import top.remake.entity.ImageFile;
 import top.remake.entity.RenameData;
 import top.remake.entity.SortOrder;
 import top.remake.utils.FileUtil;
@@ -253,8 +255,8 @@ public class MainWindowController implements Initializable {
      * @param selectedCount 被选中的图片的数量
      * @param selectedSize  被选中的图片的大小
      */
-    public void updateTipsLabelText(int totalCount, double size, int selectedCount, double selectedSize) {
-        tipsLabel.setText(String.format("共 %d 张照片(%.2f MB) - 选中 %d 张照片(%.2f MB)",
+    public void updateTipsLabelText(int totalCount, String size, int selectedCount, String selectedSize) {
+        tipsLabel.setText(String.format("共 %d 张照片(%s) - 选中 %d 张照片(%s)",
                 totalCount,
                 size,
                 selectedCount,
@@ -653,7 +655,8 @@ public class MainWindowController implements Initializable {
     }
 
     private void showImageAttribute() {
-        AttributeAlert alert = new AttributeAlert(previewFlowPane.getNewChoices().get(0).getImageFile());
+        ImageFile imageFile = previewFlowPane.getNewChoices().get(0).getImageFile();
+        AttributeAlert alert = new AttributeAlert(imageFile, new Image(imageFile.getURL()));
         alert.show();
     }
 

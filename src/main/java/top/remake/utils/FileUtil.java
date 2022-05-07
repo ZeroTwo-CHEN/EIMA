@@ -83,4 +83,18 @@ public class FileUtil {
                         .toFiles(file.getParentFile(), Rename.PREFIX_HYPHEN_THUMBNAIL);
             }
     }
+
+    private static final double ONE_ZERO_TWO_FOUR = 1024;
+
+    public static String fileSizeByString(long sizeInBytes) {
+        String size;
+        if (sizeInBytes < ONE_ZERO_TWO_FOUR) {
+            size = String.format("%d B", sizeInBytes);
+        } else if (sizeInBytes < ONE_ZERO_TWO_FOUR * ONE_ZERO_TWO_FOUR) {
+            size = String.format("%.2f KB",  (sizeInBytes / ONE_ZERO_TWO_FOUR));
+        } else {
+            size = String.format("%.2f MB",  (sizeInBytes / ONE_ZERO_TWO_FOUR / ONE_ZERO_TWO_FOUR));
+        }
+        return size;
+    }
 }

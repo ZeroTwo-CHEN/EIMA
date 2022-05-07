@@ -185,11 +185,11 @@ public class DisplayWindowController implements Initializable {
      */
     private void updateTile() {
         ImageFile imageFile = imageFiles.get(currentIndex);
-        stage.setTitle(String.format("%d/%d - %s(%.2fMB,%.0fx%.0f像素)",
+        stage.setTitle(String.format("%d/%d - %s(%s,%.0fx%.0f像素)",
                 currentIndex + 1,
                 imageFiles.size(),
                 imageFile.getFileName(),
-                imageFile.getSizeInMagaBytes(),
+                FileUtil.fileSizeByString(imageFile.getSizeInBytes()),
                 image.getWidth(),
                 image.getHeight()
         ));
@@ -350,7 +350,7 @@ public class DisplayWindowController implements Initializable {
      */
     @FXML
     private void showImageInfo() {
-        AttributeAlert alert = new AttributeAlert(imageFiles.get(currentIndex));
+        AttributeAlert alert = new AttributeAlert(imageFiles.get(currentIndex), image);
         alert.show();
     }
 

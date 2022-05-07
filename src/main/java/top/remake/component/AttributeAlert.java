@@ -2,11 +2,13 @@ package top.remake.component;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
 import top.remake.entity.ImageFile;
+import top.remake.utils.FileUtil;
 
 /**
  * @author ZeroTwo_CHEN
@@ -29,7 +31,7 @@ public class AttributeAlert extends Alert {
         KEY.setStyle("-fx-spacing: 15px");
     }
 
-    public AttributeAlert(ImageFile file) {
+    public AttributeAlert(ImageFile file, Image image) {
         super(Alert.AlertType.INFORMATION);
         initStyle(StageStyle.UTILITY);
         setTitle(file.getFileName() + " 属性");
@@ -40,8 +42,8 @@ public class AttributeAlert extends Alert {
         value.getChildren()
                 .addAll(new Label(file.getFileName()),
                         new Label(file.getFileType()),
-                        new Label(String.format("%.2f", file.getSizeInMagaBytes()) + "MB"),
-                        new Label(file.getImageWidth() + "x" + file.getImageHeight()),
+                        new Label(FileUtil.fileSizeByString(file.getSizeInBytes())),
+                        new Label(image.getWidth() + "x" + image.getHeight()),
                         new Label(file.getAbsolutePath()),
                         new Label(file.getCreationTime()),
                         new Label(file.getLastModifiedTime()),

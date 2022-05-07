@@ -20,7 +20,7 @@ public class PreviewFlowPane extends FlowPane {
     /**
      * 照片列表
      */
-    private List<ThumbnailPanel> thumbnailPanels = new ArrayList<>();
+    private final List<ThumbnailPanel> thumbnailPanels = new ArrayList<>();
 
     public File getDirectory() {
         return directory;
@@ -34,8 +34,8 @@ public class PreviewFlowPane extends FlowPane {
     /**
      * 被选中图片的数组
      */
-    private List<ThumbnailPanel> newChoices = new ArrayList<>();
-    private List<ThumbnailPanel> oldChoices = new ArrayList<>();
+    private final List<ThumbnailPanel> newChoices = new ArrayList<>();
+    private final List<ThumbnailPanel> oldChoices = new ArrayList<>();
     private MainWindowController mainWindowController;
 
 
@@ -58,7 +58,7 @@ public class PreviewFlowPane extends FlowPane {
         if (files != null) {
             for (File file : files) {
                 ImageFile imageFile = new ImageFile(file);
-                ThumbnailPanel thumbnailPanel = new ThumbnailPanel(imageFile,mainWindowController.getThumbnailSize());
+                ThumbnailPanel thumbnailPanel = new ThumbnailPanel(imageFile, mainWindowController.getThumbnailSize());
                 this.thumbnailPanels.add(thumbnailPanel);
             }
         }
@@ -148,14 +148,14 @@ public class PreviewFlowPane extends FlowPane {
     }
 
     /**
-     * @return 所有图片的总大小
+     * @return 所有图片的总大小 单位：B
      */
-    public double getTotalSize() {
-        double totalSize = 0.0;
+    public String getTotalSize() {
+        long totalSize = 0;
         for (ThumbnailPanel thumbnailPanel : thumbnailPanels) {
-            totalSize += thumbnailPanel.getImageFile().getSizeInMagaBytes();
+            totalSize += thumbnailPanel.getImageFile().getSizeInBytes();
         }
-        return totalSize;
+        return FileUtil.fileSizeByString(totalSize);
     }
 
     /**
@@ -168,12 +168,12 @@ public class PreviewFlowPane extends FlowPane {
     /**
      * @return 被选中的图片的大小
      */
-    public double getSelectedSize() {
-        double size = 0.0;
+    public String getSelectedSize() {
+        long size = 0;
         for (ThumbnailPanel thumbnailPanel : newChoices) {
-            size += thumbnailPanel.getImageFile().getSizeInMagaBytes();
+            size += thumbnailPanel.getImageFile().getSizeInBytes();
         }
-        return size;
+        return FileUtil.fileSizeByString(size);
     }
 
     public List<ThumbnailPanel> getNewChoices() {
@@ -200,20 +200,19 @@ public class PreviewFlowPane extends FlowPane {
         this.shiftSign = shiftSign;
     }
 
-    private Boolean shiftSign=false;
+    private Boolean shiftSign = false;
 
-    public void shiftSelect(){
+    public void shiftSelect() {
         clearSelect();
-        if(!shiftSign){
-            from=0;
+        if (!shiftSign) {
+            from = 0;
         }
-        if(from>to){
-            newChoices.addAll(thumbnailPanels.subList(to,from+1));
+        if (from > to) {
+            newChoices.addAll(thumbnailPanels.subList(to, from + 1));
+        } else {
+            newChoices.addAll(thumbnailPanels.subList(from, to + 1));
         }
-        else {
-            newChoices.addAll(thumbnailPanels.subList(from,to+1));
-        }
-        for(ThumbnailPanel pane:newChoices){
+        for (ThumbnailPanel pane : newChoices) {
             pane.select();
         }
     }

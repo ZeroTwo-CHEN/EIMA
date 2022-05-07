@@ -16,6 +16,7 @@ import top.remake.DisplayWindow;
 import top.remake.controller.ControllerMap;
 import top.remake.controller.MainWindowController;
 import top.remake.entity.ImageFile;
+import top.remake.utils.FileUtil;
 
 /**
  * 缩略图面板
@@ -31,23 +32,24 @@ public class ThumbnailPanel extends BorderPane {
     /**
      * Image
      */
-    private ImageFile imageFile;
+    private final ImageFile imageFile;
 
     /**
      * 缩略图
      */
-    private ImageView imageView;
+    private final ImageView imageView;
 
     /**
      * 图片名称
      */
-    private RXHighlightText imageName;
+    private final RXHighlightText imageName;
 
     private Boolean isSelected;
 
     private static final MainWindowController MAIN_WINDOWS_CONTROLLER;
 
     private static TextField searchKey;
+
     private Tooltip tooltip;
 
     /**
@@ -66,9 +68,9 @@ public class ThumbnailPanel extends BorderPane {
         searchKey = MAIN_WINDOWS_CONTROLLER.getSearchField();
     }
 
-    public ThumbnailPanel(ImageFile imageFile,double size) {
-        this.setMaxSize(size+10, size+50);
-        this.setMinSize(size+10, size+50);
+    public ThumbnailPanel(ImageFile imageFile, double size) {
+        this.setMaxSize(size + 10, size + 50);
+        this.setMinSize(size + 10, size + 50);
         //关闭cache防止占用内存过大
         this.setCache(false);
         this.setPadding(INSETS);
@@ -121,7 +123,7 @@ public class ThumbnailPanel extends BorderPane {
                     }
                 }
                 //shift多选
-                else if(event.isShiftDown()){
+                else if (event.isShiftDown()) {
                     parent.setTo(parent.getThumbnailPanels().indexOf(this));
                     parent.shiftSelect();
                 }
@@ -167,8 +169,11 @@ public class ThumbnailPanel extends BorderPane {
      * 添加图片信息
      */
     private void toolTips() {
-        String format = String.format("%.2f", this.imageFile.getSizeInMagaBytes());
-        tooltip = new Tooltip("名称:" + this.imageFile.getFileName() + "\n类型:" + this.imageFile.getFileType() + "\n大小:" + format + "MB");
+        String text = String.format("名称:%s\n类型:%s\n大小:%s",
+                this.imageFile.getFileName(),
+                this.imageFile.getFileType(),
+                FileUtil.fileSizeByString(this.imageFile.getSizeInBytes()));
+        tooltip = new Tooltip(text);
         tooltip.setAutoHide(true);
         tooltip.setAutoFix(true);
         Tooltip.install(this, tooltip);

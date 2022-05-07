@@ -126,7 +126,18 @@
                                                           <Font size="14.0" />
                                                       </font>
                                                   </RXTranslationButton>
-                                    <Button mnemonicParsing="false" onAction="#compressImage" text="压缩" />
+                                    <RXTranslationButton layoutX="264.0" layoutY="22.0" onAction="#compressImage" prefHeight="24.0" prefWidth="45.0" text="呃呃">
+                                       <graphic>
+                                          <ImageView fitHeight="22" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../image/btn-compress.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </RXTranslationButton>
                                               </children>
                                               <padding>
                                                   <Insets left="10.0" />

@@ -19,7 +19,7 @@ public class ImageFile {
     /**
      * 图片的file对象
      */
-    private  File file;
+    private File file;
 
     /**
      * 文件名
@@ -42,11 +42,6 @@ public class ImageFile {
     private long sizeInBytes;
 
     /**
-     * 图片大小 单位为MB
-     */
-    private double sizeInMagaBytes;
-
-    /**
      * 时间格式
      */
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd, HH:mm:ss");
@@ -66,24 +61,12 @@ public class ImageFile {
      */
     private String lastAccessTime = DEFAULT_VALUE;
 
-    /**
-     * 图像宽度
-     */
-    private double imageWidth;
-
-    /**
-     * 图像高度
-     */
-    private double imageHeight;
-
-
     public ImageFile(File file) {
         this.file = file;
         this.fileName = file.getName();
         this.fileType = this.fileName.toUpperCase().substring(this.fileName.lastIndexOf(".") + 1);
         this.absolutePath = file.getAbsolutePath();
         this.sizeInBytes = file.length();
-        this.sizeInMagaBytes = file.length() / (1024.0 * 1024);
 
         try {
             BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
@@ -104,9 +87,9 @@ public class ImageFile {
         return file;
     }
 
-    public void setFile(File file){
-        this.file=file;
-        this.fileName=file.getName();
+    public void setFile(File file) {
+        this.file = file;
+        this.fileName = file.getName();
     }
 
     public String getFileName() {
@@ -141,14 +124,6 @@ public class ImageFile {
         this.sizeInBytes = sizeInBytes;
     }
 
-    public double getSizeInMagaBytes() {
-        return sizeInMagaBytes;
-    }
-
-    public void setSizeInMagaBytes(double sizeInMagaBytes) {
-        this.sizeInMagaBytes = sizeInMagaBytes;
-    }
-
     public String getCreationTime() {
         return creationTime;
     }
@@ -171,22 +146,6 @@ public class ImageFile {
 
     public void setLastAccessTime(String lastAccessTime) {
         this.lastAccessTime = lastAccessTime;
-    }
-
-    public double getImageWidth() {
-        return imageWidth;
-    }
-
-    public void setImageWidth(double imageWidth) {
-        this.imageWidth = imageWidth;
-    }
-
-    public double getImageHeight() {
-        return imageHeight;
-    }
-
-    public void setImageHeight(double imageHeight) {
-        this.imageHeight = imageHeight;
     }
 
     public String getURL() {

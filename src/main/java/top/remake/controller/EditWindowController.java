@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import top.remake.entity.BrushType;
 import top.remake.entity.ImageFile;
 import top.remake.utils.DrawShapeUtil;
+import top.remake.utils.FileUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -169,9 +170,9 @@ public class EditWindowController implements Initializable {
 
     private void updateTile() {
         ImageFile imageFile = new ImageFile(file);
-        stage.setTitle(String.format("%s(%.2fMB,%.0fx%.0f像素)",
+        stage.setTitle(String.format("%s(%s,%.0fx%.0f像素)",
                 imageFile.getFileName(),
-                imageFile.getSizeInMagaBytes(),
+                FileUtil.fileSizeByString(imageFile.getSizeInBytes()),
                 image.getWidth(),
                 image.getHeight()
         ));
