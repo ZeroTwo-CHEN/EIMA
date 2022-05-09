@@ -7,6 +7,11 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
@@ -30,12 +35,16 @@ import top.remake.utils.FileUtil;
 import top.remake.utils.RandomUtil;
 
 import javax.swing.filechooser.FileSystemView;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.List;
 
 /**
  * @author ZeroTwo_CHEN
@@ -857,5 +866,39 @@ public class MainWindowController implements Initializable {
                 previewFlowPane.update();
             });
         });
+    }
+
+    /**
+     * 关于界面
+     */
+    @FXML
+    private void about() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("关于");
+        alert.setGraphic(null);
+        alert.setHeaderText(null);
+
+        Hyperlink hyperlink = new Hyperlink("https://gitee.com/ZeroTwo-CHEN/EIMA");
+        hyperlink.setOnAction(e->{
+            try {
+                Desktop.getDesktop().browse(new URI("https://gitee.com/ZeroTwo-CHEN/EIMA"));
+            } catch (IOException | URISyntaxException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        GridPane grid = new GridPane();
+        grid.add(new Label("Author: "), 0, 0);
+        grid.add(new Label("ZeroTwo_CHEN  gzz"), 1, 0);
+        grid.add(new Label("Source: "), 0, 1);
+        grid.add(hyperlink, 1, 1);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 10, 20, 10));
+        grid.setStyle("-fx-font-size: 18;-fx-font-weight: bolder");
+
+        alert.getDialogPane().setContent(grid);
+        alert.initModality(Modality.NONE);
+        alert.show();
     }
 }
