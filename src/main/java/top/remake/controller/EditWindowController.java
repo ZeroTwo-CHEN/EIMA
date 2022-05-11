@@ -145,7 +145,7 @@ public class EditWindowController implements Initializable {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("保存图片");
-        fileChooser.setInitialFileName("Edit-" + file.getName());
+        fileChooser.setInitialFileName("Edit-" + file.getName().substring(0, file.getName().lastIndexOf(".")));
         fileChooser.setInitialDirectory(file.getParentFile());
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PNG", ".png"));
 

@@ -76,7 +76,7 @@ public class DrawShapeUtil {
                 return polyline;
             }
             case LINE -> {
-                //刚开始开始与结束坐标相同
+                //刚开始与结束坐标相同
                 line = new Line(x, y, x, y);
                 line.setStroke(brushColor.get());
                 line.setStrokeWidth(strokeWidth.doubleValue());

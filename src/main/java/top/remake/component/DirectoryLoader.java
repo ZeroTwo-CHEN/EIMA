@@ -4,7 +4,6 @@ import javafx.scene.control.TreeItem;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
@@ -19,14 +18,6 @@ public class DirectoryLoader implements Callable<List<? extends TreeItem<String>
     public DirectoryLoader(File directory) {
         this.directory = directory;
     }
-
-    private static final Comparator<File> COMPARATOR = (left, right) -> {
-        boolean leftIsDir = left.isDirectory();
-        if (leftIsDir ^ right.isDirectory()) {
-            return leftIsDir ? -1 : 1;
-        }
-        return left.compareTo(right);
-    };
 
     /**
      * 转换为FileTreeItem
@@ -44,8 +35,6 @@ public class DirectoryLoader implements Callable<List<? extends TreeItem<String>
         return Arrays.stream(directory.listFiles())
                 //过滤文件
                 .filter(File::isDirectory)
-                //排序
-                //.sorted(COMPARATOR)
                 //转换
                 .map(this::toFileTreeItem)
                 .collect(Collectors.toList());
