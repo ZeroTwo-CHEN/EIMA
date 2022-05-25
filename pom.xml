@@ -79,6 +79,42 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <version>1.0.0.RC2</version>
+                <executions>
+                    <execution>
+                        <id>add-module-infos</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-module-info</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/modules</outputDirectory>
+                            <overwriteExistingFiles>true</overwriteExistingFiles>
+                            <modules>
+                                <module>
+                                    <artifact>
+                                        <groupId>net.coobird</groupId>
+                                        <artifactId>thumbnailator</artifactId>
+                                        <version>0.4.17</version>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module thumbnailator {
+                                        requires java.desktop;
+                                        exports net.coobird.thumbnailator.name to EIMA;
+                                        exports net.coobird.thumbnailator;
+                                        }
+                                        <!-- possibly other fine-tuning -->
+                                    </moduleInfoSource>
+                                </module>
+                            </modules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
