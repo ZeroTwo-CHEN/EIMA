@@ -2,8 +2,10 @@ package top.remake.controller;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -142,6 +144,17 @@ public class DisplayWindowController implements Initializable {
         //TODO: 实现图片的异步加载
         image = new Image(file.toPath().toUri().toString());
         updateImageView();
+
+        initCursor();
+    }
+
+    private void initCursor() {
+        PauseTransition idle = new PauseTransition(Duration.seconds(1));
+        idle.setOnFinished(e -> stage.getScene().setCursor(Cursor.NONE));
+        stage.getScene().addEventHandler(Event.ANY, e->{
+            idle.playFromStart();
+            stage.getScene().setCursor(Cursor.DEFAULT);
+        });
     }
 
     /**

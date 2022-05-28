@@ -6,12 +6,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
@@ -43,8 +43,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.text.NumberFormat;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * @author ZeroTwo_CHEN
@@ -670,6 +670,8 @@ public class MainWindowController implements Initializable {
     }
 
     class Menu extends ContextMenu {
+        MenuItem refresh = new MenuItem("刷新");
+
         MenuItem delete = new MenuItem("删除");
 
         MenuItem copy = new MenuItem("复制");
@@ -683,13 +685,14 @@ public class MainWindowController implements Initializable {
         MenuItem compress = new MenuItem("压缩");
 
         Menu() {
+            refresh.setOnAction(e -> refresh());
             delete.setOnAction(e -> deleteImage());
             copy.setOnAction(e -> copyImage());
             paste.setOnAction(e -> pasteImage());
             rename.setOnAction(e -> renameImage());
             attribute.setOnAction(e -> showImageAttribute());
             compress.setOnAction(e -> compressImage());
-            getItems().addAll(delete, copy, paste, rename, attribute,compress);
+            getItems().addAll(refresh, delete, copy, paste, rename, attribute, compress);
         }
 
         void show(double x, double y) {
@@ -698,7 +701,7 @@ public class MainWindowController implements Initializable {
                 copy.setDisable(true);
                 rename.setDisable(true);
                 compress.setDisable(true);
-            }else {
+            } else {
                 delete.setDisable(false);
                 copy.setDisable(false);
                 rename.setDisable(false);
@@ -879,7 +882,7 @@ public class MainWindowController implements Initializable {
         alert.setHeaderText(null);
 
         Hyperlink hyperlink = new Hyperlink("https://gitee.com/ZeroTwo-CHEN/EIMA");
-        hyperlink.setOnAction(e->{
+        hyperlink.setOnAction(e -> {
             try {
                 Desktop.getDesktop().browse(new URI("https://gitee.com/ZeroTwo-CHEN/EIMA"));
             } catch (IOException | URISyntaxException ex) {
